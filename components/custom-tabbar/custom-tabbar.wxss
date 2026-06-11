@@ -119,7 +119,7 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: calc(180rpx + env(safe-area-inset-bottom));
   background: rgba(10, 15, 26, 0);
   z-index: -1;
   pointer-events: none;
