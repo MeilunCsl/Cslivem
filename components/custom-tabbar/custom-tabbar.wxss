@@ -93,7 +93,7 @@
   align-items: center;
   justify-content: center;
   border: 7rpx solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 8rpx 24rpx rgba(74, 91, 255, 0.18), 0 2rpx 8rpx rgba(32, 191, 218, 0.10);
+  box-shadow: none;
   transform: translateY(-6rpx);
   transition: transform 220ms ease, box-shadow 220ms ease;
   z-index: 3;
