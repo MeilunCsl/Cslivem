@@ -1,4 +1,4 @@
-/* pages/home/home.wxss - Cslivem 极简 AI 对话首页 */
+/* pages/home/home.wxss - Cslivem 极简 AI 对话首页 + 动画 */
 
 .page {
   height: 100vh;
@@ -19,9 +19,25 @@
   justify-content: center;
   min-height: 100vh;
   padding: 0 var(--csl-page-x, 48rpx);
-  /* 底部 TabBar 遮挡 + 安全区 */
   padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
 }
+
+/* ===== 入场动画系统 ===== */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(40rpx);
+  transition: opacity 0.6s ease, transform 0.6s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+.anim-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.anim-d1 { transition-delay: 0.1s; }
+.anim-d2 { transition-delay: 0.2s; }
+.anim-d3 { transition-delay: 0.3s; }
+.anim-d4 { transition-delay: 0.4s; }
 
 /* ===== 品牌区域 ===== */
 .brand-area {
@@ -31,10 +47,35 @@
   margin-bottom: 80rpx;
 }
 
+.logo-ring {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  margin-bottom: 32rpx;
+}
+
 .brand-logo {
   width: 144rpx;
   height: 144rpx;
-  margin-bottom: 28rpx;
+  position: absolute;
+  top: 8rpx;
+  left: 8rpx;
+}
+
+.logo-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(91, 76, 255, 0.15) 0%, transparent 70%);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
 }
 
 .brand-name {
@@ -66,7 +107,12 @@
   padding: 12rpx 14rpx 12rpx 36rpx;
   box-shadow: var(--shadow-input, 0 4rpx 24rpx rgba(91, 76, 255, 0.12));
   border: 2rpx solid var(--color-border, #E7EAF0);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-focused {
+  border-color: var(--color-primary, #5B4CFF);
+  box-shadow: 0 4rpx 32rpx rgba(91, 76, 255, 0.2);
 }
 
 .input-field {
@@ -98,6 +144,10 @@
   box-shadow: var(--shadow-send, 0 8rpx 32rpx rgba(91, 76, 255, 0.36));
 }
 
+.send-btn-hover {
+  transform: scale(0.9);
+}
+
 .send-arrow {
   font-size: 36rpx;
   font-weight: 700;
@@ -125,9 +175,10 @@
   transition: all 0.2s ease;
 }
 
-.chip:active {
-  transform: scale(0.96);
+.chip-press {
+  transform: scale(0.95);
   border-color: var(--color-primary, #5B4CFF);
+  background: var(--color-primary-bg, #EDE9FF);
 }
 
 .chip-icon {

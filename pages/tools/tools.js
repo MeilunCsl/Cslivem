@@ -1,7 +1,7 @@
-// pages/tools/tools.js
 Page({
   data: {
     statusBarHeight: 20,
+    ready: false,
     tools: [
       { id: 'pdf', icon: '▤', name: '图片转 PDF', description: '本地处理，可保存到知识库' },
       { id: 'ocr', icon: '◎', name: 'OCR 识别', description: '需要相册或相机权限' },
@@ -18,9 +18,10 @@ Page({
   },
   onLoad() {
     try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 }); } catch(e) {}
+    setTimeout(() => { this.setData({ ready: true }); }, 100);
   },
   onToolTap(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.showToast({ title: '工具详情（开发中）: ' + id, icon: 'none' });
+    wx.vibrateShort({ type: 'light' }).catch(() => {});
+    wx.showToast({ title: '工具详情（开发中）', icon: 'none' });
   }
 });

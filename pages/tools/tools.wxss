@@ -1,23 +1,36 @@
-/* pages/tools/tools.wxss - Cslivem 品牌 */
+/* pages/tools/tools.wxss - Cslivem 品牌 + 动画 */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 .page-scroll { flex: 1; height: 0; }
 .page-container { padding: 16rpx var(--csl-page-x) 40rpx; }
 .header { padding: 24rpx 0 8rpx; }
 .page-title { font-size: var(--font-size-title-lg); font-weight: 700; color: var(--color-text); }
 .search-section { margin: 16rpx 0 24rpx; }
+
+/* 入场动画 */
+.anim-fade { opacity: 0; transform: translateY(24rpx); transition: opacity 0.5s ease, transform 0.5s var(--ease-spring); }
+.anim-show { opacity: 1; transform: translateY(0); }
+.anim-d1 { transition-delay: 0.08s; }
+.anim-d2 { transition-delay: 0.16s; }
+.anim-d3 { transition-delay: 0.24s; }
+
 .section { margin-bottom: 32rpx; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx; }
 .section-title { font-size: var(--font-size-title-md); font-weight: 700; color: var(--color-text); }
 .section-sub { font-size: 24rpx; color: var(--color-text-secondary); }
+
 .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18rpx; }
-.tool-card { min-height: 180rpx; display: flex; flex-direction: column; }
+.tool-card { min-height: 180rpx; display: flex; flex-direction: column; transition: transform 0.2s ease; }
+.tool-press { transform: scale(0.96); }
 .tool-icon { font-size: 48rpx; margin-bottom: 14rpx; }
 .tool-name { font-size: 28rpx; font-weight: 600; color: var(--color-text); margin-bottom: 8rpx; }
 .tool-desc { font-size: 22rpx; color: var(--color-text-secondary); line-height: 1.5; }
+
 .coming-soon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18rpx; }
 .coming-item {
   display: flex; flex-direction: column; align-items: center; gap: 10rpx;
   padding: 24rpx 0; background: var(--color-card); border-radius: 20rpx; opacity: 0.5;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
+.coming-press { transform: scale(0.92); opacity: 0.35; }
 .coming-icon { font-size: 40rpx; }
 .coming-name { font-size: 22rpx; color: var(--color-text-secondary); }

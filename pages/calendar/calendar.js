@@ -1,9 +1,7 @@
-// pages/calendar/calendar.js
-const calendarModule = require('../../modules/calendar/public');
-
 Page({
   data: {
     statusBarHeight: 20,
+    ready: false,
     currentYear: 2026,
     currentMonth: 6,
     weekdays: ['日', '一', '二', '三', '四', '五', '六'],
@@ -16,6 +14,7 @@ Page({
     this.setData({ currentYear: now.getFullYear(), currentMonth: now.getMonth() + 1 });
     this.buildCalendar();
     this.loadEvents();
+    setTimeout(() => { this.setData({ ready: true }); }, 100);
   },
   buildCalendar() {
     const { currentYear, currentMonth } = this.data;
@@ -31,6 +30,7 @@ Page({
     this.setData({ dates });
   },
   loadEvents() {
+    const calendarModule = require('../../modules/calendar/public');
     this.setData({ todayEvents: calendarModule.getTodayEvents() });
   },
   prevMonth() {

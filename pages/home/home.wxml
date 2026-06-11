@@ -4,21 +4,23 @@
 
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
     <view class="content">
-      <!-- Logo + 品牌 -->
-      <view class="brand-area">
-        <image
-          class="brand-logo"
-          src="/assets/icons/cslivem-mark-256.png"
-          mode="aspectFit"
-          lazy-load
-        />
+      <!-- Logo + 品牌（入场动画） -->
+      <view class="brand-area anim-fade-up {{ready ? 'anim-visible' : ''}}">
+        <view class="logo-ring">
+          <image
+            class="brand-logo"
+            src="/assets/icons/cslivem-mark-256.png"
+            mode="aspectFit"
+          />
+          <view class="logo-glow"></view>
+        </view>
         <text class="brand-name">Cslivem</text>
         <text class="brand-tagline">今天想了解什么？</text>
       </view>
 
       <!-- 问题输入框 -->
-      <view class="input-wrapper">
-        <view class="input-box">
+      <view class="input-wrapper anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}">
+        <view class="input-box {{inputFocused ? 'input-focused' : ''}}">
           <input
             class="input-field"
             placeholder="输入你的问题…"
@@ -26,6 +28,8 @@
             value="{{inputValue}}"
             bindinput="onInput"
             bindconfirm="onSend"
+            bindfocus="onFocus"
+            bindblur="onBlur"
             confirm-type="send"
             adjust-position="{{true}}"
             hold-keyboard
@@ -33,20 +37,22 @@
           <view
             class="send-btn {{inputValue ? 'send-btn-active' : ''}}"
             bindtap="onSend"
+            hover-class="send-btn-hover"
           >
             <text class="send-arrow">↑</text>
           </view>
         </view>
       </view>
 
-      <!-- 快捷建议 -->
+      <!-- 快捷建议（依次入场） -->
       <view class="suggestions" wx:if="{{!inputValue}}">
         <view
-          class="chip"
+          class="chip anim-fade-up anim-d{{index + 2}} {{ready ? 'anim-visible' : ''}}"
           wx:for="{{suggestions}}"
           wx:key="text"
           bindtap="onSuggestionTap"
           data-text="{{item.text}}"
+          hover-class="chip-press"
         >
           <text class="chip-icon">{{item.icon}}</text>
           <text class="chip-text">{{item.text}}</text>

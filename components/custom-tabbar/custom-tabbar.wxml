@@ -1,23 +1,23 @@
 <!-- components/custom-tabbar/custom-tabbar.wxml - Cslivem 品牌 -->
 <view class="tabbar safe-bottom">
-  <!-- 快速记录弹出面板 -->
+  <!-- 快速记录弹出面板（滑入动画） -->
   <view class="quick-panel {{showPanel ? 'show' : ''}}" catchtap="hidePanel">
-    <view class="quick-panel-content" catchtap="noop">
+    <view class="quick-panel-content {{showPanel ? 'panel-in' : ''}}" catchtap="noop">
       <view class="quick-panel-title">快速记录</view>
       <view class="quick-actions-grid">
-        <view class="quick-action-item" bindtap="onAction" data-type="text">
+        <view class="quick-action-item" bindtap="onAction" data-type="text" hover-class="action-press">
           <view class="quick-action-icon">📝</view>
           <text>文字</text>
         </view>
-        <view class="quick-action-item" bindtap="onAction" data-type="photo">
+        <view class="quick-action-item" bindtap="onAction" data-type="photo" hover-class="action-press">
           <view class="quick-action-icon">📷</view>
           <text>拍照</text>
         </view>
-        <view class="quick-action-item" bindtap="onAction" data-type="voice">
+        <view class="quick-action-item" bindtap="onAction" data-type="voice" hover-class="action-press">
           <view class="quick-action-icon">🎤</view>
           <text>语音</text>
         </view>
-        <view class="quick-action-item" bindtap="onAction" data-type="scan">
+        <view class="quick-action-item" bindtap="onAction" data-type="scan" hover-class="action-press">
           <view class="quick-action-icon">📄</view>
           <text>扫描</text>
         </view>
@@ -27,27 +27,34 @@
 
   <!-- Tab 栏 -->
   <view class="tabbar-inner">
-    <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/home/home">
+    <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/home/home" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 0 ? 'home-active' : 'home'}}.png" mode="aspectFit" />
       <text class="tab-text">首页</text>
+      <view class="tab-dot" wx:if="{{selected === 0}}"></view>
     </view>
-    <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/notes/notes">
+    <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/notes/notes" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 1 ? 'notes-active' : 'notes'}}.png" mode="aspectFit" />
       <text class="tab-text">知识</text>
+      <view class="tab-dot" wx:if="{{selected === 1}}"></view>
     </view>
 
     <!-- 中央 "+" FAB -->
     <view class="tab-item tab-center" bindtap="togglePanel">
-      <view class="fab {{showPanel ? 'fab-rotate' : ''}}">+</view>
+      <view class="fab {{showPanel ? 'fab-active' : ''}}">
+        <text class="fab-icon">+</text>
+      </view>
+      <view class="fab-ring"></view>
     </view>
 
-    <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/calendar/calendar">
+    <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/calendar/calendar" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 2 ? 'calendar-active' : 'calendar'}}.png" mode="aspectFit" />
       <text class="tab-text">日历</text>
+      <view class="tab-dot" wx:if="{{selected === 2}}"></view>
     </view>
-    <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/tools/tools">
+    <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/tools/tools" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 3 ? 'tools-active' : 'tools'}}.png" mode="aspectFit" />
       <text class="tab-text">工具</text>
+      <view class="tab-dot" wx:if="{{selected === 3}}"></view>
     </view>
   </view>
 </view>

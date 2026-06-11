@@ -3,6 +3,8 @@ Page({
   data: {
     statusBarHeight: 20,
     inputValue: '',
+    inputFocused: false,
+    ready: false,
     suggestions: [
       { icon: '💡', text: '记一下灵感' },
       { icon: '📋', text: '整理本周笔记' },
@@ -15,6 +17,9 @@ Page({
       const sys = wx.getSystemInfoSync();
       this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     } catch (e) {}
+
+    // 入场动画延迟触发
+    setTimeout(() => { this.setData({ ready: true }); }, 100);
   },
 
   onShow() {
@@ -27,15 +32,26 @@ Page({
     this.setData({ inputValue: e.detail.value });
   },
 
+  onFocus() {
+    this.setData({ inputFocused: true });
+  },
+
+  onBlur() {
+    this.setData({ inputFocused: false });
+  },
+
   onSend() {
     const text = this.data.inputValue.trim();
     if (!text) return;
+    // 按钮按压反馈
+    wx.vibrateShort({ type: 'light' }).catch(() => {});
     wx.showToast({ title: 'AI 功能开发中', icon: 'none' });
     this.setData({ inputValue: '' });
   },
 
   onSuggestionTap(e) {
     const text = e.currentTarget.dataset.text;
+    wx.vibrateShort({ type: 'light' }).catch(() => {});
     this.setData({ inputValue: text });
   }
 });

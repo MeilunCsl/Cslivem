@@ -1,25 +1,40 @@
-/* pages/calendar/calendar.wxss - Cslivem 品牌 */
+/* pages/calendar/calendar.wxss - Cslivem 品牌 + 动画 */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 .page-scroll { flex: 1; height: 0; }
 .page-container { padding: 16rpx var(--csl-page-x) 40rpx; }
 .header { padding: 24rpx 0 8rpx; }
 .page-title { font-size: var(--font-size-title-lg); font-weight: 700; color: var(--color-text); }
+
+/* 入场动画 */
+.anim-fade { opacity: 0; transform: translateY(24rpx); transition: opacity 0.5s ease, transform 0.5s var(--ease-spring); }
+.anim-show { opacity: 1; transform: translateY(0); }
+.anim-d1 { transition-delay: 0.08s; }
+.anim-d2 { transition-delay: 0.16s; }
+.anim-d3 { transition-delay: 0.24s; }
+
+/* 月份导航 */
 .month-nav { display: flex; align-items: center; justify-content: center; gap: 40rpx; margin: 20rpx 0; }
-.month-arrow { font-size: 40rpx; color: var(--color-primary); padding: 10rpx 20rpx; }
+.month-arrow { font-size: 40rpx; color: var(--color-primary); padding: 10rpx 20rpx; transition: transform 0.2s ease; }
+.arrow-press { transform: scale(0.8); opacity: 0.6; }
 .month-label { font-size: 32rpx; font-weight: 700; color: var(--color-text); }
+
+/* 日历网格 */
 .weekday-row { display: flex; margin-bottom: 12rpx; }
 .weekday { flex: 1; text-align: center; font-size: 24rpx; color: var(--color-text-secondary); font-weight: 600; }
 .dates-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8rpx; }
 .date-cell {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 80rpx; border-radius: 20rpx; position: relative;
+  height: 80rpx; border-radius: 20rpx; position: relative; transition: transform 0.15s ease;
 }
+.date-press { transform: scale(0.88); }
 .date-cell.today { background: var(--color-primary); }
 .date-cell.today .date-num { color: #FFFFFF; }
 .date-num { font-size: 28rpx; color: var(--color-text); }
 .date-cell.empty { opacity: 0; pointer-events: none; }
 .date-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--color-primary); margin-top: 4rpx; }
 .date-cell.today .date-dot { background: #FFFFFF; }
+
+/* 事件列表 */
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
 .section-title { font-size: var(--font-size-title-md); font-weight: 700; color: var(--color-text); }
 .event-card { margin-bottom: 12rpx; }

@@ -1,40 +1,37 @@
-<!-- pages/calendar/calendar.wxml - 日历页（骨架） -->
+<!-- pages/calendar/calendar.wxml - 日历页 -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
     <view class="page-container">
-      <view class="header">
+      <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
         <text class="page-title">日历</text>
       </view>
 
-      <!-- 月份切换 -->
-      <view class="month-nav">
-        <text class="month-arrow" bindtap="prevMonth">‹</text>
+      <view class="month-nav anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <text class="month-arrow" bindtap="prevMonth" hover-class="arrow-press">‹</text>
         <text class="month-label">{{currentYear}} 年 {{currentMonth}} 月</text>
-        <text class="month-arrow" bindtap="nextMonth">›</text>
+        <text class="month-arrow" bindtap="nextMonth" hover-class="arrow-press">›</text>
       </view>
 
-      <!-- 星期头 -->
-      <view class="weekday-row">
+      <view class="weekday-row anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
         <text class="weekday" wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
       </view>
 
-      <!-- 日期网格 -->
-      <view class="dates-grid">
+      <view class="dates-grid anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
         <view
           class="date-cell {{item.isToday ? 'today' : ''}} {{item.hasEvent ? 'has-event' : ''}} {{item.isEmpty ? 'empty' : ''}}"
           wx:for="{{dates}}"
           wx:key="index"
           bindtap="onDateTap"
           data-date="{{item.date}}"
+          hover-class="{{item.isEmpty ? '' : 'date-press'}}"
         >
           <text class="date-num">{{item.day}}</text>
           <view class="date-dot" wx:if="{{item.hasEvent}}"></view>
         </view>
       </view>
 
-      <!-- 今日事件 -->
-      <view class="section" style="margin-top: 32rpx;">
+      <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}" style="margin-top: 32rpx;">
         <view class="section-header">
           <text class="section-title">今日事件</text>
         </view>
