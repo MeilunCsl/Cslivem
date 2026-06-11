@@ -1,6 +1,5 @@
 /* components/custom-tabbar/custom-tabbar.wxss — 低圆角悬浮导航栏 */
 
-/* 外层容器：底部定位 + 安全区 */
 .tabbar {
   position: fixed;
   left: 48rpx;
@@ -10,7 +9,6 @@
   transition: opacity 260ms ease, transform 260ms ease;
 }
 
-/* 胶囊体：低圆角矩形 */
 .tabbar-inner {
   position: relative;
   display: grid;
@@ -19,20 +17,11 @@
   height: 120rpx;
   border-radius: 26rpx;
   padding: 0;
-
-  background:
-    linear-gradient(
-      110deg,
-      rgba(99, 82, 255, 0.09) 0%,
-      rgba(255, 255, 255, 0.88) 45%,
-      rgba(31, 212, 224, 0.07) 100%
-    );
-  border: 1rpx solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    0 16rpx 40rpx rgba(52, 64, 105, 0.10),
-    0 4rpx 12rpx rgba(78, 91, 143, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: linear-gradient(110deg, rgba(99, 82, 255, 0.06) 0%, rgba(255, 255, 255, 0.92) 40%, rgba(255, 255, 255, 0.92) 60%, rgba(31, 212, 224, 0.05) 100%);
+  border: 1rpx solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8rpx 32rpx rgba(52, 64, 105, 0.06), 0 2rpx 8rpx rgba(78, 91, 143, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 /* ===== 导航项 ===== */
@@ -104,9 +93,7 @@
   align-items: center;
   justify-content: center;
   border: 7rpx solid rgba(255, 255, 255, 0.9);
-  box-shadow:
-    0 12rpx 28rpx rgba(74, 91, 255, 0.20),
-    0 4rpx 10rpx rgba(32, 191, 218, 0.12);
+  box-shadow: 0 8rpx 24rpx rgba(74, 91, 255, 0.18), 0 2rpx 8rpx rgba(32, 191, 218, 0.10);
   transform: translateY(-6rpx);
   transition: transform 220ms ease, box-shadow 220ms ease;
   z-index: 3;
@@ -114,9 +101,7 @@
 
 .fab:active {
   transform: translateY(-6rpx) scale(0.94);
-  box-shadow:
-    0 6rpx 16rpx rgba(74, 91, 255, 0.12),
-    0 2rpx 6rpx rgba(32, 191, 218, 0.08);
+  box-shadow: 0 4rpx 12rpx rgba(74, 91, 255, 0.10);
 }
 
 .fab-rotated {
@@ -144,8 +129,8 @@
 }
 
 .quick-panel.show {
-  z-index: 99;
-  background: rgba(10, 15, 26, 0.40);
+  z-index: 98;
+  background: rgba(10, 15, 26, 0.35);
   pointer-events: auto;
 }
 
@@ -157,7 +142,7 @@
   background: #FFFFFF;
   border-radius: 32rpx;
   padding: 40rpx;
-  box-shadow: 0 20rpx 60rpx rgba(10, 15, 26, 0.12);
+  box-shadow: 0 16rpx 48rpx rgba(10, 15, 26, 0.10);
   transition: bottom 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
   opacity: 0;
 }
