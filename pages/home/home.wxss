@@ -1,8 +1,8 @@
-/* pages/home/home.wxss - ChatGPT 极简风格 */
+/* pages/home/home.wxss - Cslivem 极简 AI 对话首页 */
 
 .page {
   height: 100vh;
-  background: #F7F7FA;
+  background: var(--color-bg, #F2F4F8);
   display: flex;
   flex-direction: column;
 }
@@ -18,72 +18,42 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 0 48rpx;
-  padding-bottom: 180rpx;
+  padding: 0 var(--csl-page-x, 48rpx);
+  /* 底部 TabBar 遮挡 + 安全区 */
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
 }
 
-/* ===== Logo 区域 ===== */
-.logo-area {
+/* ===== 品牌区域 ===== */
+.brand-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 64rpx;
+  margin-bottom: 80rpx;
 }
 
-.logo-icon {
-  width: 140rpx;
-  height: 140rpx;
-  position: relative;
-  margin-bottom: 32rpx;
+.brand-logo {
+  width: 144rpx;
+  height: 144rpx;
+  margin-bottom: 28rpx;
 }
 
-.logo-c {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 42rpx;
-  background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.logo-c::after {
-  content: '';
-  position: absolute;
-  right: 12rpx;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 56rpx;
-  height: 56rpx;
-  border-radius: 50%;
-  background: #F7F7FA;
-}
-
-.logo-dot {
-  position: absolute;
-  right: 0;
-  bottom: 8rpx;
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6C5CE7, #A29BFE);
-  border: 6rpx solid #F7F7FA;
-}
-
-.logo-title {
+.brand-name {
   font-size: 52rpx;
-  font-weight: 800;
-  color: #17171C;
-  letter-spacing: -1rpx;
-  margin-bottom: 12rpx;
+  font-weight: 700;
+  color: var(--color-text, #0A0F1A);
+  letter-spacing: -0.5rpx;
+  margin-bottom: 16rpx;
+  font-family: var(--font-family);
 }
 
-.logo-subtitle {
-  font-size: 30rpx;
-  color: #74747E;
+.brand-tagline {
+  font-size: 34rpx;
+  color: var(--color-text-secondary, #7B8197);
+  font-weight: 400;
 }
 
 /* ===== 输入框 ===== */
-.input-area {
+.input-wrapper {
   width: 100%;
   margin-bottom: 48rpx;
 }
@@ -91,60 +61,81 @@
 .input-box {
   display: flex;
   align-items: center;
-  background: #FFFFFF;
-  border-radius: 36rpx;
-  padding: 28rpx 20rpx 28rpx 36rpx;
-  box-shadow: 0 8rpx 40rpx rgba(25, 25, 38, 0.06);
-  border: 2rpx solid rgba(0, 0, 0, 0.04);
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--csl-radius-input, 96rpx);
+  padding: 12rpx 14rpx 12rpx 36rpx;
+  box-shadow: var(--shadow-input, 0 4rpx 24rpx rgba(91, 76, 255, 0.12));
+  border: 2rpx solid var(--color-border, #E7EAF0);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field {
+  flex: 1;
+  height: var(--csl-control-height, 104rpx);
+  font-size: 30rpx;
+  color: var(--color-text, #0A0F1A);
 }
 
 .input-placeholder {
-  flex: 1;
+  color: var(--color-text-placeholder, #B0B8C9);
   font-size: 30rpx;
-  color: #B4B4BE;
 }
 
-.input-action {
-  flex-shrink: 0;
-}
-
-.input-plus {
-  width: 64rpx;
-  height: 64rpx;
+.send-btn {
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
-  background: #6C5CE7;
-  color: #FFFFFF;
-  font-size: 40rpx;
-  font-weight: 300;
+  background: var(--color-border, #E7EAF0);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s var(--ease-spring, ease);
 }
 
-/* ===== 建议词 ===== */
+.send-btn-active {
+  background: var(--csl-gradient, linear-gradient(135deg, #5B4CFF, #3A7BFF, #00D4D9));
+  box-shadow: var(--shadow-send, 0 8rpx 32rpx rgba(91, 76, 255, 0.36));
+}
+
+.send-arrow {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+/* ===== 快捷建议 ===== */
 .suggestions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 16rpx;
+  max-width: 600rpx;
 }
 
-.suggestion-chip {
+.chip {
   display: flex;
   align-items: center;
   gap: 10rpx;
-  background: #FFFFFF;
-  border-radius: 999rpx;
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-full, 999rpx);
   padding: 18rpx 28rpx;
-  box-shadow: 0 4rpx 16rpx rgba(25, 25, 38, 0.04);
-  border: 2rpx solid rgba(0, 0, 0, 0.04);
+  border: 2rpx solid var(--color-border, #E7EAF0);
+  transition: all 0.2s ease;
+}
+
+.chip:active {
+  transform: scale(0.96);
+  border-color: var(--color-primary, #5B4CFF);
 }
 
 .chip-icon {
   font-size: 28rpx;
+  line-height: 1;
 }
 
 .chip-text {
   font-size: 26rpx;
-  color: #555555;
+  color: var(--color-text-secondary, #7B8197);
 }

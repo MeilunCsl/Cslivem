@@ -1,42 +1,55 @@
-<!-- pages/home/home.wxml - 极简首页 (ChatGPT 风格) -->
+<!-- pages/home/home.wxml - Cslivem 极简 AI 对话首页 -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
 
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
     <view class="content">
-      <!-- Logo -->
-      <view class="logo-area">
-        <view class="logo-icon">
-          <view class="logo-c"></view>
-          <view class="logo-dot"></view>
-        </view>
-        <text class="logo-title">Cslivem</text>
-        <text class="logo-subtitle">你的知识助手</text>
+      <!-- Logo + 品牌 -->
+      <view class="brand-area">
+        <image
+          class="brand-logo"
+          src="/assets/icons/cslivem-mark-256.png"
+          mode="aspectFit"
+          lazy-load
+        />
+        <text class="brand-name">Cslivem</text>
+        <text class="brand-tagline">今天想了解什么？</text>
       </view>
 
-      <!-- 输入框 -->
-      <view class="input-area">
-        <view class="input-box" bindtap="onInputTap">
-          <text class="input-placeholder">输入你的想法...</text>
-          <view class="input-action">
-            <view class="input-plus">+</view>
+      <!-- 问题输入框 -->
+      <view class="input-wrapper">
+        <view class="input-box">
+          <input
+            class="input-field"
+            placeholder="输入你的问题…"
+            placeholder-class="input-placeholder"
+            value="{{inputValue}}"
+            bindinput="onInput"
+            bindconfirm="onSend"
+            confirm-type="send"
+            adjust-position="{{true}}"
+            hold-keyboard
+          />
+          <view
+            class="send-btn {{inputValue ? 'send-btn-active' : ''}}"
+            bindtap="onSend"
+          >
+            <text class="send-arrow">↑</text>
           </view>
         </view>
       </view>
 
-      <!-- 建议词 -->
-      <view class="suggestions">
-        <view class="suggestion-chip" bindtap="onSuggestion" data-text="记一下灵感">
-          <text class="chip-icon">💡</text>
-          <text class="chip-text">记一下灵感</text>
-        </view>
-        <view class="suggestion-chip" bindtap="onSuggestion" data-text="整理本周笔记">
-          <text class="chip-icon">📋</text>
-          <text class="chip-text">整理本周笔记</text>
-        </view>
-        <view class="suggestion-chip" bindtap="onSuggestion" data-text="搜索知识库">
-          <text class="chip-icon">🔍</text>
-          <text class="chip-text">搜索知识库</text>
+      <!-- 快捷建议 -->
+      <view class="suggestions" wx:if="{{!inputValue}}">
+        <view
+          class="chip"
+          wx:for="{{suggestions}}"
+          wx:key="text"
+          bindtap="onSuggestionTap"
+          data-text="{{item.text}}"
+        >
+          <text class="chip-icon">{{item.icon}}</text>
+          <text class="chip-text">{{item.text}}</text>
         </view>
       </view>
     </view>

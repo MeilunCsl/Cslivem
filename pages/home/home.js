@@ -1,7 +1,13 @@
-// pages/home/home.js - 极简首页
+// pages/home/home.js - Cslivem 极简 AI 对话首页
 Page({
   data: {
-    statusBarHeight: 20
+    statusBarHeight: 20,
+    inputValue: '',
+    suggestions: [
+      { icon: '💡', text: '记一下灵感' },
+      { icon: '📋', text: '整理本周笔记' },
+      { icon: '🔍', text: '搜索知识库' }
+    ]
   },
 
   onLoad() {
@@ -17,12 +23,19 @@ Page({
     }
   },
 
-  onInputTap() {
-    wx.showToast({ title: '输入功能开发中', icon: 'none' });
+  onInput(e) {
+    this.setData({ inputValue: e.detail.value });
   },
 
-  onSuggestion(e) {
+  onSend() {
+    const text = this.data.inputValue.trim();
+    if (!text) return;
+    wx.showToast({ title: 'AI 功能开发中', icon: 'none' });
+    this.setData({ inputValue: '' });
+  },
+
+  onSuggestionTap(e) {
     const text = e.currentTarget.dataset.text;
-    wx.showToast({ title: text, icon: 'none' });
+    this.setData({ inputValue: text });
   }
 });
