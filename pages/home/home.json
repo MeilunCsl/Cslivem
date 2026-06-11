@@ -1,8 +1,6 @@
 {
-  "navigationBarTitleText": "AI Knowledge Hub",
+  "navigationBarTitleText": "",
   "usingComponents": {
-    "search-input": "/components/search-input/search-input",
-    "card": "/components/card/card",
     "custom-tabbar": "/components/custom-tabbar/custom-tabbar"
   },
   "navigationStyle": "custom"
