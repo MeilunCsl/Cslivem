@@ -74,3 +74,14 @@
 ---
 
 *v0.1.0 验收通过 — 框架搭建完成，可进入下一阶段开发。*
+### 追加验收（2026-06-11 首页重设计）
+
+- [x] 首页改为 ChatGPT 极简风格（居中 Logo + 输入框 + 建议词）
+- [x] Logo 生成完成（紫色渐变几何 C 风格）
+- [x] app-icon.png / logo.png / logo-small.png 三个尺寸就位
+- [x] appid 已替换为正式 AppID wxe8c16cbcf5c42920
+- [x] 旧根目录 project.config.json.bak 已清理
+
+---
+
+*v0.1.0 补充验收通过 — 首页极简风格 + Logo 完成。*
