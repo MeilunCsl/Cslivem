@@ -1,6 +1,6 @@
 <!-- components/custom-tabbar/custom-tabbar.wxml -->
-<view class="tabbar" style="opacity: {{tabReady ? 1 : 0}}; transform: translateY({{tabReady ? 0 : 16}}rpx);">
-  <view class="tabbar-inner">
+<view class="tabbar">
+  <view class="tabbar-inner" style="opacity: {{tabReady ? 1 : 0}}; transform: translateY({{tabReady ? 0 : 16}}rpx);">
     <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/home/home" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 0 ? 'home-active' : 'home'}}.png" mode="aspectFit" />
       <text class="tab-text">首页</text>
@@ -22,14 +22,14 @@
       <image class="tab-icon" src="/assets/icons/{{selected === 3 ? 'tools-active' : 'tools'}}.png" mode="aspectFit" />
       <text class="tab-text">工具</text>
     </view>
-    <view class="tab-indicator" style="transform: translateX({{indicatorX}}rpx);"></view>
+    <view class="tab-indicator {{indicatorClass}}"></view>
   </view>
 </view>
 
-<!-- 快速记录面板（独立于 tabbar 容器） -->
+<!-- 快捷记录面板 -->
 <view class="quick-overlay {{showPanel ? 'show' : ''}}" catchtap="hidePanel"></view>
 <view class="quick-panel {{showPanel ? 'panel-in' : ''}}" catchtap="noop">
-  <view class="quick-panel-title">快速记录</view>
+  <view class="quick-panel-title">快捷记录</view>
   <view class="quick-actions-grid">
     <view class="quick-action-item" bindtap="onAction" data-type="text" hover-class="action-press">
       <view class="quick-action-icon">📝</view>
@@ -44,7 +44,7 @@
       <text>语音</text>
     </view>
     <view class="quick-action-item" bindtap="onAction" data-type="scan" hover-class="action-press">
-      <view class="quick-action-icon">📄</view>
+      <view class="quick-action-icon">📋</view>
       <text>扫描</text>
     </view>
   </view>

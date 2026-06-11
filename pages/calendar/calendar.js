@@ -16,6 +16,11 @@ Page({
     this.loadEvents();
     setTimeout(() => { this.setData({ ready: true }); }, 100);
   },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 2 });
+    }
+  },
   buildCalendar() {
     const { currentYear, currentMonth } = this.data;
     const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();

@@ -15,3 +15,20 @@ desktop.ini
 # 编译产物
 *.tmp
 .cache/
+
+# 项目文档（不上传）
+doc/
+plan-md/
+cslivem-codex-handoff/
+README.md
+CHANGELOG.md
+VERIFICATION.md
+
+# 设计资源（不上传到小程序）
+*.svg
+design-tokens.json
+design-tokens.css
+
+# 备份文件
+*.bak
+*.bak.*

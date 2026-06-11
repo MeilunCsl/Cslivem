@@ -6,7 +6,7 @@ Component({
   data: {
     showPanel: false,
     tabReady: false,
-    indicatorX: 0
+    indicatorClass: 'pos-0'
   },
 
   lifetimes: {
@@ -28,18 +28,11 @@ Component({
       if (index === this.data.selected) return;
       wx.vibrateShort({ type: 'light' }).catch(() => {});
       this.setData({ showPanel: false });
-      this.updateIndicator(index);
       wx.switchTab({ url });
     },
 
     updateIndicator(selectedIndex) {
-      const tabW = 654;
-      const colW = tabW / 5;
-      const gridColMap = [0, 1, 3, 4];
-      const gridCol = gridColMap[selectedIndex] !== undefined ? gridColMap[selectedIndex] : 0;
-      const center = colW * gridCol + colW / 2;
-      const x = Math.round(center - 22);
-      this.setData({ indicatorX: x });
+      this.setData({ indicatorClass: 'pos-' + selectedIndex });
     },
 
     togglePanel() {

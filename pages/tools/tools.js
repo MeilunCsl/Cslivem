@@ -3,22 +3,27 @@ Page({
     statusBarHeight: 20,
     ready: false,
     tools: [
-      { id: 'pdf', icon: '▤', name: '图片转 PDF', description: '本地处理，可保存到知识库' },
+      { id: 'pdf', icon: '◻', name: '图片转PDF', description: '本地处理，可保存到知识库' },
       { id: 'ocr', icon: '◎', name: 'OCR 识别', description: '需要相册或相机权限' },
-      { id: 'food', icon: '◒', name: '饮食记录', description: 'AI 识别食物与营养' },
-      { id: 'scanner', icon: '▧', name: '扫描归档', description: '自动裁切和增强文档' },
-      { id: 'ledger', icon: '￥', name: '记账', description: '收支记录与月度流水' }
+      { id: 'food', icon: '◎', name: '饮食记录', description: 'AI 识别食物与营养' },
+      { id: 'scanner', icon: '◻', name: '扫描归档', description: '自动裁切和增强文档' },
+      { id: 'ledger', icon: '◻', name: '记账', description: '收支记录与月度流水' }
     ],
     comingSoon: [
       { id: 'habit', icon: '✓', name: '习惯' },
-      { id: 'pomodoro', icon: '⏱', name: '番茄钟' },
-      { id: 'watermark', icon: '💧', name: '去水印' },
+      { id: 'pomodoro', icon: '◴', name: '番茄钟' },
+      { id: 'watermark', icon: '🌞', name: '去水印' },
       { id: 'translate', icon: '🌐', name: '翻译' }
     ]
   },
   onLoad() {
     try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 }); } catch(e) {}
     setTimeout(() => { this.setData({ ready: true }); }, 100);
+  },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 3 });
+    }
   },
   onToolTap(e) {
     wx.vibrateShort({ type: 'light' }).catch(() => {});

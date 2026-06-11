@@ -18,6 +18,11 @@ Page({
     setTimeout(() => { this.setData({ ready: true }); }, 100);
     this.loadNotes();
   },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 });
+    }
+  },
   loadNotes() {
     const noteModule = require('../../modules/note/public');
     const format = require('../../utils/format');

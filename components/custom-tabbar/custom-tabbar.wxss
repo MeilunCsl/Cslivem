@@ -1,6 +1,5 @@
-/* components/custom-tabbar/custom-tabbar.wxss — 低圆角悬浮导航栏 */
+/* components/custom-tabbar/custom-tabbar.wxss */
 
-/* 胶囊容器：仅做定位，不渲染任何视觉 */
 .tabbar {
   position: fixed;
   left: 48rpx;
@@ -8,10 +7,8 @@
   bottom: calc(env(safe-area-inset-bottom) + 28rpx);
   z-index: 100;
   background: transparent;
-  transition: opacity 260ms ease, transform 260ms ease;
 }
 
-/* 胶囊体 */
 .tabbar-inner {
   position: relative;
   display: grid;
@@ -23,9 +20,9 @@
   padding: 0;
   background: linear-gradient(110deg, rgba(99, 82, 255, 0.06) 0%, rgba(255, 255, 255, 0.92) 40%, rgba(255, 255, 255, 0.92) 60%, rgba(31, 212, 224, 0.05) 100%);
   border: none;
+  transition: opacity 260ms ease, transform 260ms ease;
 }
 
-/* ===== 导航项 ===== */
 .tab-item {
   display: flex;
   flex-direction: column;
@@ -65,7 +62,6 @@
   opacity: 1;
 }
 
-/* ===== 选中指示线 ===== */
 .tab-indicator {
   position: absolute;
   bottom: 16rpx;
@@ -74,10 +70,15 @@
   border-radius: 3rpx;
   z-index: 1;
   background: linear-gradient(90deg, #6352ff 0%, #3a7bff 55%, #20bcd9 100%);
-  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: left 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateX(-50%);
 }
 
-/* ===== 中央 + 按钮 ===== */
+.tab-indicator.pos-0 { left: 10%; }
+.tab-indicator.pos-1 { left: 30%; }
+.tab-indicator.pos-2 { left: 70%; }
+.tab-indicator.pos-3 { left: 90%; }
+
 .tab-center { position: relative; }
 
 .fab {
@@ -99,7 +100,6 @@
 .fab-rotated { transform: translateY(-6rpx) rotate(45deg); }
 .fab-icon { font-size: 58rpx; font-weight: 300; color: #ffffff; line-height: 1; }
 
-/* ===== 快速记录面板（独立于 tabbar） ===== */
 .quick-overlay {
   position: fixed;
   top: 0;
