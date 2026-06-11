@@ -3,7 +3,7 @@ Component({
     selected: 0,
     showPanel: false,
     tabReady: false,
-    indicatorX: -200
+    indicatorX: 0
   },
 
   lifetimes: {
@@ -11,6 +11,10 @@ Component({
       setTimeout(() => { this.setData({ tabReady: true }); }, 200);
       this.updateIndicator(this.data.selected);
     }
+  },
+
+  pageLifetimes: {
+    show() {}
   },
 
   methods: {
@@ -24,13 +28,15 @@ Component({
     },
 
     updateIndicator(index) {
-      // 5 列等分，每列宽度 = (屏幕宽 - 96rpx) / 5
-      // 屏幕宽 750rpx → 每列 130.8rpx
-      // 第 index 列的中心 = 48rpx + 130.8rpx * index + 65.4rpx
-      // 指示线宽 44rpx，偏移 = 中心 - 22rpx
-      const colW = (750 - 96) / 5;
-      const centerX = 48 + colW * index + colW / 2;
-      const x = Math.round(centerX - 22);
+      // tabbar-inner 宽度 = 750 - 48*2 = 654rpx
+      // 5 列等分，每列 130.8rpx
+      // 指示线居中于第 index 列
+      const tabW = 654;
+      const cols = 5;
+      const colW = tabW / cols;
+      const center = colW * index + colW / 2;
+      const indicatorW = 44;
+      const x = Math.round(center - indicatorW / 2);
       this.setData({ indicatorX: x });
     },
 
@@ -46,7 +52,8 @@ Component({
     onAction(e) {
       const type = e.currentTarget.dataset.type;
       this.setData({ showPanel: false });
-      wx.showToast({ title: type === 'text' ? '文字记录' : type === 'photo' ? '拍照' : type === 'voice' ? '语音' : '扫描', icon: 'none' });
+      const labels = { text: '文字记录', photo: '拍照', voice: '语音', scan: '扫描' };
+      wx.showToast({ title: labels[type] || type, icon: 'none' });
     },
 
     noop() {}

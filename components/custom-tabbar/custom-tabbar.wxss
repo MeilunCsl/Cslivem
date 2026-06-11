@@ -18,7 +18,7 @@
   align-items: center;
   height: 120rpx;
   border-radius: 26rpx;
-  padding: 0 8rpx;
+  padding: 0;
 
   background:
     linear-gradient(
