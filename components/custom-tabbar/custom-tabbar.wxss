@@ -19,7 +19,7 @@
   padding: 0;
   background: linear-gradient(110deg, rgba(99, 82, 255, 0.06) 0%, rgba(255, 255, 255, 0.92) 40%, rgba(255, 255, 255, 0.92) 60%, rgba(31, 212, 224, 0.05) 100%);
   border: 1rpx solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8rpx 32rpx rgba(52, 64, 105, 0.06), 0 2rpx 8rpx rgba(78, 91, 143, 0.03);
+  box-shadow: none;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
