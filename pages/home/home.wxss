@@ -2,7 +2,13 @@
 
 .page {
   height: 100vh;
-  background: var(--color-bg, #F2F4F8);
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(226, 232, 255, 0.32),
+      rgba(247, 249, 253, 0) 44%
+    ),
+    #F7F8FB;
   display: flex;
   flex-direction: column;
 }
@@ -19,7 +25,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: 0 var(--csl-page-x, 48rpx);
-  padding-bottom: calc(260rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(190rpx + env(safe-area-inset-bottom));
 }
 
 /* ===== 入场动画系统 ===== */

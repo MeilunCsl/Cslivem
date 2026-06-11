@@ -1,6 +1,43 @@
-<!-- components/custom-tabbar/custom-tabbar.wxml - Cslivem 品牌 -->
-<view class="tabbar safe-bottom">
-  <!-- 快速记录弹出面板（滑入动画） -->
+<!-- components/custom-tabbar/custom-tabbar.wxml -->
+<view class="tabbar" style="opacity: {{tabReady ? 1 : 0}}; transform: translateY({{tabReady ? 0 : 16}}rpx);">
+  <view class="tabbar-inner">
+
+    <!-- 首页 -->
+    <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/home/home" hover-class="tab-press">
+      <image class="tab-icon" src="/assets/icons/{{selected === 0 ? 'home-active' : 'home'}}.png" mode="aspectFit" />
+      <text class="tab-text">首页</text>
+    </view>
+
+    <!-- 知识 -->
+    <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/notes/notes" hover-class="tab-press">
+      <image class="tab-icon" src="/assets/icons/{{selected === 1 ? 'notes-active' : 'notes'}}.png" mode="aspectFit" />
+      <text class="tab-text">知识</text>
+    </view>
+
+    <!-- 中央 + -->
+    <view class="tab-item tab-center" bindtap="togglePanel">
+      <view class="fab {{showPanel ? 'fab-rotated' : ''}}">
+        <text class="fab-icon">+</text>
+      </view>
+    </view>
+
+    <!-- 日历 -->
+    <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/calendar/calendar" hover-class="tab-press">
+      <image class="tab-icon" src="/assets/icons/{{selected === 2 ? 'calendar-active' : 'calendar'}}.png" mode="aspectFit" />
+      <text class="tab-text">日历</text>
+    </view>
+
+    <!-- 工具 -->
+    <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/tools/tools" hover-class="tab-press">
+      <image class="tab-icon" src="/assets/icons/{{selected === 3 ? 'tools-active' : 'tools'}}.png" mode="aspectFit" />
+      <text class="tab-text">工具</text>
+    </view>
+
+    <!-- 选中指示线 -->
+    <view class="tab-indicator" style="transform: translateX({{indicatorX}}rpx);"></view>
+  </view>
+
+  <!-- 快速记录面板 -->
   <view class="quick-panel {{showPanel ? 'show' : ''}}" catchtap="hidePanel">
     <view class="quick-panel-content {{showPanel ? 'panel-in' : ''}}" catchtap="noop">
       <view class="quick-panel-title">快速记录</view>
@@ -22,39 +59,6 @@
           <text>扫描</text>
         </view>
       </view>
-    </view>
-  </view>
-
-  <!-- Tab 栏 -->
-  <view class="tabbar-inner">
-    <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/home/home" hover-class="tab-press">
-      <image class="tab-icon" src="/assets/icons/{{selected === 0 ? 'home-active' : 'home'}}.png" mode="aspectFit" />
-      <text class="tab-text">首页</text>
-      <view class="tab-dot" wx:if="{{selected === 0}}"></view>
-    </view>
-    <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/notes/notes" hover-class="tab-press">
-      <image class="tab-icon" src="/assets/icons/{{selected === 1 ? 'notes-active' : 'notes'}}.png" mode="aspectFit" />
-      <text class="tab-text">知识</text>
-      <view class="tab-dot" wx:if="{{selected === 1}}"></view>
-    </view>
-
-    <!-- 中央 "+" FAB -->
-    <view class="tab-item tab-center" bindtap="togglePanel">
-      <view class="fab {{showPanel ? 'fab-active' : ''}}">
-        <text class="fab-icon">+</text>
-      </view>
-      <view class="fab-ring"></view>
-    </view>
-
-    <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/calendar/calendar" hover-class="tab-press">
-      <image class="tab-icon" src="/assets/icons/{{selected === 2 ? 'calendar-active' : 'calendar'}}.png" mode="aspectFit" />
-      <text class="tab-text">日历</text>
-      <view class="tab-dot" wx:if="{{selected === 2}}"></view>
-    </view>
-    <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/tools/tools" hover-class="tab-press">
-      <image class="tab-icon" src="/assets/icons/{{selected === 3 ? 'tools-active' : 'tools'}}.png" mode="aspectFit" />
-      <text class="tab-text">工具</text>
-      <view class="tab-dot" wx:if="{{selected === 3}}"></view>
     </view>
   </view>
 </view>
