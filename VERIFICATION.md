@@ -85,3 +85,18 @@
 ---
 
 *v0.1.0 补充验收通过 — 首页极简风格 + Logo 完成。*
+
+---
+
+## 教训记录
+
+### BUG-001: 正则替换 CSS 导致花括号缺失 (2026-06-11)
+
+**问题**: PowerShell 正则替换 WXSS 中 padding-bottom 时，误吃了 .page-container 的闭合 }，导致编译报错 unexpected '{'。
+
+**影响**: calendar.wxss、notes.wxss、tools.wxss 三个文件同时出错。
+
+**修复规则**:
+1. 禁止用正则批量修改 CSS/WXSS。改用完整文件重写。
+2. 修改后必须校验花括号配对: { 数量 == } 数量。
+3. 批量修改前备份原文件，用 git diff 确认变更范围。
