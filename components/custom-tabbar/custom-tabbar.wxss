@@ -1,14 +1,17 @@
 /* components/custom-tabbar/custom-tabbar.wxss — 低圆角悬浮导航栏 */
 
+/* 胶囊容器：仅做定位，不渲染任何视觉 */
 .tabbar {
   position: fixed;
   left: 48rpx;
   right: 48rpx;
   bottom: calc(env(safe-area-inset-bottom) + 28rpx);
   z-index: 100;
+  background: transparent;
   transition: opacity 260ms ease, transform 260ms ease;
 }
 
+/* 胶囊体 */
 .tabbar-inner {
   position: relative;
   display: grid;
@@ -19,7 +22,6 @@
   padding: 0;
   background: linear-gradient(110deg, rgba(99, 82, 255, 0.06) 0%, rgba(255, 255, 255, 0.92) 40%, rgba(255, 255, 255, 0.92) 60%, rgba(31, 212, 224, 0.05) 100%);
   border: 1rpx solid rgba(255, 255, 255, 0.85);
-  box-shadow: none;
 }
 
 /* ===== 导航项 ===== */
@@ -34,9 +36,7 @@
   transition: transform 200ms ease, color 200ms ease, opacity 200ms ease;
 }
 
-.tab-press {
-  transform: scale(0.94);
-}
+.tab-press { transform: scale(0.94); }
 
 .tab-icon {
   width: 40rpx;
@@ -77,9 +77,7 @@
 }
 
 /* ===== 中央 + 按钮 ===== */
-.tab-center {
-  position: relative;
-}
+.tab-center { position: relative; }
 
 .fab {
   position: relative;
@@ -91,63 +89,53 @@
   align-items: center;
   justify-content: center;
   border: 7rpx solid rgba(255, 255, 255, 0.9);
-  box-shadow: none;
   transform: translateY(-6rpx);
-  transition: transform 220ms ease, box-shadow 220ms ease;
+  transition: transform 220ms ease;
   z-index: 3;
 }
 
-.fab:active {
-  transform: translateY(-6rpx) scale(0.94);
-  box-shadow: 0 4rpx 12rpx rgba(74, 91, 255, 0.10);
-}
+.fab:active { transform: translateY(-6rpx) scale(0.94); }
+.fab-rotated { transform: translateY(-6rpx) rotate(45deg); }
+.fab-icon { font-size: 58rpx; font-weight: 300; color: #ffffff; line-height: 1; }
 
-.fab-rotated {
-  transform: translateY(-6rpx) rotate(45deg);
-}
-
-.fab-icon {
-  font-size: 58rpx;
-  font-weight: 300;
-  color: #ffffff;
-  line-height: 1;
-}
-
-/* ===== 快速记录面板 ===== */
-.quick-panel {
+/* ===== 快速记录面板（独立于 tabbar） ===== */
+.quick-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: calc(180rpx + env(safe-area-inset-bottom));
-  background: rgba(10, 15, 26, 0);
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
   z-index: -1;
   pointer-events: none;
-  transition: background 300ms ease;
+  transition: background 280ms ease;
 }
 
-.quick-panel.show {
-  z-index: 98;
-  background: rgba(10, 15, 26, 0.35);
+.quick-overlay.show {
+  z-index: 99;
+  background: rgba(10, 15, 26, 0.30);
   pointer-events: auto;
 }
 
-.quick-panel-content {
-  position: absolute;
-  bottom: -400rpx;
+.quick-panel {
+  position: fixed;
   left: 32rpx;
   right: 32rpx;
+  bottom: -500rpx;
   background: #FFFFFF;
   border-radius: 32rpx;
   padding: 40rpx;
-  box-shadow: 0 16rpx 48rpx rgba(10, 15, 26, 0.10);
-  transition: bottom 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
+  box-shadow: 0 12rpx 40rpx rgba(10, 15, 26, 0.08);
+  z-index: 100;
   opacity: 0;
+  pointer-events: none;
+  transition: bottom 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease;
 }
 
 .panel-in {
   bottom: calc(190rpx + env(safe-area-inset-bottom));
   opacity: 1;
+  pointer-events: auto;
 }
 
 .quick-panel-title {
@@ -171,10 +159,7 @@
   gap: 10rpx;
 }
 
-.action-press {
-  transform: scale(0.9);
-  opacity: 0.7;
-}
+.action-press { transform: scale(0.9); opacity: 0.7; }
 
 .quick-action-icon {
   width: 96rpx;
@@ -188,11 +173,5 @@
   transition: background 160ms ease;
 }
 
-.quick-action-item:active .quick-action-icon {
-  background: #EDE9FF;
-}
-
-.quick-action-item text {
-  font-size: 22rpx;
-  color: #7B8197;
-}
+.quick-action-item:active .quick-action-icon { background: #EDE9FF; }
+.quick-action-item text { font-size: 22rpx; color: #7B8197; }

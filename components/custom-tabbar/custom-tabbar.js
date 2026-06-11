@@ -32,13 +32,9 @@ Component({
       wx.switchTab({ url });
     },
 
-    // selected 0=首页 1=知识 2=日历 3=工具
-    // grid 列 0=首页 1=知识 2=FAB 3=日历 4=工具
-    // 需要跳过第 2 列(FAB)
     updateIndicator(selectedIndex) {
       const tabW = 654;
       const colW = tabW / 5;
-      // 映射: selected → grid列
       const gridColMap = [0, 1, 3, 4];
       const gridCol = gridColMap[selectedIndex] !== undefined ? gridColMap[selectedIndex] : 0;
       const center = colW * gridCol + colW / 2;
