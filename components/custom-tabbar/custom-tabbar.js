@@ -1,6 +1,9 @@
 Component({
+  properties: {
+    selected: { type: Number, value: 0 }
+  },
+
   data: {
-    selected: 0,
     showPanel: false,
     tabReady: false,
     indicatorX: 0
@@ -13,8 +16,10 @@ Component({
     }
   },
 
-  pageLifetimes: {
-    show() {}
+  observers: {
+    'selected': function(val) {
+      this.updateIndicator(val);
+    }
   },
 
   methods: {
@@ -22,21 +27,16 @@ Component({
       const { index, url } = e.currentTarget.dataset;
       if (index === this.data.selected) return;
       wx.vibrateShort({ type: 'light' }).catch(() => {});
-      this.setData({ selected: index, showPanel: false });
+      this.setData({ showPanel: false });
       this.updateIndicator(index);
       wx.switchTab({ url });
     },
 
     updateIndicator(index) {
-      // tabbar-inner 宽度 = 750 - 48*2 = 654rpx
-      // 5 列等分，每列 130.8rpx
-      // 指示线居中于第 index 列
       const tabW = 654;
-      const cols = 5;
-      const colW = tabW / cols;
+      const colW = tabW / 5;
       const center = colW * index + colW / 2;
-      const indicatorW = 44;
-      const x = Math.round(center - indicatorW / 2);
+      const x = Math.round(center - 22);
       this.setData({ indicatorX: x });
     },
 
