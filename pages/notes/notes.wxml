@@ -1,0 +1,53 @@
+<!-- pages/notes/notes.wxml - 知识列表页（骨架） -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="page-container">
+      <!-- 顶部 -->
+      <view class="header">
+        <text class="page-title">知识</text>
+      </view>
+
+      <!-- 搜索 -->
+      <view class="search-section">
+        <search-input placeholder="搜索笔记..." showAi="{{false}}" />
+      </view>
+
+      <!-- 筛选标签 -->
+      <scroll-view scroll-x class="filters-scroll" enhanced show-scrollbar="{{false}}">
+        <view class="filters-row">
+          <view class="filter {{activeFilter === 'inbox' ? 'active' : ''}}" bindtap="setFilter" data-filter="inbox">
+            收件箱
+            <text class="filter-badge" wx:if="{{inboxCount > 0}}">{{inboxCount}}</text>
+          </view>
+          <view class="filter {{activeFilter === 'recent' ? 'active' : ''}}" bindtap="setFilter" data-filter="recent">最近</view>
+          <view class="filter {{activeFilter === 'all' ? 'active' : ''}}" bindtap="setFilter" data-filter="all">全部</view>
+          <view class="filter {{activeFilter === 'fav' ? 'active' : ''}}" bindtap="setFilter" data-filter="fav">收藏</view>
+          <view class="filter {{activeFilter === 'tags' ? 'active' : ''}}" bindtap="setFilter" data-filter="tags">标签</view>
+        </view>
+      </scroll-view>
+
+      <!-- 笔记列表 -->
+      <view class="note-list">
+        <card className="note-item" wx:for="{{notes}}" wx:key="id">
+          <text class="note-item-title">{{item.title}}</text>
+          <text class="note-item-summary">{{item.summary}}</text>
+          <view class="note-item-footer">
+            <text class="note-item-time">{{item.timeAgo}}</text>
+            <view class="note-item-tags">
+              <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+            </view>
+          </view>
+        </card>
+      </view>
+
+      <!-- 空态 -->
+      <view class="empty" wx:if="{{notes.length === 0}}">
+        <text class="empty-icon">▤</text>
+        <text class="empty-text">还没有笔记</text>
+        <text class="empty-hint">点击底部 ＋ 开始记录</text>
+      </view>
+    </view>
+  </scroll-view>
+  <custom-tabbar selected="{{1}}" />
+</view>

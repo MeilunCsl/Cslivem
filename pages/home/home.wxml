@@ -1,0 +1,123 @@
+<!-- pages/home/home.wxml - 首页智能工作台 -->
+<view class="page">
+  <!-- 状态栏占位 -->
+  <view style="height: {{statusBarHeight}}px;"></view>
+
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="page-container">
+      <!-- 欢迎语 + 头像 -->
+      <view class="header">
+        <view class="greeting">
+          <text class="greeting-text">{{greeting}}</text>
+          <text class="greeting-name">{{userName}}</text>
+        </view>
+        <view class="avatar" bindtap="onAvatarTap">
+          <text class="avatar-text">{{avatarLetter}}</text>
+        </view>
+      </view>
+
+      <!-- AI 搜索/输入框 -->
+      <view class="search-section">
+        <search-input
+          placeholder="搜索笔记、工具，或输入你的想法..."
+          bind:confirm="onSearch"
+          bind:tap="onSearchTap"
+        />
+      </view>
+
+      <!-- 快捷动作 -->
+      <view class="quick-actions">
+        <view class="action-btn" bindtap="onQuickAction" data-type="text">
+          <view class="action-icon">📝</view>
+          <text>记录</text>
+        </view>
+        <view class="action-btn" bindtap="onQuickAction" data-type="photo">
+          <view class="action-icon">📷</view>
+          <text>拍照</text>
+        </view>
+        <view class="action-btn" bindtap="onQuickAction" data-type="voice">
+          <view class="action-icon">🎤</view>
+          <text>语音</text>
+        </view>
+        <view class="action-btn" bindtap="onQuickAction" data-type="scan">
+          <view class="action-icon">📄</view>
+          <text>扫描</text>
+        </view>
+      </view>
+
+      <!-- 今日卡片 -->
+      <view class="today-cards">
+        <card className="metric-card">
+          <text class="metric-value">{{stats.todayTodos}}</text>
+          <text class="metric-label">今日待办</text>
+        </card>
+        <card className="metric-card">
+          <text class="metric-value">+{{stats.thisWeekNotes}}</text>
+          <text class="metric-label">本周笔记</text>
+        </card>
+      </view>
+
+      <!-- AI 收件箱 -->
+      <view class="section" wx:if="{{inbox.length > 0}}">
+        <view class="section-header">
+          <text class="section-title">AI 收件箱</text>
+          <text class="section-action" bindtap="onViewAll" data-section="inbox">查看全部 ›</text>
+        </view>
+        <card className="inbox-card" wx:for="{{inbox}}" wx:key="id">
+          <view class="inbox-item">
+            <view class="inbox-dot"></view>
+            <view class="inbox-content">
+              <text class="inbox-title">{{item.title}}</text>
+              <text class="inbox-time">{{item.timeAgo}}</text>
+            </view>
+          </view>
+        </card>
+      </view>
+
+      <!-- 最近笔记 -->
+      <view class="section">
+        <view class="section-header">
+          <text class="section-title">最近笔记</text>
+          <text class="section-action" bindtap="onViewAll" data-section="notes">全部 ›</text>
+        </view>
+        <scroll-view scroll-x class="notes-scroll" enhanced show-scrollbar="{{false}}">
+          <view class="notes-row">
+            <card
+              className="note-card"
+              wx:for="{{recentNotes}}"
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="onNoteTap"
+            >
+              <text class="note-title">{{item.title}}</text>
+              <text class="note-summary">{{item.summary}}</text>
+              <view class="note-meta">
+                <text class="note-time">{{item.timeAgo}}</text>
+                <view class="note-tags">
+                  <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+                </view>
+              </view>
+            </card>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 常用工具 -->
+      <view class="section">
+        <view class="section-header">
+          <text class="section-title">常用工具</text>
+        </view>
+        <view class="tools-grid">
+          <card className="tool-card" wx:for="{{tools}}" wx:key="id" bindtap="onToolTap" data-id="{{item.id}}">
+            <view class="tool-icon">{{item.icon}}</view>
+            <text class="tool-name">{{item.name}}</text>
+            <text class="tool-desc">{{item.description}}</text>
+          </card>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 自定义底部导航 -->
+  <custom-tabbar selected="{{0}}" />
+</view>

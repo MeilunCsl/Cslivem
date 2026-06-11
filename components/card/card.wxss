@@ -1,0 +1,7 @@
+/* components/card/card.wxss */
+.card-wrapper {
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-lg, 16rpx);
+  padding: var(--spacing-md, 24rpx);
+  box-shadow: 0 10rpx 40rpx rgba(25, 25, 38, 0.08);
+}

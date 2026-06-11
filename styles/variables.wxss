@@ -1,0 +1,60 @@
+/* styles/variables.wxss - 设计系统变量 */
+
+page {
+  /* 主色 */
+  --color-primary: #6C5CE7;
+  --color-primary-light: #A29BFE;
+  --color-primary-bg: #EEEAFE;
+
+  /* 背景 */
+  --color-bg: #F7F7FA;
+  --color-card: #FFFFFF;
+
+  /* 文字 */
+  --color-text: #17171C;
+  --color-text-secondary: #74747E;
+  --color-text-placeholder: #B4B4BE;
+
+  /* 功能色 */
+  --color-success: #24A148;
+  --color-warning: #F59E0B;
+  --color-error: #DC3545;
+  --color-info: #3B82F6;
+
+  /* 边框 */
+  --color-border: #E8E8EE;
+  --color-divider: #F2F2F7;
+
+  /* 阴影 */
+  --shadow-card: 0 10rpx 40rpx rgba(25, 25, 38, 0.08);
+  --shadow-fab: 0 18rpx 50rpx rgba(108, 92, 231, 0.38);
+  --shadow-search: 0 16rpx 48rpx rgba(30, 30, 50, 0.07);
+
+  /* 圆角 */
+  --radius-sm: 8rpx;
+  --radius-md: 12rpx;
+  --radius-lg: 16rpx;
+  --radius-xl: 24rpx;
+  --radius-full: 999rpx;
+
+  /* 间距 (4pt 基准) */
+  --spacing-xs: 8rpx;
+  --spacing-sm: 16rpx;
+  --spacing-md: 24rpx;
+  --spacing-lg: 32rpx;
+  --spacing-xl: 48rpx;
+
+  /* 字体 */
+  --font-size-title-lg: 44rpx;
+  --font-size-title-md: 36rpx;
+  --font-size-body: 28rpx;
+  --font-size-caption: 24rpx;
+  --font-size-mini: 20rpx;
+
+  --line-height-title: 1.3;
+  --line-height-body: 1.5;
+
+  --font-weight-bold: 800;
+  --font-weight-semibold: 700;
+  --font-weight-normal: 400;
+}

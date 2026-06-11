@@ -1,0 +1,45 @@
+<!-- pages/tools/tools.wxml - 工具中心页（骨架） -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="page-container">
+      <view class="header">
+        <text class="page-title">工具中心</text>
+      </view>
+
+      <!-- 搜索工具 -->
+      <view class="search-section">
+        <search-input placeholder="搜索工具..." showAi="{{false}}" />
+      </view>
+
+      <!-- 常用工具 -->
+      <view class="section">
+        <view class="section-header">
+          <text class="section-title">常用</text>
+        </view>
+        <view class="tools-grid">
+          <card className="tool-card" wx:for="{{tools}}" wx:key="id" bindtap="onToolTap" data-id="{{item.id}}">
+            <view class="tool-icon">{{item.icon}}</view>
+            <text class="tool-name">{{item.name}}</text>
+            <text class="tool-desc">{{item.description}}</text>
+          </card>
+        </view>
+      </view>
+
+      <!-- 更多工具（开发中） -->
+      <view class="section">
+        <view class="section-header">
+          <text class="section-title">更多工具</text>
+          <text class="section-sub">开发中</text>
+        </view>
+        <view class="coming-soon-grid">
+          <view class="coming-item" wx:for="{{comingSoon}}" wx:key="id">
+            <text class="coming-icon">{{item.icon}}</text>
+            <text class="coming-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <custom-tabbar selected="{{3}}" />
+</view>

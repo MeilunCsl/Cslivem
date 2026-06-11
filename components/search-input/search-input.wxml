@@ -1,0 +1,15 @@
+<!-- components/search-input/search-input.wxml - AI 搜索/输入框 -->
+<view class="search-box" bindtap="onTap">
+  <view class="search-icon">🔍</view>
+  <input
+    class="search-field"
+    placeholder="{{placeholder}}"
+    placeholder-class="search-placeholder"
+    value="{{value}}"
+    bindinput="onInput"
+    bindconfirm="onConfirm"
+    confirm-type="search"
+    focus="{{focus}}"
+  />
+  <view class="search-ai-badge" wx:if="{{showAi}}">AI</view>
+</view>

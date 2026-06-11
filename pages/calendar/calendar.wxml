@@ -1,0 +1,57 @@
+<!-- pages/calendar/calendar.wxml - 日历页（骨架） -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="page-container">
+      <view class="header">
+        <text class="page-title">日历</text>
+      </view>
+
+      <!-- 月份切换 -->
+      <view class="month-nav">
+        <text class="month-arrow" bindtap="prevMonth">‹</text>
+        <text class="month-label">{{currentYear}} 年 {{currentMonth}} 月</text>
+        <text class="month-arrow" bindtap="nextMonth">›</text>
+      </view>
+
+      <!-- 星期头 -->
+      <view class="weekday-row">
+        <text class="weekday" wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+      </view>
+
+      <!-- 日期网格 -->
+      <view class="dates-grid">
+        <view
+          class="date-cell {{item.isToday ? 'today' : ''}} {{item.hasEvent ? 'has-event' : ''}} {{item.isEmpty ? 'empty' : ''}}"
+          wx:for="{{dates}}"
+          wx:key="index"
+          bindtap="onDateTap"
+          data-date="{{item.date}}"
+        >
+          <text class="date-num">{{item.day}}</text>
+          <view class="date-dot" wx:if="{{item.hasEvent}}"></view>
+        </view>
+      </view>
+
+      <!-- 今日事件 -->
+      <view class="section" style="margin-top: 32rpx;">
+        <view class="section-header">
+          <text class="section-title">今日事件</text>
+        </view>
+        <card className="event-card" wx:for="{{todayEvents}}" wx:key="id">
+          <view class="event-item">
+            <view class="event-dot"></view>
+            <view class="event-info">
+              <text class="event-title">{{item.title}}</text>
+              <text class="event-time">{{item.time}}</text>
+            </view>
+          </view>
+        </card>
+        <view class="empty-mini" wx:if="{{todayEvents.length === 0}}">
+          <text>今日暂无事件</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <custom-tabbar selected="{{2}}" />
+</view>

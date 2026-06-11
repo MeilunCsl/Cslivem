@@ -1,0 +1,32 @@
+/* styles/reset.wxss - 基础重置 */
+
+view, text, image, navigator, scroll-view, swiper, button, input, textarea, form {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+button::after {
+  border: none;
+}
+
+image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+text {
+  display: inline;
+}

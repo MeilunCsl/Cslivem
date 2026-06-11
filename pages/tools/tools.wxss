@@ -1,0 +1,23 @@
+/* pages/tools/tools.wxss */
+.page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
+.page-scroll { flex: 1; height: 0; }
+.page-container { padding: 16rpx 32rpx 40rpx; }
+.header { padding: 24rpx 0 8rpx; }
+.page-title { font-size: 44rpx; font-weight: 800; color: var(--color-text); }
+.search-section { margin: 16rpx 0 24rpx; }
+.section { margin-bottom: 32rpx; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx; }
+.section-title { font-size: 34rpx; font-weight: 800; color: var(--color-text); }
+.section-sub { font-size: 24rpx; color: var(--color-text-secondary); }
+.tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18rpx; }
+.tool-card { min-height: 180rpx; display: flex; flex-direction: column; }
+.tool-icon { font-size: 48rpx; margin-bottom: 14rpx; }
+.tool-name { font-size: 28rpx; font-weight: 700; color: var(--color-text); margin-bottom: 8rpx; }
+.tool-desc { font-size: 22rpx; color: var(--color-text-secondary); line-height: 1.5; }
+.coming-soon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18rpx; }
+.coming-item {
+  display: flex; flex-direction: column; align-items: center; gap: 10rpx;
+  padding: 24rpx 0; background: #FFFFFF; border-radius: 20rpx; opacity: 0.5;
+}
+.coming-icon { font-size: 40rpx; }
+.coming-name { font-size: 22rpx; color: var(--color-text-secondary); }

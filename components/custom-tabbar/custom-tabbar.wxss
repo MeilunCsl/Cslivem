@@ -1,0 +1,139 @@
+/* components/custom-tabbar/custom-tabbar.wxss */
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1rpx solid var(--color-border, #E8E8EE);
+}
+
+.tabbar-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 110rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  color: #888888;
+  font-size: 20rpx;
+  position: relative;
+}
+
+.tab-item.active {
+  color: var(--color-primary, #6C5CE7);
+}
+
+.tab-icon {
+  font-size: 40rpx;
+  margin-bottom: 4rpx;
+  line-height: 1;
+}
+
+.tab-text {
+  font-size: 20rpx;
+  line-height: 1;
+}
+
+/* 中央 FAB 按钮 */
+.tab-center {
+  position: relative;
+  top: -30rpx;
+}
+
+.fab {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  background: var(--color-primary, #6C5CE7);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  box-shadow: 0 18rpx 50rpx rgba(108, 92, 231, 0.38);
+  transition: transform 0.3s ease;
+}
+
+.fab-rotate {
+  transform: rotate(45deg);
+}
+
+/* 快速记录面板 */
+.quick-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.quick-panel.show {
+  z-index: 1000;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.quick-panel-content {
+  position: absolute;
+  bottom: calc(140rpx + env(safe-area-inset-bottom));
+  left: 32rpx;
+  right: 32rpx;
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 40rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
+}
+
+.quick-panel-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 36rpx;
+  color: var(--color-text, #17171C);
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx;
+}
+
+.quick-action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.quick-action-icon {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 28rpx;
+  background: var(--color-bg, #F7F7FA);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+}
+
+.quick-action-item text {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #74747E);
+}

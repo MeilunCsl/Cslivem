@@ -1,0 +1,97 @@
+/* styles/mixins.wxss - 通用样式工具类 */
+
+/* 弹性布局 */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.justify-end { justify-content: flex-end; }
+
+/* 文字 */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+
+.text-bold { font-weight: var(--font-weight-bold); }
+.text-semibold { font-weight: var(--font-weight-semibold); }
+
+.text-title-lg { font-size: var(--font-size-title-lg); line-height: var(--line-height-title); font-weight: var(--font-weight-bold); }
+.text-title-md { font-size: var(--font-size-title-md); line-height: var(--line-height-title); font-weight: var(--font-weight-bold); }
+.text-body { font-size: var(--font-size-body); line-height: var(--line-height-body); }
+.text-caption { font-size: var(--font-size-caption); line-height: var(--line-height-body); }
+.text-mini { font-size: var(--font-size-mini); }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 卡片 */
+.card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-card);
+}
+
+/* 按钮 */
+.btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-radius: var(--radius-full);
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2rpx solid var(--color-primary);
+  border-radius: var(--radius-full);
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  font-size: var(--font-size-body);
+}
+
+/* 标签 */
+.tag {
+  display: inline-block;
+  font-size: var(--font-size-caption);
+  padding: 6rpx 16rpx;
+  border-radius: var(--radius-full);
+  background: var(--color-divider);
+  color: var(--color-text-secondary);
+}
+
+/* 安全区域底部 */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 页面容器 */
+.page-container {
+  padding: 0 32rpx;
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+}
+
+/* 分割线 */
+.divider {
+  height: 2rpx;
+  background: var(--color-divider);
+  margin: var(--spacing-md) 0;
+}
+
+/* 隐藏 */
+.hidden { display: none !important; }

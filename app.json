@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/notes/notes",
+    "pages/calendar/calendar",
+    "pages/tools/tools"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F7F7FA",
+    "navigationBarTitleText": "AI Knowledge Hub",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F7FA",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#888888",
+    "selectedColor": "#6C5CE7",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/notes/notes",
+        "text": "知识",
+        "iconPath": "assets/icons/notes.png",
+        "selectedIconPath": "assets/icons/notes-active.png"
+      },
+      {
+        "pagePath": "pages/calendar/calendar",
+        "text": "日历",
+        "iconPath": "assets/icons/calendar.png",
+        "selectedIconPath": "assets/icons/calendar-active.png"
+      },
+      {
+        "pagePath": "pages/tools/tools",
+        "text": "工具",
+        "iconPath": "assets/icons/tools.png",
+        "selectedIconPath": "assets/icons/tools-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
