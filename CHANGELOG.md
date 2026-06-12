@@ -9,7 +9,7 @@
 | v0.1.0 | Skeleton | 项目骨架、设计系统、底部导航、首页工作台 | ✅ 已完成 |
 | v0.2.0 | Note | 笔记模块：列表、详情、编辑器、标签、收藏、持久化 | ✅ 已完成 |
 | v0.3.0 | Calendar | 日历模块：月视图、事件管理、日记 | ✅ 已完成 |
-| v0.4.0 | Ledger | 记账模块：收支记录、月度流水、分类 | ⏳ 待开发 |
+| v0.4.0 | Ledger | 记账模块：收支记录、月度流水、分类 | ✅ 已完成 |
 | v0.5.0 | AI-Core | AI 能力：意图识别、标签建议、摘要 | ⏳ 待开发 |
 | v0.6.0 | Tools | 工具平台：图片转PDF、OCR、扫描 | ⏳ 待开发 |
 | v0.7.0 | Sync | 云同步：登录、数据同步、冲突处理 | ⏳ 待开发 |
@@ -19,6 +19,46 @@
 
 ---
 
+
+
+## v0.4.0 — Ledger（2026-06-12）
+
+### 新增
+- 记账领域模型 `modules/ledger/model.js`：
+  - Account 实体（id, name, type, icon, currency, balance）
+  - Transaction 实体（id, type, amountMinor, categoryId, accountId, date, note）
+  - Category 实体（id, name, type, icon, color）
+  - 8 个默认支出分类 + 6 个默认收入分类
+  - 事务验证（validateTransaction）
+  - 金额统一使用最小货币单位整数（禁浮点）
+- 记账数据仓储 `modules/ledger/repository.js`：
+  - Account CRUD（getAll, getById, save, delete）
+  - Transaction CRUD + 余额自动计算
+  - 按月查询（getTransactionsByMonth, getMonthlySummary）
+  - 分类管理（getAll, getByType, getById）
+  - 默认账户初始化（现金/微信/支付宝/银行卡）
+  - 本地存储持久化
+- 记账模块 Public API：
+  - 账户管理（getAccounts, createAccount, updateAccount）
+  - 流水管理（createTransaction, deleteTransaction, getRecentTransactions）
+  - 月度查询（getMonthTransactions, getMonthlySummary）
+  - 分类查询（getCategories, getExpenseCategories, getIncomeCategories）
+  - 统计（getStats）
+- 记账页面 `pages/ledger/`：
+  - 月份切换 + 收支/结余汇总卡
+  - 账户横向滚动展示
+  - 最近流水列表
+  - 快速记账 FAB + 滑出面板（类型/金额/分类/账户/备注）
+  - 入场动画
+- `app.json` 注册 ledger 页面
+- `app.js` 启动时调用 ledgerModule.init()
+
+### 不变性
+- 模块间只通过 `public.js` 通信
+- 数据本地存储，不接入后端
+- M0+M1 范围，转账/预算/周期账单后续实现
+
+---
 
 ## v0.3.0 — Calendar（2026-06-12）
 

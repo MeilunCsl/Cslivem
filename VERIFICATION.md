@@ -112,6 +112,46 @@
 
 *v0.3.0 验收通过 — 日历模块完整，可进入下一阶段开发。*
 
+
+## v0.4.0 — Ledger 验收（2026-06-12）
+
+**验收人**: cansen
+**环境**: Windows, 微信开发者工具 2.01.2510290, 基础库 3.16.1
+
+### 文件结构
+
+- [x] `modules/ledger/manifest.js` — v0.4.0 active
+- [x] `modules/ledger/model.js` — Account + Transaction + Category 实体
+- [x] `modules/ledger/repository.js` — CRUD + 月度查询 + 余额计算 + 持久化
+- [x] `modules/ledger/public.js` — 完整 Public API (15 个方法)
+- [x] `pages/ledger/ledger.js` — 记账页面逻辑
+- [x] `pages/ledger/ledger.wxml` — 汇总卡 + 账户 + 流水 + 创建表单
+- [x] `pages/ledger/ledger.wxss` — 花括号配对 (75/75) 验证通过
+- [x] `app.json` — ledger 页面已注册
+- [x] `app.js` — ledgerModule.init() 已调用
+
+### 功能验证
+
+- [x] 记账模块可被 tool-registry 注册和查询
+- [x] 默认账户初始化（现金/微信/支付宝/银行卡）
+- [x] 默认分类初始化（8支出 + 6收入）
+- [x] 流水创建、列表、删除流程正常
+- [x] 月度汇总计算正确（收入/支出/结余）
+- [x] 账户余额自动更新
+- [x] 底部 Tab 导航正确定位到工具 Tab
+- [x] 所有 JS 文件 UTF-8 无 BOM
+- [x] 所有 WXSS 花括号配对验证通过
+
+### 教训记录
+
+| # | 问题 | 状态 | 备注 |
+|---|------|------|------|
+| BUG-007 | PowerShell `\|\|` 被解析为运算符 | ✅ 已规避 | 使用 PowerShell here-string `‘@ ... ’@` pipe 到 python |
+
+---
+
+*v0.4.0 验收通过 — 记账模块 M0+M1 完成，可进入下一阶段开发。*
+
 ### 追加验收（2026-06-11 首页重设计）
 
 - [x] 首页改为 ChatGPT 极简风格（居中 Logo + 输入框 + 建议词）
