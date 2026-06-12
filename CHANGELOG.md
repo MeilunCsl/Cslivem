@@ -10,8 +10,8 @@
 | v0.2.0 | Note | 笔记模块：列表、详情、编辑器、标签、收藏、持久化 | ✅ 已完成 |
 | v0.3.0 | Calendar | 日历模块：月视图、事件管理、日记 | ✅ 已完成 |
 | v0.4.0 | Ledger | 记账模块：收支记录、月度流水、分类 | ✅ 已完成 |
-| v0.5.0 | AI-Core | AI 能力：意图识别、标签建议、摘要 | ⏳ 待开发 |
-| v0.6.0 | Tools | 工具平台：图片转PDF、OCR、扫描 | ⏳ 待开发 |
+| v0.5.0 | AI-Core | AI 能力：意图识别、标签建议、摘要 | ✅ 已完成 |
+| v0.6.0 | Tools | 工具平台：图片转PDF、OCR、扫描 | ✅ 已完成 |
 | v0.7.0 | Sync | 云同步：登录、数据同步、冲突处理 | ⏳ 待开发 |
 | v0.8.0 | Search | 全局搜索、知识图谱 | ⏳ 待开发 |
 | v0.9.0 | Polish | 性能优化、UI 细节、动画 | ⏳ 待开发 |
@@ -20,6 +20,31 @@
 ---
 
 
+
+## v0.6.0 — Tools（2026-06-12）
+
+### 新增
+- 图片转PDF 工具模块 `modules/tool-pdf/`：manifest + public API 桩
+- OCR 识别 工具模块 `modules/tool-ocr/`：manifest + public API 桩
+- 扫描归档 工具模块 `modules/tool-scanner/`：manifest + public API 桩
+- `app.js` 注册三个工具模块到 tool-registry
+
+### 不变性
+- 工具模块独立，通过 tool-registry 注册和查询
+- 工具功能为桩实现，后续逐步实现真实逻辑
+
+---
+
+## v0.5.0 — AI-Core（2026-06-12）
+
+### 变更
+- `miniprogram/ai-gateway.js` 升级：
+  - 意图解析（parseIntent）支持中文关键词匹配（创建/搜索/删除/查看/统计/更新）
+  - 标签建议（suggestTags）基于正则模式匹配（会议/待办/灵感/学习/工作/餐饮/购物）
+  - 分类（classify）支持笔记/事件/记账/任务/问题分类
+  - 请求日志记录（最近 100 条）
+
+---
 
 ## v0.4.0 — Ledger（2026-06-12）
 

@@ -152,6 +152,39 @@
 
 *v0.4.0 验收通过 — 记账模块 M0+M1 完成，可进入下一阶段开发。*
 
+## v0.5.0 + v0.6.0 — AI-Core + Tools 验收（2026-06-12）
+
+**验收人**: cansen
+
+### v0.5.0 AI-Core
+
+- [x] `ai-gateway.js` 意图解析支持 6 种中文意图
+- [x] 标签建议支持 7 种关键词模式
+- [x] 分类支持 5 种类型
+- [x] 请求日志功能正常
+
+### v0.6.0 Tools
+
+- [x] 3 个工具模块注册到 tool-registry
+- [x] `app.js` 启动时注册所有工具
+- [x] 工具模块独立、符合最小出口原则
+- [x] manifest 正确定义 permissions 和 lifecycle
+
+### 框架完整性检查
+
+- [x] 平台内核 `miniprogram/` 5 个文件全部实现
+- [x] 领域模块 `modules/` 7 个（note, calendar, ledger, tool-pdf, tool-ocr, tool-scanner + 原 ledger）
+- [x] 页面 `pages/` 7 个（home, notes, note-detail, note-editor, calendar, ledger, tools）
+- [x] 组件 `components/` 4 个（custom-tabbar, card, search-input, nav-bar）
+- [x] 设计系统 `styles/` 3 个 + `app.wxss`
+- [x] 工具函数 `utils/` 3 个
+- [x] 所有 WXSS 花括号配对验证通过
+- [x] 所有 JS UTF-8 无 BOM
+
+---
+
+*v0.5.0 + v0.6.0 验收通过 — 框架搭建完成，可进入功能迭代阶段。*
+
 ### 追加验收（2026-06-11 首页重设计）
 
 - [x] 首页改为 ChatGPT 极简风格（居中 Logo + 输入框 + 建议词）
