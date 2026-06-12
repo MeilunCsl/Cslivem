@@ -1,4 +1,4 @@
-// modules/note/repository.js - 笔记数据仓储
+// modules/note/repository.js
 
 const storage = require('../../miniprogram/storage');
 const model = require('./model');

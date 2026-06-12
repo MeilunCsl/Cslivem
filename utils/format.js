@@ -1,4 +1,4 @@
-// utils/format.js - 日期与金额格式化工具
+// utils/format.js
 
 function generateId() {
   const timestamp = Date.now().toString(36);

@@ -1,4 +1,5 @@
-// modules/note/public.js - 笔记模块唯一对外出口
+// modules/note/public.js
+
 const manifest = require('./manifest');
 const model = require('./model');
 const repository = require('./repository');

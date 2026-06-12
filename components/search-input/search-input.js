@@ -1,4 +1,3 @@
-// components/search-input/search-input.js
 Component({
   properties: {
     placeholder: { type: String, value: '搜索笔记、工具，或输入你的想法...' },

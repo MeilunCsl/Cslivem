@@ -1,19 +1,4 @@
-// modules/note/model.js - 笔记领域模型
-
-/**
- * 笔记实体
- * @typedef {Object} Note
- * @property {string} id - 唯一标识
- * @property {string} title - 标题
- * @property {string} content - 内容（Markdown）
- * @property {string} summary - 摘要（自动生成）
- * @property {string[]} tags - 标签列表
- * @property {boolean} isFavorite - 是否收藏
- * @property {string} category - 分类
- * @property {string} source - 来源（手动输入/AI识别/导入）
- * @property {string} createdAt - 创建时间
- * @property {string} updatedAt - 更新时间
- */
+// modules/note/model.js
 
 const { generateId } = require('../../utils/format');
 
