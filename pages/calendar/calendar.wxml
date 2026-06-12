@@ -3,6 +3,7 @@
   <view style="height: {{statusBarHeight}}px;"></view>
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
     <view class="page-container">
+
       <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
         <text class="page-title">日历</text>
       </view>
@@ -19,7 +20,7 @@
 
       <view class="dates-grid anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
         <view
-          class="date-cell {{item.isToday ? 'today' : ''}} {{item.hasEvent ? 'has-event' : ''}} {{item.isEmpty ? 'empty' : ''}}"
+          class="date-cell {{item.isToday ? 'today' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.hasEvent ? 'has-event' : ''}} {{item.isEmpty ? 'empty' : ''}}"
           wx:for="{{dates}}"
           wx:key="index"
           bindtap="onDateTap"
@@ -33,21 +34,52 @@
 
       <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}" style="margin-top: 32rpx;">
         <view class="section-header">
-          <text class="section-title">今日事件</text>
+          <text class="section-title">事件</text>
+          <view class="add-btn" bindtap="toggleCreateEvent" hover-class="add-press">
+            <text>{{showCreateEvent ? '✕' : '+'}}</text>
+          </view>
         </view>
-        <card className="event-card" wx:for="{{todayEvents}}" wx:key="id">
+
+        <view class="create-form {{showCreateEvent ? 'form-show' : ''}}" wx:if="{{showCreateEvent}}">
+          <input class="form-input" placeholder="事件标题" value="{{newEventTitle}}" bindinput="onEventTitleInput" />
+          <input class="form-input" placeholder="时间（可选，如 14:00）" value="{{newEventTime}}" bindinput="onEventTimeInput" />
+          <view class="form-actions">
+            <view class="form-save" bindtap="saveEvent" hover-class="action-press">保存</view>
+          </view>
+        </view>
+
+        <card className="event-card" wx:for="{{selectedEvents}}" wx:key="id">
           <view class="event-item">
-            <view class="event-dot"></view>
+            <view class="event-dot" style="background: {{item.color}}"></view>
             <view class="event-info">
               <text class="event-title">{{item.title}}</text>
-              <text class="event-time">{{item.time}}</text>
+              <text class="event-time" wx:if="{{item.time}}">{{item.time}}</text>
             </view>
+            <view class="event-delete" catchtap="deleteEvent" data-id="{{item.id}}">✕</view>
           </view>
         </card>
-        <view class="empty-mini" wx:if="{{todayEvents.length === 0}}">
-          <text>今日暂无事件</text>
+        <view class="empty-mini" wx:if="{{selectedEvents.length === 0}}">
+          <text>暂无事件</text>
         </view>
       </view>
+
+      <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}" style="margin-top: 40rpx;">
+        <view class="section-header">
+          <text class="section-title">日记</text>
+        </view>
+        <view class="diary-box">
+          <textarea
+            class="diary-input"
+            placeholder="记录今日所思所感..."
+            value="{{diary.content}}"
+            bindinput="onDiaryInput"
+            bindblur="saveDiary"
+            auto-height
+            maxlength="2000"
+          />
+        </view>
+      </view>
+
     </view>
   </scroll-view>
   <custom-tabbar selected="{{2}}" />

@@ -1,20 +1,54 @@
+// modules/calendar/public.js
+
 const manifest = require('./manifest');
+const model = require('./model');
+const repository = require('./repository');
 
 module.exports = {
   manifest,
 
   getTodayEvents() {
-    return [
-      { id: 'evt-1', title: '团队周会', time: '10:00-11:00', type: 'meeting' },
-      { id: 'evt-2', title: '午饭和小李', time: '12:30', type: 'social' }
-    ];
+    const today = new Date().toISOString().split('T')[0];
+    return repository.getEventsByDate(today);
   },
 
   getMonthEvents(year, month) {
-    return [];
+    return repository.getEventsByMonth(year, month);
+  },
+
+  getEventsByDate(date) {
+    return repository.getEventsByDate(date);
   },
 
   createEvent(data) {
-    return { id: 'evt-' + Date.now(), ...data };
+    const event = model.createEvent(data);
+    const validation = model.validateEvent(event);
+    if (!validation.valid) {
+      throw new Error('Event validation failed: ' + validation.errors.join(', '));
+    }
+    return repository.saveEvent(event);
+  },
+
+  updateEvent(id, updates) {
+    const event = repository.getEventById(id);
+    if (!event) throw new Error('Event not found: ' + id);
+    return repository.saveEvent({ ...event, ...updates });
+  },
+
+  deleteEvent(id) {
+    repository.deleteEvent(id);
+  },
+
+  getDiary(date) {
+    return repository.getDiaryByDate(date);
+  },
+
+  saveDiary(data) {
+    const diary = model.createDiary(data);
+    return repository.saveDiary(diary);
+  },
+
+  getStats() {
+    return repository.getStats();
   }
 };

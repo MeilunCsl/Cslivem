@@ -1,39 +1,68 @@
-/* pages/calendar/calendar.wxss - Cslivem 品牌 + 动画 */
+/* pages/calendar/calendar.wxss*\n * Cslivem 品牌设计系统\n */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 .page-scroll { flex: 1; height: 0; }
 .page-container { padding: 16rpx var(--csl-page-x) 240rpx; }
-.header { padding: 24rpx 0 8rpx; }
+
+header { padding: 24rpx 0 8rpx; }
 .page-title { font-size: var(--font-size-title-lg); font-weight: 700; color: var(--color-text); }
 
+/* Animation */
 .anim-fade { opacity: 0; transform: translateY(24rpx); transition: opacity 0.5s ease, transform 0.5s var(--ease-spring); }
 .anim-show { opacity: 1; transform: translateY(0); }
 .anim-d1 { transition-delay: 0.08s; }
 .anim-d2 { transition-delay: 0.16s; }
 .anim-d3 { transition-delay: 0.24s; }
 
+/* Month Navigation */
 .month-nav { display: flex; align-items: center; justify-content: center; gap: 40rpx; margin: 20rpx 0; }
 .month-arrow { font-size: 40rpx; color: var(--color-primary); padding: 10rpx 20rpx; transition: transform 0.2s ease; }
 .arrow-press { transform: scale(0.8); opacity: 0.6; }
 .month-label { font-size: 32rpx; font-weight: 700; color: var(--color-text); }
 
+/* Weekday */
 .weekday-row { display: flex; margin-bottom: 12rpx; }
 .weekday { flex: 1; text-align: center; font-size: 24rpx; color: var(--color-text-secondary); font-weight: 600; }
+
+/* Calendar Grid */
 .dates-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8rpx; }
 .date-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80rpx; border-radius: 20rpx; position: relative; transition: transform 0.15s ease; }
 .date-press { transform: scale(0.88); }
 .date-cell.today { background: var(--color-primary); }
-.date-cell.today .date-num { color: #FFFFFF; }
+.date-cell.today .date-num { color: #FFFFFF; font-weight: 700; }
+.date-cell.selected { background: var(--color-primary-bg); }
+.date-cell.selected .date-num { color: var(--color-primary); font-weight: 700; }
 .date-num { font-size: 28rpx; color: var(--color-text); }
 .date-cell.empty { opacity: 0; pointer-events: none; }
 .date-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--color-primary); margin-top: 4rpx; }
 .date-cell.today .date-dot { background: #FFFFFF; }
 
+/* Section */
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
 .section-title { font-size: var(--font-size-title-md); font-weight: 700; color: var(--color-text); }
+
+/* Add Button */
+.add-btn { width: 56rpx; height: 56rpx; border-radius: 50%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; }
+.add-btn text { color: #FFFFFF; font-size: 36rpx; font-weight: 300; }
+.add-0ress { transform: scale(0.9); opacity: 0.8; }
+
+/* Create Form */
+.create-form { background: var(--color-card); border-radius: var(--radius-lg); padding: 24rpx; margin-bottom: 20rpx; box-shadow: var(--shadow-card); }
+.form-input { width: 100%; height: 80rpx; padding: 0 24rpx; margin-bottom: 16rpx; background: var(--csl-surface-muted); border-radius: var(--radius-md); font-size: 28rpx; color: var(--color-text); box-sizing: border-box; }
+.form-actions { display: flex; justify-content: flex-end; margin-top: 8rpx; }
+.form-save { padding: 12rpx 40rpx; border-radius: var(--radius-full); background: var(--color-primary); color: #FFFFFF; font-size: 28rpx; font-weight: 600; }
+.action-press { transform: scale(0.94); opacity: 0.8; }
+
+/* Event List */
 .event-card { margin-bottom: 12rpx; }
 .event-item { display: flex; align-items: center; gap: 16rpx; }
 .event-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; }
 .event-info { flex: 1; }
 .event-title { display: block; font-size: 28rpx; font-weight: 600; color: var(--color-text); }
 .event-time { display: block; font-size: 22rpx; color: var(--color-text-secondary); margin-top: 4rpx; }
+.event-delete { width: 48rpx; height: 48rpx; display: flex; align-items: center; justify-content: center; font-size: 24rpx; color: var(--color-text-secondary); border-radius: 50%; }
+.event-delete:active { background: rgba(220, 53, 69, 0.1); color: var(--color-error); }
 .empty-mini { text-align: center; padding: 40rpx 0; color: var(--color-text-secondary); font-size: 26rpx; }
+
+/* Diary */
+.diary-box { background: var(--color-card); border-radius: var(--radius-lg); padding: 24rpx; box-shadow: var(--shadow-card); }
+.diary-input { width: 100%; min-height: 160rpx; font-size: 28rpx; color: var(--color-text); line-height: 1.6; box-sizing: border-box; }
