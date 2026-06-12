@@ -24,7 +24,7 @@ Page({
     if (note) {
       this.setData({ note, editContent: note.content });
     } else {
-      wx.showToast({ title: '绗旇涓嶅瓨鍦?, icon: 'none' });
+      wx.showToast({ title: '笔记不存在', icon: 'none' });
       setTimeout(() => wx.navigateBack(), 1500);
     }
   },
@@ -46,7 +46,7 @@ Page({
       summary: noteModule.generateSummary(editContent)
     });
     this.setData({ note: updated, isEditing: false });
-    wx.showToast({ title: '宸蹭繚瀛?, icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   toggleFavorite() {
@@ -84,13 +84,13 @@ Page({
 
   deleteNote() {
     wx.showModal({
-      title: '纭鍒犻櫎',
-      content: '鍒犻櫎鍚庢棤娉曟仮澶嶏紝纭畾瑕佸垹闄よ繖鏉＄瑪璁板悧锛?,
+      title: '确认删除',
+      content: '删除后无法恢复，确定要删除这条笔记吗？',
       success: (res) => {
         if (res.confirm) {
           const noteModule = require('../../modules/note/public');
           noteModule.deleteNote(this.data.noteId);
-          wx.showToast({ title: '宸插垹闄?, icon: 'success' });
+          wx.showToast({ title: '已删除', icon: 'success' });
           setTimeout(() => wx.navigateBack(), 1000);
         }
       }

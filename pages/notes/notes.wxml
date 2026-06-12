@@ -1,4 +1,4 @@
-<!-- pages/notes/notes.wxml - 知识列表页 -->
+<!-- pages/notes/notes.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
@@ -41,7 +41,6 @@
     </view>
   </scroll-view>
 
-  <!-- 新建按钮 -->
   <view class="fab-create" bindtap="createNote" hover-class="fab-press">
     <text class="fab-icon">+</text>
   </view>

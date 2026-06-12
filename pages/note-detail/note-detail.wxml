@@ -1,8 +1,7 @@
-<!-- pages/note-detail/note-detail.wxml - 笔记详情页 -->
+<!-- pages/note-detail/note-detail.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
   
-  <!-- 顶部操作栏 -->
   <view class="top-bar anim-fade {{ready ? 'anim-show' : ''}}">
     <view class="back-btn" bindtap="goBack" hover-class="press">← 返回</view>
     <view class="top-actions">
@@ -18,13 +17,11 @@
 
   <scroll-view scroll-y class="detail-scroll" enhanced show-scrollbar="{{false}}">
     <view class="detail-container">
-      <!-- 标题 -->
       <view class="title-section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
         <text class="note-title" wx:if="{{!isEditing}}">{{note.title}}</text>
         <input class="title-input" wx:else value="{{note.title}}" placeholder="输入标题" />
       </view>
 
-      <!-- 元信息 -->
       <view class="meta-section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
         <text class="meta-item">{{note.updatedAt}}</text>
         <text class="meta-dot">·</text>
@@ -33,7 +30,6 @@
         <text class="meta-item">{{note.category}}</text>
       </view>
 
-      <!-- 标签 -->
       <view class="tags-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
         <view class="tag-item" wx:for="{{note.tags}}" wx:key="*this">
           <text class="tag-text">{{item}}</text>
@@ -46,7 +42,6 @@
         </view>
       </view>
 
-      <!-- 内容 -->
       <view class="content-section anim-fade anim-d4 {{ready ? 'anim-show' : ''}}">
         <text class="content-text" wx:if="{{!isEditing && note.content}}">{{note.content}}</text>
         <textarea class="content-editor" wx:if="{{isEditing}}" value="{{editContent}}" bindinput="onContentInput" placeholder="输入内容..." auto-height />
@@ -55,7 +50,6 @@
         </view>
       </view>
 
-      <!-- 保存按钮 -->
       <view class="save-section anim-fade anim-d5 {{ready ? 'anim-show' : ''}}" wx:if="{{isEditing}}">
         <view class="save-btn" bindtap="saveNote" hover-class="press">保存</view>
       </view>

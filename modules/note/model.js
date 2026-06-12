@@ -1,5 +1,4 @@
 // modules/note/model.js - 笔记领域模型
-// 定义笔记的数据结构和验证规则
 
 /**
  * 笔记实体
@@ -19,11 +18,6 @@
 const { generateId } = require('../../utils/format');
 
 module.exports = {
-  /**
-   * 创建新笔记
-   * @param {Object} data - 笔记数据
-   * @returns {Note}
-   */
   create(data = {}) {
     const now = new Date().toISOString();
     return {
@@ -40,11 +34,6 @@ module.exports = {
     };
   },
 
-  /**
-   * 验证笔记数据
-   * @param {Note} note
-   * @returns {{valid: boolean, errors: string[]}}
-   */
   validate(note) {
     const errors = [];
     if (!note.id) errors.push('缺少 id');
@@ -53,14 +42,8 @@ module.exports = {
     return { valid: errors.length === 0, errors };
   },
 
-  /**
-   * 生成摘要（从内容提取前 100 字符）
-   * @param {string} content
-   * @returns {string}
-   */
   generateSummary(content) {
     if (!content) return '';
-    // 移除 Markdown 标记
     const plain = content
       .replace(/#+\s/g, '')
       .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -72,11 +55,6 @@ module.exports = {
     return plain.length > 100 ? plain.substring(0, 100) + '...' : plain;
   },
 
-  /**
-   * 更新笔记时间戳
-   * @param {Note} note
-   * @returns {Note}
-   */
   touch(note) {
     return { ...note, updatedAt: new Date().toISOString() };
   }

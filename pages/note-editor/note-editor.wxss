@@ -1,4 +1,4 @@
-/* pages/note-editor/note-editor.wxss - Cslivem 编辑器 */
+/* pages/note-editor/note-editor.wxss */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 
 .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16rpx 32rpx; }

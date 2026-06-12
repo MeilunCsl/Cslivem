@@ -30,10 +30,8 @@ Page({
     const noteModule = require('../../modules/note/public');
     const format = require('../../utils/format');
     const stats = noteModule.getStats();
-    
     let notes = [];
     const { activeFilter } = this.data;
-    
     switch (activeFilter) {
       case 'inbox':
         notes = noteModule.getInbox(20);
@@ -53,7 +51,6 @@ Page({
       default:
         notes = noteModule.getRecentNotes(20);
     }
-    
     this.setData({
       notes: notes.map(n => ({
         ...n,

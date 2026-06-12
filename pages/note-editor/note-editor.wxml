@@ -1,19 +1,16 @@
-<!-- pages/note-editor/note-editor.wxml - 笔记编辑器 -->
+<!-- pages/note-editor/note-editor.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
   
-  <!-- 顶部操作栏 -->
   <view class="top-bar anim-fade {{ready ? 'anim-show' : ''}}">
     <view class="back-btn" bindtap="goBack" hover-class="press">← 返回</view>
     <view class="save-btn" bindtap="save" hover-class="press">保存</view>
   </view>
 
-  <!-- 标题输入 -->
   <view class="title-section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
     <input class="title-input" value="{{title}}" bindinput="onTitleInput" placeholder="输入标题" />
   </view>
 
-  <!-- Markdown 工具栏 -->
   <view class="toolbar anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
     <view class="toolbar-item" bindtap="insertMarkdown" data-type="bold" hover-class="press">B</view>
     <view class="toolbar-item" bindtap="insertMarkdown" data-type="italic" hover-class="press">I</view>
@@ -24,7 +21,6 @@
     <view class="toolbar-item" bindtap="insertMarkdown" data-type="divider" hover-class="press">—</view>
   </view>
 
-  <!-- 内容编辑区 -->
   <view class="editor-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
     <textarea class="editor" value="{{content}}" bindinput="onContentInput" placeholder="开始写作..." auto-height cursor-spacing="120" />
   </view>
