@@ -2,19 +2,56 @@
   "description": "AI Knowledge Hub - Cslivem",
   "packOptions": {
     "ignore": [
-      { "type": "folder", "value": "cslivem-codex-handoff" },
-      { "type": "folder", "value": "doc" },
-      { "type": "folder", "value": "plan-md" },
-      { "type": "file", "value": "assets/reference" },
-      { "type": "file", "value": "README.md" },
-      { "type": "file", "value": "CHANGELOG.md" },
-      { "type": "file", "value": "VERIFICATION.md" },
-      { "type": "file", "value": "assets/design-tokens.json" },
-      { "type": "file", "value": "assets/logo/cslivem-mark.svg" },
-      { "type": "file", "value": "assets/logo/cslivem-logo-horizontal.svg" },
-      { "type": "file", "value": "assets/logo/cslivem-mark-monochrome.svg" },
-      { "type": "file", "value": "styles/design-tokens.css" }
-    ]
+      {
+        "value": "cslivem-codex-handoff",
+        "type": "folder"
+      },
+      {
+        "value": "doc",
+        "type": "folder"
+      },
+      {
+        "value": "plan-md",
+        "type": "folder"
+      },
+      {
+        "value": "assets/reference",
+        "type": "file"
+      },
+      {
+        "value": "README.md",
+        "type": "file"
+      },
+      {
+        "value": "CHANGELOG.md",
+        "type": "file"
+      },
+      {
+        "value": "VERIFICATION.md",
+        "type": "file"
+      },
+      {
+        "value": "assets/design-tokens.json",
+        "type": "file"
+      },
+      {
+        "value": "assets/logo/cslivem-mark.svg",
+        "type": "file"
+      },
+      {
+        "value": "assets/logo/cslivem-logo-horizontal.svg",
+        "type": "file"
+      },
+      {
+        "value": "assets/logo/cslivem-mark-monochrome.svg",
+        "type": "file"
+      },
+      {
+        "value": "styles/design-tokens.css",
+        "type": "file"
+      }
+    ],
+    "include": []
   },
   "setting": {
     "bundle": false,
@@ -43,7 +80,12 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "condition": false
+    "condition": false,
+    "compileWorklet": false,
+    "localPlugins": false,
+    "useCompilerPlugins": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.16.1",
@@ -53,5 +95,6 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "simulatorPluginLibVersion": {}
 }
