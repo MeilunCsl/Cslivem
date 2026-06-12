@@ -225,6 +225,37 @@
 
 *v0.7.0 + v0.8.0 验收通过 — 框架搭建基本完成。*
 
+## v0.9.0 — Polish 验收（2026-06-12）
+
+**验收人**: cansen
+
+### 动画统一性
+
+- [x] home: anim-fade-up + anim-visible
+- [x] notes: anim-fade + anim-show
+- [x] note-detail: anim-fade + anim-show
+- [x] note-editor: anim-fade + anim-show
+- [x] calendar: anim-fade + anim-show
+- [x] ledger: anim-fade + anim-show
+- [x] search: anim-fade + anim-show (新增)
+- [x] tools: anim-fade + anim-show
+
+### 数据源统一
+
+- [x] tools 页从 tool-registry 动态加载工具列表
+- [x] 所有模块通过 public.js 暴露 API
+- [x] 所有页面通过 require 引入模块
+
+### 质量检查
+
+- [x] 0 JS 编码问题
+- [x] 16 WXSS 花括号全部配对
+- [x] 所有 JSON 格式正确
+
+---
+
+*v0.9.0 验收通过 — 框架搭建完成，可进入 v1.0.0 发布准备。*
+
 ### 追加验收（2026-06-11 首页重设计）
 
 - [x] 首页改为 ChatGPT 极简风格（居中 Logo + 输入框 + 建议词）
