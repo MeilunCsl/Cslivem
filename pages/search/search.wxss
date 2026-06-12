@@ -1,3 +1,9 @@
+
+/* Entrance Animation */
+.anim-fade { opacity: 0; transform: translateY(20rpx); transition: opacity 0.4s ease, transform 0.4s var(--ease-spring); }
+.anim-show { opacity: 1; transform: translateY(0); }
+.anim-d1 { transition-delay: 0.1s; }
+.anim-d2 { transition-delay: 0.2s; }
 /* pages/search/search.wxss */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 

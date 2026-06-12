@@ -1,7 +1,7 @@
 <!-- pages/search/search.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
-  <view class="search-bar">
+  <view class="search-bar anim-fade {{ready ? 'anim-show' : ''}}">
     <view class="back-btn" bindtap="onBack" hover-class="btn-press">←</view>
     <view class="search-wrap">
       <input
@@ -20,7 +20,7 @@
 
   <scroll-view scroll-y class="result-scroll" enhanced show-scrollbar="{{false}}">
     <!-- Hot Keys -->
-    <view class="hot-keys" wx:if="{{!searched}}">
+    <view class="hot-keys anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{!searched}}">
       <text class="hot-title">热门搜索</text>
       <view class="hot-list">
         <view class="hot-item" wx:for="{{hotKeys}}" wx:key="*this" bindtap="onHotKey" data-key="{{item}}" hover-class="hot-press">
@@ -30,7 +30,7 @@
     </view>
 
     <!-- Results -->
-    <view class="results" wx:if="{{searched}}">
+    <view class="results anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{searched}}">
       <view class="result-count" wx:if="{{results.length > 0}}">
         找到 {{results.length}} 条结果
       </view>

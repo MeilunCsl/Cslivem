@@ -1,32 +1,50 @@
+// pages/tools/tools.js
+var toolRegistry = require('../../miniprogram/tool-registry');
+
 Page({
   data: {
     statusBarHeight: 20,
     ready: false,
-    tools: [
-      { id: 'pdf', icon: '◻', name: '图片转PDF', description: '本地处理，可保存到知识库' },
-      { id: 'ocr', icon: '◎', name: 'OCR 识别', description: '需要相册或相机权限' },
-      { id: 'food', icon: '◎', name: '饮食记录', description: 'AI 识别食物与营养' },
-      { id: 'scanner', icon: '◻', name: '扫描归档', description: '自动裁切和增强文档' },
-      { id: 'ledger', icon: '◻', name: '记账', description: '收支记录与月度流水' }
-    ],
+    tools: [],
     comingSoon: [
       { id: 'habit', icon: '✓', name: '习惯' },
       { id: 'pomodoro', icon: '◴', name: '番茄钟' },
-      { id: 'watermark', icon: '🌞', name: '去水印' },
-      { id: 'translate', icon: '🌐', name: '翻译' }
+      { id: 'watermark', icon: '☀', name: '去水印' },
+      { id: 'translate', icon: '🌐', name: '翻译' },
+      { id: 'weather', icon: '⛅', name: '天气' },
+      { id: 'calculator', icon: '🖩', name: '计算器' }
     ]
   },
-  onLoad() {
+
+  onLoad: function() {
     try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 }); } catch(e) {}
-    setTimeout(() => { this.setData({ ready: true }); }, 100);
+    var self = this;
+    setTimeout(function() { self.setData({ ready: true }); }, 100);
   },
-  onShow() {
+
+  onShow: function() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 });
     }
+    this.loadTools();
   },
-  onToolTap(e) {
-    wx.vibrateShort({ type: 'light' }).catch(() => {});
+
+  loadTools: function() {
+    var all = toolRegistry.getEnabled();
+    var tools = all.map(function(t) {
+      return {
+        id: t.id,
+        icon: t.icon || '◻',
+        name: t.name,
+        description: t.description || ''
+      };
+    });
+    this.setData({ tools: tools });
+  },
+
+  onToolTap: function(e) {
+    var id = e.currentTarget.dataset.id;
+    wx.vibrateShort({ type: 'light' }).catch(function() {});
     wx.showToast({ title: '工具详情（开发中）', icon: 'none' });
   }
 });

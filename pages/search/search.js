@@ -6,6 +6,7 @@ var ledgerModule = require('../../modules/ledger/public');
 Page({
   data: {
     statusBarHeight: 20,
+    ready: false,
     query: '',
     results: [],
     searched: false,
@@ -16,6 +17,8 @@ Page({
     try {
       this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 });
     } catch (e) {}
+    var self = this;
+    setTimeout(function() { self.setData({ ready: true }); }, 100);
     if (options && options.query) {
       var q = decodeURIComponent(options.query);
       this.setData({ query: q });
