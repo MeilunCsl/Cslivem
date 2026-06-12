@@ -8,7 +8,7 @@
 |------|------|------|------|
 | v0.1.0 | Skeleton | 项目骨架、设计系统、底部导航、首页工作台 | ✅ 已完成 |
 | v0.2.0 | Note | 笔记模块：列表、详情、编辑器、标签、收藏、持久化 | ✅ 已完成 |
-| v0.3.0 | Calendar | 日历模块：月视图、事件管理、日记 | ⏳ 待开发 |
+| v0.3.0 | Calendar | 日历模块：月视图、事件管理、日记 | ✅ 已完成 |
 | v0.4.0 | Ledger | 记账模块：收支记录、月度流水、分类 | ⏳ 待开发 |
 | v0.5.0 | AI-Core | AI 能力：意图识别、标签建议、摘要 | ⏳ 待开发 |
 | v0.6.0 | Tools | 工具平台：图片转PDF、OCR、扫描 | ⏳ 待开发 |
@@ -16,6 +16,48 @@
 | v0.8.0 | Search | 全局搜索、知识图谱 | ⏳ 待开发 |
 | v0.9.0 | Polish | 性能优化、UI 细节、动画 | ⏳ 待开发 |
 | v1.0.0 | Release | 正式发布版 | ⏳ 待开发 |
+
+---
+
+
+## v0.3.0 — Calendar（2026-06-12）
+
+### 新增
+- 日历领域模型 modules/calendar/model.js：
+  - Event 实体定义（id, title, date, time, endTime, description, type, color, isAllDay, reminder, relatedNoteId）
+  - Diary 实体定义（id, date, content, mood, weather, tags）
+  - 数据验证（validateEvent）
+  - 时间戳自动更新（touch）
+- 日历数据仓储 modules/calendar/repository.js：
+  - Event CRUD（getAll, getById, save, delete）
+  - 按日期查询（getEventsByDate, getEventsByMonth）
+  - Diary 读写（getDiaryByDate, saveDiary）
+  - 统计信息（getStats）
+  - 本地存储持久化
+- 日历模块 Public API：
+  - 事件管理（createEvent, updateEvent, deleteEvent, getTodayEvents, getMonthEvents, getEventsByDate）
+  - 日记管理（getDiary, saveDiary）
+  - 统计（getStats）
+- 日历页面升级 pages/calendar/：
+  - 月视图日期网格，支持前/后月切换
+  - 选中日期高亮 + 事件点标记
+  - 事件创建表单（标题 + 时间）
+  - 事件列表展示 + 删除
+  - 日记区域（自动保存）
+  - 入场动画（淡入 + 上移）
+
+### 修复
+- manifest.js 空文件（0字节）导致 app.js 启动失败
+- calendar.js 中文乱码（星期名称编码损坏）
+
+### 变更
+- calendar.wxml 模板重写，对齐新的数据结构
+- calendar.wxss 补充事件表单/日记/选中状态样式
+- 花括号配对验证通过（48/48）
+
+### 不变性
+- 模块间只通过 public.js 通信
+- 日历数据存储在本地 localStorage
 
 ---
 

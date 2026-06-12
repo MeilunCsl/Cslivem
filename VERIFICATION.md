@@ -74,6 +74,44 @@
 ---
 
 *v0.1.0 验收通过 — 框架搭建完成，可进入下一阶段开发。*
+
+## v0.3.0 — Calendar 验收（2026-06-12）
+
+**验收人**: cansen  
+**环境**: Windows, 微信开发者工具 2.01.2510290, 基础库 3.16.1
+
+### 文件结构
+
+- [x] modules/calendar/manifest.js — 内容完整（id, name, version, lifecycle, icon, description）
+- [x] modules/calendar/model.js — Event + Diary 实体 + 验证
+- [x] modules/calendar/repository.js — CRUD + 日期查询 + 持久化
+- [x] modules/calendar/public.js — 完整 Public API（11 个方法）
+- [x] pages/calendar/calendar.js — 中文正常、数据接入真实
+- [x] pages/calendar/calendar.wxml — 日历网格 + 事件 + 日记模板
+- [x] pages/calendar/calendar.wxss — 花括号配对 (48/48) 验证通过
+
+### 功能验证
+
+- [x] 日历模块可被 	ool-registry 注册和查询
+- [x] 事件创建、列表、删除流程正常
+- [x] 日记区域可输入并自动保存
+- [x] 月视图切换正常（前/后月）
+- [x] 选中日期高亮 + 事件点标记来自真实数据
+- [x] 底部 Tab 导航正确定位到日历 Tab
+- [x] 入场动画淡入效果正常
+
+### 教训记录
+
+| # | 问题 | 状态 | 备注 |
+|---|------|------|------|
+| BUG-004 | manifest.js 0字节导致启动失败 | ✅ 已修复 | Python 写入避免编码问题 |
+| BUG-005 | calendar.js 中文乱码 | ✅ 已修复 | 整文件用 Python 重写 |
+| BUG-006 | PowerShell || && 被解析为运算符 | ✅ 已规避 | 复杂 HTML 用 Python 脚本文件写入 |
+
+---
+
+*v0.3.0 验收通过 — 日历模块完整，可进入下一阶段开发。*
+
 ### 追加验收（2026-06-11 首页重设计）
 
 - [x] 首页改为 ChatGPT 极简风格（居中 Logo + 输入框 + 建议词）
