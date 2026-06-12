@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "card": "/components/card/card"
+  },
+  "navigationStyle": "custom"
+}

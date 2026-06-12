@@ -116,6 +116,7 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.input-tap-press { transform: scale(0.98); opacity: 0.9; }
 .input-focused {
   border-color: var(--color-primary, #5B4CFF);
   box-shadow: 0 4rpx 32rpx rgba(91, 76, 255, 0.2);
@@ -128,6 +129,9 @@
   color: var(--color-text, #0A0F1A);
 }
 
+.input-placeholder-text {
+  flex: 1; font-size: 30rpx; color: var(--color-text-placeholder); line-height: 72rpx;
+}
 .input-placeholder {
   color: var(--color-text-placeholder, #B0B8C9);
   font-size: 30rpx;

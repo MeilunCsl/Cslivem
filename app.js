@@ -9,6 +9,7 @@ const ledgerModule = require('./modules/ledger/public');
 const toolPdf = require('./modules/tool-pdf/public');
 const toolOcr = require('./modules/tool-ocr/public');
 const toolScanner = require('./modules/tool-scanner/public');
+const syncManager = require('./miniprogram/sync-manager');
 
 App({
   globalData: {
@@ -30,6 +31,7 @@ App({
     console.log('[App] Registered tools:', toolRegistry.getAll().map(t => t.name).join(', '));
 
     ledgerModule.init();
+    syncManager.init();
 
     storage.init();
     this.restoreUserInfo();

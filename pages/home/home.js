@@ -37,6 +37,10 @@ Page({
     this.setData({ inputFocused: false });
   },
 
+  onInputTap() {
+    wx.navigateTo({ url: '/pages/search/search' });
+  },
+
   onSend() {
     const text = this.data.inputValue.trim();
     if (!text) return;
@@ -48,6 +52,6 @@ Page({
   onSuggestionTap(e) {
     const text = e.currentTarget.dataset.text;
     wx.vibrateShort({ type: 'light' }).catch(() => {});
-    this.setData({ inputValue: text });
+    wx.navigateTo({ url: '/pages/search/search?query=' + encodeURIComponent(text) });
   }
 });

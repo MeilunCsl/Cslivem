@@ -18,27 +18,11 @@
         <text class="brand-tagline">今天想了解什么？</text>
       </view>
 
-      <!-- 问题输入框 -->
+      <!-- 搜索框（点击跳转搜索页） -->
       <view class="input-wrapper anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}">
-        <view class="input-box {{inputFocused ? 'input-focused' : ''}}">
-          <input
-            class="input-field"
-            placeholder="输入你的问题..."
-            placeholder-class="input-placeholder"
-            value="{{inputValue}}"
-            bindinput="onInput"
-            bindconfirm="onSend"
-            bindfocus="onFocus"
-            bindblur="onBlur"
-            confirm-type="send"
-            adjust-position="{{true}}"
-            hold-keyboard
-          />
-          <view
-            class="send-btn {{inputValue ? 'send-btn-active' : ''}}"
-            bindtap="onSend"
-            hover-class="send-btn-hover"
-          >
+        <view class="input-box" bindtap="onInputTap" hover-class="input-tap-press">
+          <text class="input-placeholder-text">输入你的问题...</text>
+          <view class="send-btn send-btn-active">
             <text class="send-arrow">→</text>
           </view>
         </view>
