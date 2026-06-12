@@ -1,0 +1,145 @@
+<!-- pages/ledger/ledger.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="page-container">
+
+      <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+        <text class="page-title">记账</text>
+      </view>
+
+      <!-- Month Navigation -->
+      <view class="month-nav anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <text class="month-arrow" bindtap="prevMonth" hover-class="arrow-press">←</text>
+        <text class="month-label">{{currentYear}} 年 {{currentMonth}} 月</text>
+        <text class="month-arrow" bindtap="nextMonth" hover-class="arrow-press">→</text>
+      </view>
+
+      <!-- Summary Card -->
+      <view class="summary-card anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="summary-row">
+          <view class="summary-item">
+            <text class="summary-label">收入</text>
+            <text class="summary-amount income">¥{{summary.income}}</text>
+          </view>
+          <view class="summary-divider"></view>
+          <view class="summary-item">
+            <text class="summary-label">支出</text>
+            <text class="summary-amount expense">¥{{summary.expense}}</text>
+          </view>
+          <view class="summary-divider"></view>
+          <view class="summary-item">
+            <text class="summary-label">结余</text>
+            <text class="summary-amount">¥{{summary.balance}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Accounts -->
+      <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+        <view class="section-header">
+          <text class="section-title">账户</text>
+        </view>
+        <scroll-view scroll-x class="accounts-scroll" enhanced show-scrollbar="{{false}}">
+          <view class="accounts-row">
+            <view class="account-chip" wx:for="{{accounts}}" wx:key="id">
+              <text class="account-icon">{{item.icon}}</text>
+              <text class="account-name">{{item.name}}</text>
+              <text class="account-balance">¥{{item.currentBalanceMinor}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- Recent Transactions -->
+      <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="section-header">
+          <text class="section-title">最近流水</text>
+        </view>
+        <card className="tx-card" wx:for="{{recentTransactions}}" wx:key="id">
+          <view class="tx-item">
+            <view class="tx-icon-wrap">
+              <text class="tx-icon">{{categoryMap[item.categoryId].icon || '💼'}}</text>
+            </view>
+            <view class="tx-info">
+              <text class="tx-cat">{{categoryMap[item.categoryId].name || '未分类'}}</text>
+              <text class="tx-note" wx:if="{{item.note}}">{{item.note}}</text>
+              <text class="tx-date">{{item.date}}</text>
+            </view>
+            <text class="tx-amount {{item.type}}">
+              {{item.type === 'income' ? '+' : '-'}}{{item.amountMinor}}
+            </text>
+            <view class="tx-delete" catchtap="deleteTx" data-id="{{item.id}}">×</view>
+          </view>
+        </card>
+        <view class="empty-mini" wx:if="{{recentTransactions.length === 0}}">
+          <text>暂无流水记录</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Create Transaction FAB -->
+  <view class="fab-create {{showCreate ? 'fab-hidden' : ''}}" bindtap="toggleCreate" hover-class="fab-press">
+    <text class="fab-plus">+</text>
+  </view>
+
+  <!-- Create Form Overlay -->
+  <view class="create-overlay {{showCreate ? 'show' : ''}}" catchtap="toggleCreate"></view>
+  <view class="create-panel {{showCreate ? 'panel-in' : ''}}">
+    <view class="panel-header">
+      <text class="panel-title">记一笔</text>
+      <view class="panel-close" bindtap="toggleCreate">×</view>
+    </view>
+
+    <!-- Type Tabs -->
+    <view class="type-tabs">
+      <view class="type-tab {{txType === 'expense' ? 'active' : ''}}" bindtap="switchTxType" data-type="expense">支出</view>
+      <view class="type-tab {{txType === 'income' ? 'active' : ''}}" bindtap="switchTxType" data-type="income">收入</view>
+    </view>
+
+    <!-- Amount -->
+    <view class="amount-row">
+      <text class="amount-prefix">¥</text>
+      <input class="amount-input" type="digit" placeholder="0.00" value="{{amountInput}}" bindinput="onAmountInput" />
+    </view>
+
+    <!-- Category Grid -->
+    <view class="cat-grid">
+      <view
+        class="cat-item {{selectedCategory === item.id ? 'selected' : ''}}"
+        wx:for="{{txType === 'income' ? [] : categories}}"
+        wx:key="id"
+        wx:if="{{item.type === txType}}"
+        bindtap="selectCategory"
+        data-id="{{item.id}}"
+      >
+        <text class="cat-icon">{{item.icon}}</text>
+        <text class="cat-name">{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- Account Select -->
+    <view class="account-select">
+      <text class="select-label">账户</text>
+      <view class="account-options">
+        <view
+          class="acct-opt {{selectedAccount === item.id ? 'selected' : ''}}"
+          wx:for="{{accounts}}" wx:key="id"
+          bindtap="selectAccount"
+          data-id="{{item.id}}"
+        >
+          <text>{{item.icon}} {{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Note -->
+    <input class="note-input" placeholder="备注（可选）" value="{{txNote}}" bindinput="onNoteInput" />
+
+    <!-- Save -->
+    <view class="save-btn" bindtap="saveTransaction" hover-class="save-press">保存</view>
+  </view>
+
+  <custom-tabbar selected="{{3}}" />
+</view>

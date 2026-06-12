@@ -23,6 +23,8 @@ App({
 
     console.log('[App] Registered tools:', toolRegistry.getAll().map(t => t.name).join(', '));
 
+    ledgerModule.init();
+
     storage.init();
     this.restoreUserInfo();
   },

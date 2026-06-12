@@ -5,6 +5,7 @@
     "pages/note-detail/note-detail",
     "pages/note-editor/note-editor",
     "pages/calendar/calendar",
+    "pages/ledger/ledger",
     "pages/tools/tools"
   ],
   "window": {
