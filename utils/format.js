@@ -1,6 +1,16 @@
 // utils/format.js - 日期与金额格式化工具
 
 /**
+ * 生成唯一 ID
+ * @returns {string}
+ */
+function generateId() {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).substring(2, 8);
+  return `${timestamp}-${random}`;
+}
+
+/**
  * 格式化日期为 YYYY-MM-DD
  * @param {Date} date
  * @returns {string}
@@ -30,7 +40,7 @@ function formatDateCN(date) {
 }
 
 /**
- * 格式化金额 (分为单位 → 元显示)
+ * 格式化金额（分为单位 → 元显示）
  * @param {number} amountMinor 最小货币单位（分）
  * @returns {string}
  */
@@ -70,6 +80,7 @@ function getRelativeTime(date) {
 }
 
 module.exports = {
+  generateId,
   formatDate,
   formatDateCN,
   formatMoney,

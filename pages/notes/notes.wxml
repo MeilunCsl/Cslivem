@@ -21,9 +21,9 @@
       </scroll-view>
 
       <view class="note-list">
-        <card className="note-item anim-fade anim-d{{index < 4 ? index + 2 : 5}} {{ready ? 'anim-show' : ''}}" wx:for="{{notes}}" wx:key="id" hover-class="note-press">
+        <card className="note-item anim-fade anim-d{{index < 4 ? index + 2 : 5}} {{ready ? 'anim-show' : ''}}" wx:for="{{notes}}" wx:key="id" hover-class="note-press" bindtap="onTapNote" data-id="{{item.id}}">
           <text class="note-item-title">{{item.title}}</text>
-          <text class="note-item-summary">{{item.summary}}</text>
+          <text class="note-item-summary">{{item.summary || item.content}}</text>
           <view class="note-item-footer">
             <text class="note-item-time">{{item.timeAgo}}</text>
             <view class="note-item-tags">
@@ -34,11 +34,17 @@
       </view>
 
       <view class="empty anim-fade {{ready ? 'anim-show' : ''}}" wx:if="{{notes.length === 0}}">
-        <text class="empty-icon">▤</text>
+        <text class="empty-icon">📝</text>
         <text class="empty-text">还没有笔记</text>
-        <text class="empty-hint">点击底部 ＋ 开始记录</text>
+        <text class="empty-hint">点击右下角 + 开始记录</text>
       </view>
     </view>
   </scroll-view>
+
+  <!-- 新建按钮 -->
+  <view class="fab-create" bindtap="createNote" hover-class="fab-press">
+    <text class="fab-icon">+</text>
+  </view>
+
   <custom-tabbar selected="{{1}}" />
 </view>

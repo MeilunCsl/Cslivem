@@ -1,0 +1,64 @@
+<!-- pages/note-detail/note-detail.wxml - 笔记详情页 -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  
+  <!-- 顶部操作栏 -->
+  <view class="top-bar anim-fade {{ready ? 'anim-show' : ''}}">
+    <view class="back-btn" bindtap="goBack" hover-class="press">← 返回</view>
+    <view class="top-actions">
+      <view class="action-btn {{note.isFavorite ? 'fav-active' : ''}}" bindtap="toggleFavorite" hover-class="press">
+        {{note.isFavorite ? '★' : '☆'}}
+      </view>
+      <view class="action-btn" bindtap="toggleEdit" hover-class="press">
+        {{isEditing ? '取消' : '编辑'}}
+      </view>
+      <view class="action-btn delete-btn" bindtap="deleteNote" hover-class="press">删除</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="detail-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="detail-container">
+      <!-- 标题 -->
+      <view class="title-section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <text class="note-title" wx:if="{{!isEditing}}">{{note.title}}</text>
+        <input class="title-input" wx:else value="{{note.title}}" placeholder="输入标题" />
+      </view>
+
+      <!-- 元信息 -->
+      <view class="meta-section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+        <text class="meta-item">{{note.updatedAt}}</text>
+        <text class="meta-dot">·</text>
+        <text class="meta-item">{{note.source}}</text>
+        <text class="meta-dot">·</text>
+        <text class="meta-item">{{note.category}}</text>
+      </view>
+
+      <!-- 标签 -->
+      <view class="tags-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="tag-item" wx:for="{{note.tags}}" wx:key="*this">
+          <text class="tag-text">{{item}}</text>
+          <text class="tag-remove" catchtap="removeTag" data-tag="{{item}}">×</text>
+        </view>
+        <view class="add-tag-btn" bindtap="showAddTag" wx:if="{{!showTagInput}}" hover-class="press">+ 标签</view>
+        <view class="tag-input-wrap" wx:if="{{showTagInput}}">
+          <input class="tag-input" value="{{newTag}}" bindinput="onTagInput" placeholder="新标签" focus="{{showTagInput}}" bindconfirm="confirmAddTag" />
+          <text class="tag-confirm" bindtap="confirmAddTag">✓</text>
+        </view>
+      </view>
+
+      <!-- 内容 -->
+      <view class="content-section anim-fade anim-d4 {{ready ? 'anim-show' : ''}}">
+        <text class="content-text" wx:if="{{!isEditing && note.content}}">{{note.content}}</text>
+        <textarea class="content-editor" wx:if="{{isEditing}}" value="{{editContent}}" bindinput="onContentInput" placeholder="输入内容..." auto-height />
+        <view class="empty-content" wx:if="{{!isEditing && !note.content}}">
+          <text class="empty-hint">暂无内容，点击编辑开始记录</text>
+        </view>
+      </view>
+
+      <!-- 保存按钮 -->
+      <view class="save-section anim-fade anim-d5 {{ready ? 'anim-show' : ''}}" wx:if="{{isEditing}}">
+        <view class="save-btn" bindtap="saveNote" hover-class="press">保存</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

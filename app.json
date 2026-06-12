@@ -2,6 +2,8 @@
   "pages": [
     "pages/home/home",
     "pages/notes/notes",
+    "pages/note-detail/note-detail",
+    "pages/note-editor/note-editor",
     "pages/calendar/calendar",
     "pages/tools/tools"
   ],
