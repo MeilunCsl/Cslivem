@@ -35,7 +35,8 @@ Page({
     this.setData({ content: e.detail.value });
   },
 
-  insertMarkdown(type) {
+  insertMarkdown(e) {
+    const type = e.currentTarget.dataset.type;
     const content = this.data.content;
     let insert = '';
     switch (type) {
