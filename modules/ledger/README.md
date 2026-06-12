@@ -1,17 +1,9 @@
-# 记账模块 (Ledger Module)
+# 记账模块 (ledger)
 
-- **ID**: `ledger`
-- **版本**: 0.1.0
-- **状态**: draft
+## 简介
+收支记录与月度流水。
 
-## 职责
-- 收支记录
-- 月度流水
-- 分类统计
-- 预算管理
-
-## Public API
-- `getMonthlySummary(year, month)` — 月度摘要
-- `getRecentTransactions(limit)` — 最近流水
-- `createTransaction(data)` — 创建流水
-- `getAccounts()` — 账户列表
+## 公共 API
+- `getAccounts()` - 获取账户列表
+- `getRecentTransactions(limit)` - 获取最近交易
+- `getMonthlySummary(year, month)` - 获取月度汇总

@@ -1,4 +1,3 @@
-// pages/home/home.js - Cslivem 极简 AI 对话首页
 Page({
   data: {
     statusBarHeight: 20,
@@ -17,8 +16,6 @@ Page({
       const sys = wx.getSystemInfoSync();
       this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     } catch (e) {}
-
-    // 入场动画延迟触发
     setTimeout(() => { this.setData({ ready: true }); }, 100);
   },
 
@@ -43,7 +40,6 @@ Page({
   onSend() {
     const text = this.data.inputValue.trim();
     if (!text) return;
-    // 按钮按压反馈
     wx.vibrateShort({ type: 'light' }).catch(() => {});
     wx.showToast({ title: 'AI 功能开发中', icon: 'none' });
     this.setData({ inputValue: '' });

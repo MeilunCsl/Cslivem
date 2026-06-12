@@ -1,32 +1,20 @@
-// modules/calendar/public.js - 日历模块唯一对外出口
 const manifest = require('./manifest');
 
 module.exports = {
   manifest,
 
-  /** 获取指定月份的事件 */
-  getMonthEvents(year, month) {
-    console.log('[Calendar] getMonthEvents:', year, month);
-    return [];
-  },
-
-  /** 获取今日事件 */
   getTodayEvents() {
     return [
-      { id: 'evt-1', title: '产品评审会议', time: '14:00', type: 'event' },
-      { id: 'evt-2', title: '提交架构文档', time: '17:00', type: 'task' }
+      { id: 'evt-1', title: '团队周会', time: '10:00-11:00', type: 'meeting' },
+      { id: 'evt-2', title: '午饭和小李', time: '12:30', type: 'social' }
     ];
   },
 
-  /** 获取日记 */
-  getDiary(date) {
-    console.log('[Calendar] getDiary:', date);
-    return null;
+  getMonthEvents(year, month) {
+    return [];
   },
 
-  /** 创建事件 */
-  createEvent(eventData) {
-    console.log('[Calendar] createEvent:', eventData.title);
-    return { id: 'evt-new', ...eventData };
+  createEvent(data) {
+    return { id: 'evt-' + Date.now(), ...data };
   }
 };

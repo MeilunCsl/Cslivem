@@ -1,4 +1,3 @@
-// modules/note/manifest.js - 笔记模块清单
 module.exports = {
   id: 'note',
   name: '笔记',
