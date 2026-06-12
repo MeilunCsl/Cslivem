@@ -1,13 +1,13 @@
 {
   "pages": [
-    "pages/search/search",
     "pages/home/home",
     "pages/notes/notes",
     "pages/note-detail/note-detail",
     "pages/note-editor/note-editor",
     "pages/calendar/calendar",
     "pages/ledger/ledger",
-    "pages/tools/tools"
+    "pages/tools/tools",
+    "pages/search/search"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",
