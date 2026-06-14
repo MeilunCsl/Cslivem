@@ -9,6 +9,7 @@ const ledgerModule = require('./modules/ledger/public');
 const toolPdf = require('./modules/tool-pdf/public');
 const toolOcr = require('./modules/tool-ocr/public');
 const toolScanner = require('./modules/tool-scanner/public');
+const knowledgeModule = require('./modules/knowledge/public');
 const syncManager = require('./miniprogram/sync-manager');
 
 App({
@@ -27,6 +28,7 @@ App({
     toolRegistry.register(toolPdf.manifest);
     toolRegistry.register(toolOcr.manifest);
     toolRegistry.register(toolScanner.manifest);
+    toolRegistry.register(knowledgeModule.manifest);
 
     console.log('[App] Registered tools:', toolRegistry.getAll().map(t => t.name).join(', '));
 
