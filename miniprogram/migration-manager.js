@@ -69,6 +69,24 @@ var MIGRATIONS = [
         localStorage.setJSON('ledger_budgets', []);
       }
     }
+  },
+  {
+    version: 5,
+    name: 'init_todo_storage',
+    description: 'Initialize todo storage',
+    up: function() {
+      if (!localStorage.getJSON('csl_todos', null)) {
+        localStorage.setJSON('csl_todos', []);
+      }
+      if (!localStorage.getJSON('csl_todo_lists', null)) {
+        localStorage.setJSON('csl_todo_lists', [
+          { id: 'default', name: '默认', icon: '☑', color: '#5B4CFF' },
+          { id: 'work', name: '工作', icon: '▣', color: '#3A7BFF' },
+          { id: 'personal', name: '生活', icon: '◆', color: '#00D4D9' },
+          { id: 'shopping', name: '购物', icon: '▢', color: '#F59E0B' }
+        ]);
+      }
+    }
   }
 ];
 

@@ -67,7 +67,8 @@ function packageLocalData() {
     foodRecords: foodRecords,
     countdowns: countdowns,
     pomodoroSessions: pomodoroSessions,
-    conversations: conversations
+    conversations: conversations,
+    todos: todos
   };
 }
 
