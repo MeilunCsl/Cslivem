@@ -7,11 +7,11 @@ Page({
   data: {
     statusBarHeight: 20,
     ready: false,
-    version: 'v2.1.0',
+    version: 'v2.8.8',
     buildDate: '2026-06-14',
     stats: {
       modules: 0,
-      pages: 27,
+      pages: 32,
       graphNodes: 0,
       graphEdges: 0,
       notes: 0,
@@ -43,7 +43,7 @@ Page({
       this.setData({
         stats: {
           modules: modules.length,
-          pages: 27,
+          pages: 32,
           graphNodes: Object.keys(graph.nodes || {}).length,
           graphEdges: Object.keys(graph.edges || {}).length,
           notes: notes.length,
