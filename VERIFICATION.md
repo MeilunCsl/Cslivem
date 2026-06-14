@@ -477,3 +477,29 @@
 ---
 
 *v1.8.0 验收通过 — 生活工具模块完成。*
+
+## v1.9.0 — Food + Export (2026-06-14)
+
+**验收人**: cansen (auto-verify)
+
+### Food Module
+- [x] 2 module files (manifest, public)
+- [x] 4 page files (js, json, wxml, wxss)
+- [x] All BOM clean, braces balanced, tags balanced
+- [x] Registered in app.json, app.js, tools.js
+- [x] Quick presets, meal selector, calorie summary
+
+### Data Export/Import
+- [x] packageLocalData includes all 11 data stores
+- [x] importDataToStore handles habits, food, countdowns, pomodoro, conversations
+- [x] Merge by ID with conflict resolution
+- [x] Export version upgraded to v2
+- [x] Braces balanced (121/121)
+
+### Overall Stats
+- [x] 22 pages, 11 modules, 4 components
+- [x] All commits pushed to GitHub
+
+---
+
+*v1.9.0 验收通过 — 全模块数据导入导出完成。*
