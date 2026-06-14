@@ -1,4 +1,4 @@
-﻿// pages/chat/chat.js
+// pages/chat/chat.js
 var conversationStore = require('../../core/conversation/store');
 var gateway = require('../../miniprogram/ai-gateway');
 var types = require('../../core/conversation/types');

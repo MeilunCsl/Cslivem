@@ -1,4 +1,4 @@
-﻿/* pages/chat/chat.wxss */
+/* pages/chat/chat.wxss */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 
 /* Nav */

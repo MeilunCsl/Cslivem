@@ -1,4 +1,4 @@
-﻿/* pages/conversations/conversations.wxss */
+/* pages/conversations/conversations.wxss */
 .page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 .page-scroll { flex: 1; height: 0; }
 .page-container { padding: 16rpx var(--csl-page-x) 240rpx; }

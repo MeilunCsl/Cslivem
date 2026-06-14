@@ -1,4 +1,4 @@
-﻿<!-- pages/chat/chat.wxml -->
+<!-- pages/chat/chat.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
   

@@ -1,4 +1,4 @@
-﻿// core/conversation/types.js
+// core/conversation/types.js
 // Conversation and Message data types v1.3.6
 
 function generateId() {

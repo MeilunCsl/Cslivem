@@ -1,4 +1,4 @@
-﻿// pages/conversations/conversations.js
+// pages/conversations/conversations.js
 var conversationStore = require('../../core/conversation/store');
 var format = require('../../utils/format');
 

@@ -1,4 +1,4 @@
-﻿// core/conversation/store.js
+// core/conversation/store.js
 // Conversation local persistence store v1.3.6
 
 var localStorage = require('../storage/local-storage');
