@@ -3,17 +3,17 @@
   <view style="height: {{statusBarHeight}}px;"></view>
 
   <view class="nav-bar">
-    <view class="nav-back" bindtap="onBack" hover-class="nav-press">&#x2039;</view>
-    <view class="nav-title">{{conversation.title || '\u65b0\u5bf9\u8bdd'}}</view>
-    <view class="nav-more" bindtap="onMore">&#x22EF;</view>
+    <view class="nav-back" bindtap="onBack" hover-class="nav-press">‹</view>
+    <view class="nav-title">{{conversation.title || '新对话'}}</view>
+    <view class="nav-more" bindtap="onMore">⋯</view>
   </view>
 
   <scroll-view scroll-y class="msg-scroll" enhanced show-scrollbar="{{false}}">
     <view class="msg-list">
       <view class="msg-empty" wx:if="{{messages.length === 0 && !sending}}">
-        <text class="empty-icon">&#x1F4AC;</text>
-        <text class="empty-text">\u5f00\u59cb\u4f60\u7684\u5bf9\u8bdd\u5427</text>
-        <text class="empty-hint">\u53d1\u9001\u6587\u672c\u3001\u56fe\u7247\u6216\u8bed\u97f3</text>
+        <text class="empty-icon">💬</text>
+        <text class="empty-text">开始你的对话吧</text>
+        <text class="empty-hint">发送文本、图片或语音</text>
       </view>
 
       <block wx:for="{{groupedMessages}}" wx:key="time">
@@ -30,11 +30,11 @@
             </view>
             <view class="msg-meta">
               <text class="msg-model" wx:if="{{m.model}}">{{m.model}}</text>
-              <text class="msg-retry" wx:if="{{m.isError}}" bindtap="onRetry" data-id="{{m.id}}">&#x21BB; \u91cd\u8bd5</text>
+              <text class="msg-retry" wx:if="{{m.isError}}" bindtap="onRetry" data-id="{{m.id}}">↻ 重试</text>
             </view>
           </view>
           <view class="msg-avatar user-avatar" wx:if="{{m.role === 'user'}}">
-            <text class="avatar-text">&#x1F464;</text>
+            <text class="avatar-text">👤</text>
           </view>
         </view>
       </block>
@@ -50,7 +50,7 @@
               <view class="dot dot2"></view>
               <view class="dot dot3"></view>
             </view>
-            <text class="thinking-text">\u6b63\u5728\u601d\u8003...</text>
+            <text class="thinking-text">正在思考...</text>
           </view>
         </view>
       </view>
@@ -64,26 +64,26 @@
       <view class="action-btn recording" bindtap="onStopRecord" wx:if="{{recording}}">⏹</view>
     </view>
     <view class="input-wrap">
-      <input class="msg-input" placeholder="\u8f93\u5165\u6d88\u606f..." value="{{inputText}}" bindinput="onInput" bindconfirm="onSend" confirm-type="send" />
+      <input class="msg-input" placeholder="输入消息..." value="{{inputText}}" bindinput="onInput" bindconfirm="onSend" confirm-type="send" />
     </view>
     <view class="send-btn {{inputText ? 'active' : ''}}" bindtap="onSend" hover-class="send-press">
-      <text class="send-arrow">&#x2191;</text>
+      <text class="send-arrow">↑</text>
     </view>
   </view>
 
   <view class="actions-overlay {{showActions ? 'show' : ''}}" bindtap="hideActions" catchtouchmove="hideActions"></view>
   <view class="actions-panel {{showActions ? 'show' : ''}}" catchtap="noop">
     <view class="action-item" bindtap="onCopyMessage">
-      <text class="action-icon">&#x1F4CB;</text>
-      <text>\u590d\u5236</text>
+      <text class="action-icon">📋</text>
+      <text>复制</text>
     </view>
     <view class="action-item" bindtap="onSaveAsNote" wx:if="{{selectedMsgRole === 'assistant'}}">
-      <text class="action-icon">&#x1F4DD;</text>
-      <text>\u4fdd\u5b58\u4e3a\u7b14\u8bb0</text>
+      <text class="action-icon">📝</text>
+      <text>保存为笔记</text>
     </view>
     <view class="action-item action-danger" bindtap="onDeleteMessage">
-      <text class="action-icon">&#x1F5D1;</text>
-      <text>\u5220\u9664</text>
+      <text class="action-icon">🗑</text>
+      <text>删除</text>
     </view>
   </view>
 </view>

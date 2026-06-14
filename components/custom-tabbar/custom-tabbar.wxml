@@ -36,7 +36,7 @@
       <text>文字</text>
     </view>
     <view class="quick-action-item" bindtap="onAction" data-type="photo" hover-class="action-press">
-      <view class="quick-action-icon">📷</view>
+      <view class="quick-action-icon">📸</view>
       <text>拍照</text>
     </view>
     <view class="quick-action-item" bindtap="onAction" data-type="voice" hover-class="action-press">
@@ -44,7 +44,7 @@
       <text>语音</text>
     </view>
     <view class="quick-action-item" bindtap="onAction" data-type="scan" hover-class="action-press">
-      <view class="quick-action-icon">📋</view>
+      <view class="quick-action-icon">📷</view>
       <text>扫描</text>
     </view>
   </view>
