@@ -1,0 +1,59 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">番茄钟</view>
+  </view>
+  <view class="timer-area">
+    <!-- Mode Indicator -->
+    <view class="mode-indicator">
+      <text class="mode-label {{mode === 'focus' ? 'mode-active' : ''}}">专注</text>
+      <text class="mode-label {{mode === 'break' ? 'mode-active' : ''}}">短休息</text>
+      <text class="mode-label {{mode === 'longBreak' ? 'mode-active' : ''}}">长休息</text>
+    </view>
+
+    <!-- Timer Circle -->
+    <view class="timer-circle">
+      <view class="timer-progress" style="background: conic-gradient({{mode === 'focus' ? '#6C5CE7' : '#24A148'}} {{progress}}%, transparent {{progress}}%);">
+        <view class="timer-inner">
+          <text class="timer-display">{{display}}</text>
+          <text class="timer-status">{{status === 'running' ? '进行中' : status === 'paused' ? '已暂停' : 'ready'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Controls -->
+    <view class="controls">
+      <view class="ctrl-btn ctrl-reset" bindtap="onReset" hover-class="ctrl-press">
+        <text>↺</text>
+      </view>
+      <view class="ctrl-btn ctrl-main {{status === 'running' ? 'ctrl-pause' : 'ctrl-start'}}"
+            bindtap="{{status === 'running' ? 'onPause' : 'onStart'}}" hover-class="ctrl-press">
+        <text>{{status === 'running' ? '‖' : '▶'}}</text>
+      </view>
+      <view class="ctrl-btn ctrl-skip" bindtap="onTimerEnd" hover-class="ctrl-press">
+        <text>⏭</text>
+      </view>
+    </view>
+
+    <!-- Session Counter -->
+    <view class="session-counter">
+      <text>本轮已完成 {{sessionCount}} 个专注</text>
+    </view>
+
+    <!-- Stats -->
+    <view class="stats-bar">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.todayCount || 0}}</text>
+        <text class="stat-label">今日</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.todayMinutes || 0}}</text>
+        <text class="stat-label">分钟</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.weekCount || 0}}</text>
+        <text class="stat-label">本周</text>
+      </view>
+    </view>
+  </view>
+</view>

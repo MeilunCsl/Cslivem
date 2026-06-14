@@ -18,7 +18,8 @@
     "pages/ocr/ocr",
     "pages/graph-ingest/graph-ingest",
     "pages/scanner/scanner",
-    "pages/habit/habit"
+    "pages/habit/habit",
+    "pages/pomodoro/pomodoro"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",
