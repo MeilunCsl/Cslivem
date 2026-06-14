@@ -1,0 +1,35 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">单位换算</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="category-row">
+      <picker range="{{categories}}" range-key="name" bindchange="onCategoryChange">
+        <view class="picker-btn">{{categories[0].name || '长度'}} ▼</view>
+      </picker>
+    </view>
+
+    <view class="convert-card">
+      <view class="convert-row">
+        <input class="convert-input" type="digit" placeholder="输入数值" value="{{inputValue}}" bindinput="onValueInput" />
+        <picker range="{{units}}" range-key="name" bindchange="onFromChange">
+          <view class="unit-btn">{{units[0].name}} ▼</view>
+        </picker>
+      </view>
+
+      <view class="swap-btn" bindtap="onSwap" hover-class="btn-press">⇅</view>
+
+      <view class="convert-row">
+        <view class="convert-result">{{result || ‘’}}</view>
+        <picker range="{{units}}" range-key="name" bindchange="onToChange">
+          <view class="unit-btn">{{units[1].name}} ▼</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="info-text" wx:if="{{result}}">
+      <text>{{inputValue}} {{fromUnit}} = {{result}} {{toUnit}}</text>
+    </view>
+  </scroll-view>
+</view>

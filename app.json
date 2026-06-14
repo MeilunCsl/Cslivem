@@ -25,7 +25,8 @@
     "pages/flashcard/flashcard",
     "pages/mood/mood",
     "pages/compress/compress",
-    "pages/text-tool/text-tool"
+    "pages/text-tool/text-tool",
+    "pages/convert/convert"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",
