@@ -23,7 +23,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -31,14 +48,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -58,8 +109,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 }); } catch(e) {}
@@ -67,7 +152,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -75,14 +177,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -102,8 +238,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 }); }, 100);
@@ -115,7 +285,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -123,14 +310,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -150,8 +371,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });
@@ -208,7 +463,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -216,14 +488,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -243,8 +549,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });
@@ -255,7 +595,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -263,14 +620,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -290,8 +681,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });
@@ -304,7 +729,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -312,14 +754,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -339,8 +815,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });
@@ -351,7 +861,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -359,14 +886,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -386,8 +947,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });
@@ -398,7 +993,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -406,14 +1018,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -433,8 +1079,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });
@@ -443,7 +1123,24 @@ Page({
 
   loadMore: function() {
     if (!this.data.hasMore || this.data.loadingMore) return;
-    this.setData({ loadingMore: true });
+    this.setData({ loadingMore: true 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     var self = this;
     var noteModule = require('../../modules/note/public');
     var page = self.data.currentPage + 1;
@@ -451,14 +1148,48 @@ Page({
     var allNotes = noteModule.getRecentNotes(page * limit);
     var newNotes = allNotes.slice((page - 1) * limit, page * limit);
     if (newNotes.length < limit) {
-      self.setData({ hasMore: false });
+      self.setData({ hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }
     setTimeout(function() {
       self.setData({
         notes: self.data.notes.concat(newNotes),
         currentPage: page,
         loadingMore: false
-      });
+      
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 200);
   },
 
@@ -478,8 +1209,42 @@ Page({
       }
       var noteModule = require('../../modules/note/public');
       var results = noteModule.searchNotes(query);
-      self.setData({ notes: results.slice(0, 20), hasMore: false });
+      self.setData({ notes: results.slice(0, 20), hasMore: false 
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
+  },
+
+});
     }, 300);
+  },
+
+
+
+  onShowTemplates: function() {
+    var noteModule = require('../../modules/note/public');
+    var templates = noteModule.getTemplates();
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    wx.showActionSheet({
+      itemList: names,
+      success: function(res) {
+        var template = templates[res.tapIndex];
+        if (template) {
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+        }
+      }
+    });
   },
 
 });

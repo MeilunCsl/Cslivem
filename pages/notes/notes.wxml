@@ -53,5 +53,6 @@
       <text class="no-more-text">没有更多了</text>
     </view>
 
+    <view class="template-btn" bindtap="onShowTemplates" hover-class="btn-press"><text class="template-icon">+</text><text class="template-label">模板</text></view>
   <custom-tabbar selected="{{2}}" />
 </view>

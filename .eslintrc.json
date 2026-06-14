@@ -1,0 +1,72 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "globals": {
+    "wx": "readonly",
+    "App": "readonly",
+    "Page": "readonly",
+    "Component": "readonly",
+    "getApp": "readonly",
+    "getCurrentPages": "readonly"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error",
+    "no-restricted-imports": ["error", {
+      "patterns": [
+        {
+          "group": ["../pages/*"],
+          "message": "Modules must not import from pages. Use miniprogram/ or modules/ instead."
+        },
+        {
+          "group": ["../../pages/*"],
+          "message": "Modules must not import from pages. Use miniprogram/ or modules/ instead."
+        }
+      ]
+    }],
+    "no-restricted-properties": ["error", {
+      "object": "wx",
+      "property": "request",
+      "message": "Use miniprogram/ai-gateway for AI requests. Use miniprogram/ecs-adapter for sync."
+    }]
+  },
+  "overrides": [
+    {
+      "files": ["modules/**/*.js"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": [
+            {
+              "group": ["../pages/*", "../../pages/*"],
+              "message": "MODULE BOUNDARY: modules/ must not import from pages/"
+            },
+            {
+              "group": ["../components/*", "../../components/*"],
+              "message": "MODULE BOUNDARY: modules/ must not import from components/"
+            }
+          ]
+        }]
+      }
+    },
+    {
+      "files": ["pages/**/*.js"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": [
+            {
+              "group": ["../modules/*/internal*", "../../modules/*/internal*"],
+              "message": "PAGE BOUNDARY: pages/ must only use modules/*/public.js"
+            },
+            {
+              "group": ["../modules/*/model*", "../modules/*/repository*", "../modules/*/service*"],
+              "message": "PAGE BOUNDARY: pages/ must only use modules/*/public.js"
+            }
+          ]
+        }]
+      }
+    }
+  ]
+}
