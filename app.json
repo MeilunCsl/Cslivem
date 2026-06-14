@@ -20,7 +20,8 @@
     "pages/scanner/scanner",
     "pages/habit/habit",
     "pages/pomodoro/pomodoro",
-    "pages/countdown/countdown"
+    "pages/countdown/countdown",
+    "pages/food/food"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",

@@ -1,0 +1,47 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">饮食记录</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="summary-card">
+      <view class="summary-main">
+        <text class="summary-cal">{{summary.totalCalories || 0}}</text>
+        <text class="summary-unit">千卡</text>
+      </view>
+      <view class="summary-meals">
+        <view class="meal-stat"><text class="meal-val">{{summary.byMeal.breakfast || 0}}</text><text class="meal-label">早餐</text></view>
+        <view class="meal-stat"><text class="meal-val">{{summary.byMeal.lunch || 0}}</text><text class="meal-label">午餐</text></view>
+        <view class="meal-stat"><text class="meal-val">{{summary.byMeal.dinner || 0}}</text><text class="meal-label">晚餐</text></view>
+        <view class="meal-stat"><text class="meal-val">{{summary.byMeal.snack || 0}}</text><text class="meal-label">加餐</text></view>
+      </view>
+    </view>
+    <view class="week-bar"><text class="week-text">本周平均 {{weekSummary.avgCalories || 0}} 千卡/天 · {{weekSummary.count || 0}} 条记录</text></view>
+    <view class="meal-selector">
+      <view class="meal-tab {{selectedMeal === item.id ? 'meal-active' : ''}}" wx:for="{{meals}}" wx:key="id" bindtap="onSelectMeal" data-meal="{{item.id}}"><text>{{item.name}}</text></view>
+    </view>
+    <view class="section">
+      <text class="section-title">快速记录</text>
+      <view class="preset-grid">
+        <view class="preset-item" wx:for="{{presets}}" wx:key="name" bindtap="onPresetTap" data-index="{{index}}" hover-class="preset-press">
+          <text class="preset-name">{{item.name}}</text><text class="preset-cal">{{item.calories}}卡</text>
+        </view>
+      </view>
+    </view>
+    <view class="add-btn" bindtap="toggleAdd" hover-class="btn-press"><text>＋ 自定义记录</text></view>
+    <view class="add-form" wx:if="{{showAdd}}">
+      <input class="form-input" placeholder="食物名称" value="{{newName}}" bindinput="onNameInput" />
+      <input class="form-input" placeholder="卡路里" type="number" value="{{newCalories}}" bindinput="onCaloriesInput" />
+      <input class="form-input" placeholder="备注" value="{{newNote}}" bindinput="onNoteInput" />
+      <view class="submit-btn" bindtap="onAddRecord" hover-class="btn-press">记录</view>
+    </view>
+    <view class="section" wx:if="{{summary.records.length > 0}}">
+      <text class="section-title">今日记录</text>
+      <view class="record-item" wx:for="{{summary.records}}" wx:key="id">
+        <view class="record-info"><text class="record-name">{{item.name}}</text><text class="record-time">{{item.time}}</text></view>
+        <text class="record-cal">{{item.calories}}卡</text>
+        <view class="record-del" catchtap="onDeleteRecord" data-id="{{item.id}}">×</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
