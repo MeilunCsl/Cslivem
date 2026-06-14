@@ -24,12 +24,29 @@ Page({
   onLoad: function(options) {
     try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 }); } catch(e) {}
     var noteId = options.id || '';
+    var templateId = options.template || '';
     this.setData({ noteId: noteId, isNew: !noteId });
     if (noteId) { this.loadNote(noteId); }
+    else if (templateId) { this.loadTemplate(templateId); }
     var self = this;
     setTimeout(function() { self.setData({ ready: true }); }, 100);
   },
 
+
+
+  loadTemplate: function(templateId) {
+    var noteModule = require('../../modules/note/public');
+    var template = noteModule.getTemplateById(templateId);
+    if (template) {
+      var now = new Date();
+      var dateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      this.setData({
+        title: template.title + dateStr,
+        content: template.content,
+        isNew: true
+      });
+    }
+  },
   loadNote: function(id) {
     var note = noteModule.getRecentNotes(100);
     for (var i = 0; i < note.length; i++) {
