@@ -447,3 +447,33 @@
 ---
 
 *v1.7.0 验收通过 — 工具层完成，可进入下一阶段开发。*
+
+## v1.8.0 — Lifestyle Modules (2026-06-14)
+
+**验收人**: cansen (auto-verify)
+
+### Habit Module
+- [x] 4 module files (manifest, model, repository, public)
+- [x] 4 page files (js, json, wxml, wxss)
+- [x] All BOM clean, braces balanced, tags balanced
+- [x] Registered in app.json, app.js, tools.js
+
+### Pomodoro Module
+- [x] 2 module files (manifest, public)
+- [x] 4 page files (js, json, wxml, wxss)
+- [x] All BOM clean, braces balanced, tags balanced
+- [x] Registered in app.json, app.js, tools.js
+
+### Countdown Module
+- [x] 2 module files (manifest, public)
+- [x] 4 page files (js, json, wxml, wxss)
+- [x] All BOM clean, braces balanced, tags balanced
+- [x] Registered in app.json, app.js, tools.js
+
+### Overall Stats
+- [x] 21 pages, 10 modules, 4 components
+- [x] All commits pushed to GitHub
+
+---
+
+*v1.8.0 验收通过 — 生活工具模块完成。*
