@@ -23,7 +23,8 @@
     "pages/countdown/countdown",
     "pages/food/food",
     "pages/flashcard/flashcard",
-    "pages/mood/mood"
+    "pages/mood/mood",
+    "pages/compress/compress"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",
