@@ -1,26 +1,66 @@
 <view class="page">
   <view class="nav-bar">
-    <view class="nav-back" bindtap="onBack">&#x2039;</view>
+    <view class="nav-back" bindtap="onBack">‹</view>
     <view class="nav-title">预览入库</view>
   </view>
   <view class="content">
-    <view class="section" wx:if="{{!loading}}">
-      <text class="section-title">将生成 {{preview.nodes.length}} 个节点</text>
+    <!-- Loading -->
+    <view class="loading" wx:if="{{loading}}">
+      <text class="loading-text">正在分析对话...</text>
+    </view>
+
+    <!-- Node Preview -->
+    <view class="section" wx:if="{{!loading && preview.nodes.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">知识节点 ({{selectedCount}}/{{preview.nodes.length}})</text>
+      </view>
       <view class="node-list">
-        <view class="node-item" wx:for="{{preview.nodes}}" wx:key="label">
-          <text class="node-type">{{item.type}}</text>
-          <text class="node-label">{{item.label}}</text>
+        <view class="node-item {{item.selected ? 'node-selected' : 'node-deselected'}}" 
+              wx:for="{{preview.nodes}}" wx:key="label" bindtap="toggleNode" data-index="{{index}}">
+          <view class="node-check">
+            <text class="check-icon">{{item.selected ? '✓' : ''}}</text>
+          </view>
+          <view class="node-info">
+            <text class="node-type type-{{item.type}}">{{item.type}}</text>
+            <text class="node-label">{{item.label}}</text>
+            <text class="node-dup" wx:if="{{item.isDuplicate}}">⚠ 已存在</text>
+          </view>
         </view>
       </view>
     </view>
-    <view class="section" wx:if="{{!loading}}">
-      <text class="section-title">将生成 {{preview.edges.length}} 条关联</text>
+
+    <!-- Edge Preview -->
+    <view class="section" wx:if="{{!loading && preview.edges.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">关联关系 ({{preview.edges.length}})</text>
+      </view>
+      <view class="edge-list">
+        <view class="edge-item" wx:for="{{preview.edges}}" wx:key="index">
+          <text class="edge-source">{{item.source}}</text>
+          <text class="edge-arrow"> → </text>
+          <text class="edge-target">{{item.target}}</text>
+          <text class="edge-type">{{item.type}}</text>
+        </view>
+      </view>
     </view>
-    <view class="confirm-btn" bindtap="onConfirm" wx:if="{{!preview.ingested}}">
-      <text>确认入库</text>
+
+    <!-- Empty State -->
+    <view class="empty" wx:if="{{!loading && preview.nodes.length === 0}}">
+      <text class="empty-icon">💭</text>
+      <text class="empty-text">未找到可提取的知识点</text>
     </view>
+
+    <!-- Actions -->
+    <view class="actions" wx:if="{{!loading && preview.nodes.length > 0 && !preview.ingested}}">
+      <view class="confirm-btn {{selectedCount === 0 ? 'btn-disabled' : ''}}" bindtap="onConfirm">
+        <text>确认入库 ({{selectedCount}} 个节点)</text>
+      </view>
+    </view>
+
+    <!-- Ingested -->
     <view class="ingested-info" wx:if="{{preview.ingested}}">
-      <text>已入库</text>
+      <text class="ingested-icon">✅</text>
+      <text class="ingested-text">已入库</text>
     </view>
   </view>
 </view>
