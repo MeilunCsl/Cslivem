@@ -36,8 +36,16 @@ function packageLocalData() {
   var ledgerAccounts = localStorage.getJSON(keys.LEDGER_ACCOUNTS, []);
   var ledgerTransactions = localStorage.getJSON(keys.LEDGER_TRANSACTIONS, []);
 
+  // New modules (v1.9.0+)
+  var habits = localStorage.getJSON('csl_habits', []);
+  var habitCheckins = localStorage.getJSON('csl_habit_checkins', []);
+  var foodRecords = localStorage.getJSON('csl_food_records', []);
+  var countdowns = localStorage.getJSON('csl_countdowns', []);
+  var pomodoroSessions = localStorage.getJSON('csl_pomodoro_sessions', []);
+  var conversations = localStorage.getJSON('csl_conversations', []);
+
   return {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     graph: {
       nodes: graph.nodes || {},
@@ -53,7 +61,13 @@ function packageLocalData() {
     ledger: {
       accounts: ledgerAccounts,
       transactions: ledgerTransactions
-    }
+    },
+    habits: habits,
+    habitCheckins: habitCheckins,
+    foodRecords: foodRecords,
+    countdowns: countdowns,
+    pomodoroSessions: pomodoroSessions,
+    conversations: conversations
   };
 }
 
@@ -62,7 +76,7 @@ function importDataToStore(data) {
     return { success: false, error: 'Invalid data format' };
   }
 
-  var imported = { graph: 0, notes: 0, calendar: 0, ledger: 0 };
+  var imported = { graph: 0, notes: 0, calendar: 0, ledger: 0, habits: 0, food: 0, countdowns: 0, pomodoro: 0, conversations: 0 };
 
   // Import graph
   if (data.graph) {
