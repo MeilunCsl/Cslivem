@@ -1,0 +1,26 @@
+<view class="page">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">&#x2039;</view>
+    <view class="nav-title">预览入库</view>
+  </view>
+  <view class="content">
+    <view class="section" wx:if="{{!loading}}">
+      <text class="section-title">将生成 {{preview.nodes.length}} 个节点</text>
+      <view class="node-list">
+        <view class="node-item" wx:for="{{preview.nodes}}" wx:key="label">
+          <text class="node-type">{{item.type}}</text>
+          <text class="node-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="section" wx:if="{{!loading}}">
+      <text class="section-title">将生成 {{preview.edges.length}} 条关联</text>
+    </view>
+    <view class="confirm-btn" bindtap="onConfirm" wx:if="{{!preview.ingested}}">
+      <text>确认入库</text>
+    </view>
+    <view class="ingested-info" wx:if="{{preview.ingested}}">
+      <text>已入库</text>
+    </view>
+  </view>
+</view>

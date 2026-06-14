@@ -306,7 +306,7 @@ Page({
           wx.setClipboardData({ data: all });
           wx.showToast({ title: '\u5df2\u590d\u5236', icon: 'success' });
         } else if (res.tapIndex === 2) {
-          wx.showToast({ title: '\u56fe\u8c31\u529f\u80fd\u5f00\u53d1\u4e2d', icon: 'none' });
+          wx.navigateTo({ url: '/pages/graph-ingest/graph-ingest?id=' + self.data.conversationId });
         }
       }
     });

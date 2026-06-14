@@ -13,7 +13,8 @@
     "pages/ai-chat/ai-chat",
     "pages/graph-view/graph-view",
     "pages/graph-debug/graph-debug",
-    "pages/settings/settings"
+    "pages/settings/settings",
+    "pages/graph-ingest/graph-ingest"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",
