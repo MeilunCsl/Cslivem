@@ -61,9 +61,9 @@ Page({
       var sys = wx.getSystemInfoSync();
       this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     } catch (e) {}
-    this.loadConfig();
-    this.loadStats();
-    this.loadSyncStatus();
+    try { this.loadConfig(); } catch (e) { console.warn('[Settings] loadConfig error:', e); }
+    try { this.loadStats(); } catch (e) { console.warn('[Settings] loadStats error:', e); }
+    try { this.loadSyncStatus(); } catch (e) { console.warn('[Settings] loadSyncStatus error:', e); }
     var self = this;
     setTimeout(function() { self.setData({ ready: true }); }, 100);
   },

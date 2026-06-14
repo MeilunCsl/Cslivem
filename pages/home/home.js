@@ -10,10 +10,10 @@ Page({
     ready: false,
     isSending: false,
     suggestions: [
-      { icon: '\u2728', text: '记一下灵感' },
-      { icon: '\ud83d\udcda', text: '整理本周笔记' },
-      { icon: '\ud83d\udd0d', text: '记一下灵感' },
-      { icon: '\ud83e\udde0', text: 'AI 总结最近内容' }
+      { icon: '✨', text: '记一下灵感' },
+      { icon: '📚', text: '整理本周笔记' },
+      { icon: '🔍', text: '记一下灵感' },
+      { icon: '🧠', text: 'AI 总结最近内容' }
     ]
   },
 
@@ -64,7 +64,7 @@ Page({
     var text = e.currentTarget.dataset.text;
     wx.vibrateShort({ type: 'light' }).catch(function() {});
     // Check if it's a search-type suggestion
-    if (text.indexOf('\u641c\u7d22') >= 0 || text.indexOf('\u6574\u7406') >= 0) {
+    if (text.indexOf('搜索') >= 0 || text.indexOf('整理') >= 0) {
       wx.navigateTo({ url: '/pages/search/search?query=' + encodeURIComponent(text) });
     } else {
       wx.navigateTo({ url: '/pages/ai-chat/ai-chat?query=' + encodeURIComponent(text) });

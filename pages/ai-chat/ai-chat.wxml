@@ -4,9 +4,9 @@
 
   <!-- Header -->
   <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
-    <view class="back-btn" bindtap="onBack" hover-class="btn-press">\u2190</view>
+    <view class="back-btn" bindtap="onBack" hover-class="btn-press">←</view>
     <text class="header-title">Cslivem AI</text>
-    <view class="clear-btn" bindtap="onClear" hover-class="btn-press">\u6e05\u7a7a</view>
+    <view class="clear-btn" bindtap="onClear" hover-class="btn-press">清空</view>
   </view>
 
   <!-- Messages -->
@@ -17,8 +17,8 @@
         <view class="welcome-icon-wrap">
           <image class="welcome-logo" src="/assets/icons/cslivem-mark-256.png" mode="aspectFit" />
         </view>
-        <text class="welcome-title">Cslivem AI \u52a9\u624b</text>
-        <text class="welcome-desc">\u6709\u4ec0\u4e48\u53ef\u4ee5\u5e2e\u4f60\u7684\uff1f</text>
+        <text class="welcome-title">Cslivem AI 助手</text>
+        <text class="welcome-desc">有什么可以帮你的？</text>
 
         <!-- Quick Suggestions -->
         <view class="welcome-suggestions">
@@ -45,7 +45,7 @@
         <view class="msg-bubble {{item.role}}">
           <text class="msg-content">{{item.content}}</text>
           <view class="msg-footer">
-            <text class="msg-meta">{{item.time}} {{item.mode === 'local' ? '\ud83d\udce1' : ''}}</text>
+            <text class="msg-meta">{{item.time}} {{item.mode === 'local' ? '📡' : ''}}</text>
             <view
               class="msg-save-btn"
               wx:if="{{item.role === 'assistant' && item.canSave}}"
@@ -53,7 +53,7 @@
               data-content="{{item.content}}"
               hover-class="btn-press"
             >
-              <text class="msg-save-text">\ud83d\udcbe \u4fdd\u5b58</text>
+              <text class="msg-save-text">💾 保存</text>
             </view>
           </view>
         </view>
@@ -76,7 +76,7 @@
   <view class="input-bar">
     <input
       class="chat-input"
-      placeholder="\u8f93\u5165\u4f60\u7684\u95ee\u9898..."
+      placeholder="输入你的问题..."
       value="{{inputValue}}"
       bindinput="onInput"
       bindconfirm="onSend"
@@ -89,7 +89,7 @@
       bindtap="onSend"
       hover-class="send-press"
     >
-      <text class="send-icon">\u2192</text>
+      <text class="send-icon">→</text>
     </view>
   </view>
 </view>
