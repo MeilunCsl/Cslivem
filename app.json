@@ -19,7 +19,8 @@
     "pages/graph-ingest/graph-ingest",
     "pages/scanner/scanner",
     "pages/habit/habit",
-    "pages/pomodoro/pomodoro"
+    "pages/pomodoro/pomodoro",
+    "pages/countdown/countdown"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",

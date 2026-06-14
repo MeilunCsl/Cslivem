@@ -1,0 +1,51 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">倒数日</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="cd-list">
+      <view class="cd-card" wx:for="{{items}}" wx:key="id" style="border-left: 6rpx solid {{item.color}};">
+        <view class="cd-left">
+          <text class="cd-icon">{{item.icon}}</text>
+          <text class="cd-title">{{item.title}}</text>
+          <text class="cd-date">{{item.date}}</text>
+        </view>
+        <view class="cd-right">
+          <text class="cd-days {{item.isToday ? 'cd-today' : item.isPast ? 'cd-past' : 'cd-future'}}">{{item.isToday ? '今天' : item.isPast ? Math.abs(item.daysLeft) + '天前' : item.daysLeft + '天'}}</text>
+          <text class="cd-label">{{item.isPast ? '已过去' : item.isToday ? '就是今天' : '剩余'}}</text>
+        </view>
+        <view class="cd-delete" catchtap="onDelete" data-id="{{item.id}}">×</view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{items.length === 0}}">
+      <text class="empty-icon">⏳</text>
+      <text class="empty-text">还没有倒数日</text>
+    </view>
+
+    <view class="create-btn" bindtap="toggleCreate" hover-class="btn-press">
+      <text>＋ 新建倒数日</text>
+    </view>
+
+    <view class="create-form" wx:if="{{showCreate}}">
+      <input class="form-input" placeholder="名称" value="{{newTitle}}" bindinput="onTitleInput" />
+      <picker mode="date" value="{{newDate}}" bindchange="onDateChange">
+        <view class="form-input form-picker">日期: {{newDate}}</view>
+      </picker>
+      <view class="form-section">
+        <text class="form-label">图标</text>
+        <view class="icon-row">
+          <view class="icon-opt {{selectedIcon === item ? 'icon-sel' : ''}}" wx:for="{{icons}}" wx:key="*this" bindtap="onSelectIcon" data-icon="{{item}}">{{item}}</view>
+        </view>
+      </view>
+      <view class="form-section">
+        <text class="form-label">颜色</text>
+        <view class="color-row">
+          <view class="color-opt {{selectedColor === item ? 'color-sel' : ''}}" wx:for="{{colors}}" wx:key="*this" style="background:{{item}}" bindtap="onSelectColor" data-color="{{item}}"></view>
+        </view>
+      </view>
+      <view class="submit-btn" bindtap="onCreate" hover-class="btn-press">创建</view>
+    </view>
+  </scroll-view>
+</view>
