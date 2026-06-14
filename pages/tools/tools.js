@@ -72,6 +72,15 @@ Page({
       'tool-pdf': '/pages/pdf/pdf',
       'tool-ocr': '/pages/ocr/ocr',
       'tool-scanner': '/pages/scanner/scanner'
+      'tool-compress': '/pages/compress/compress',
+      'tool-text': '/pages/text-tool/text-tool',
+      'tool-convert': '/pages/convert/convert',
+      'habit': '/pages/habit/habit',
+      'pomodoro': '/pages/pomodoro/pomodoro',
+      'countdown': '/pages/countdown/countdown',
+      'food': '/pages/food/food',
+      'flashcard': '/pages/flashcard/flashcard',
+      'mood': '/pages/mood/mood'
     };
     if (routes[id]) {
       wx.navigateTo({ url: routes[id] });
