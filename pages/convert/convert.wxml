@@ -21,7 +21,7 @@
       <view class="swap-btn" bindtap="onSwap" hover-class="btn-press">⇅</view>
 
       <view class="convert-row">
-        <view class="convert-result">{{result || ‘’}}</view>
+        <view class="convert-result">{{result || ''}}</view>
         <picker range="{{units}}" range-key="name" bindchange="onToChange">
           <view class="unit-btn">{{units[1].name}} ▼</view>
         </picker>
