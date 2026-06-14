@@ -30,3 +30,5 @@ design-tokens.css
 # 备份文件
 *.bak
 *.bak.*
+# Old plans
+docs/superpowers/plans/2026-06-14-ai-knowledge-graph.md

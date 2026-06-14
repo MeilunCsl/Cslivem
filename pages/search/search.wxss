@@ -9,7 +9,9 @@
 
 .search-bar {
   display: flex; align-items: center; gap: 16rpx;
-  padding: 16rpx var(--csl-page-x); background: var(--color-card);
+  padding: 16rpx var(--csl-page-x);
+  padding-right: calc(var(--csl-page-x) + 180rpx);
+  background: var(--color-card);
   border-bottom: 1rpx solid var(--color-divider);
 }
 .back-btn {
