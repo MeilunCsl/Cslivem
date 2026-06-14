@@ -1,0 +1,35 @@
+<!-- pages/graph-view/graph-view.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+
+  <!-- Header -->
+  <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+    <view class="back-btn" bindtap="onBack" hover-class="btn-press">←</view>
+    <text class="header-title">知识图谱</text>
+    <view class="stats">
+      <text class="stat">{{nodeCount}} 节点</text>
+      <text class="stat">{{edgeCount}} 边</text>
+    </view>
+  </view>
+
+  <!-- Canvas -->
+  <canvas
+    id="graphCanvas"
+    type="2d"
+    class="graph-canvas"
+    bindtouchstart="onTouchStart"
+    bindtouchmove="onTouchMove"
+    bindtouchend="onTouchEnd"
+  />
+
+  <!-- Selected Node Info -->
+  <view class="node-info {{selectedNode ? 'show' : ''}}" wx:if="{{selectedNode}}">
+    <view class="node-info-header">
+      <text class="node-label">{{selectedNode.label}}</text>
+      <text class="node-type">{{selectedNode.type}}</text>
+    </view>
+    <view class="node-action" bindtap="onNodeTap" hover-class="action-press" wx:if="{{selectedNode.refId}}">
+      <text>查看笔记 →</text>
+    </view>
+  </view>
+</view>
