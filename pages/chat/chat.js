@@ -50,7 +50,7 @@ Page({
 
   loadConversation: function(id) {
     var conv = conversationStore.getConversation(id);
-    var msgs = conversationStore.getMessages(id);
+    var msgs = conversationStore.getMessages(id, { limit: 100 });
     if (conv) {
       var grouped = this.groupByTime(msgs);
       this.setData({
@@ -212,9 +212,10 @@ Page({
 
   scrollToBottom: function() {
     var self = this;
-    setTimeout(function() {
+    if (self._scrollTimer) clearTimeout(self._scrollTimer);
+    self._scrollTimer = setTimeout(function() {
       wx.pageScrollTo({ scrollTop: 99999, duration: 200 });
-    }, 150);
+    }, 200);
   },
 
   onMessageLongPress: function(e) {

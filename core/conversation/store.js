@@ -7,8 +7,16 @@ var types = require('./types');
 var CONVERSATIONS_KEY = 'core_conversations';
 var MESSAGES_KEY = 'core_messages';
 
-function getAllConversations() {
-  return localStorage.getJSON(CONVERSATIONS_KEY, []);
+function getAllConversations(opts) {
+  opts = opts || {};
+  var list = localStorage.getJSON(CONVERSATIONS_KEY, []);
+  var limit = opts.limit || 50;
+  var offset = opts.offset || 0;
+  return list.slice(offset, offset + limit);
+}
+
+function getConversationCount() {
+  return localStorage.getJSON(CONVERSATIONS_KEY, []).length;
 }
 
 function saveAllConversations(list) {
@@ -85,10 +93,23 @@ function saveAllMessages(list) {
   localStorage.setJSON(MESSAGES_KEY, list);
 }
 
-function getMessages(conversationId) {
+function getMessages(conversationId, opts) {
+  opts = opts || {};
   var msgs = getAllMessages();
-  return msgs.filter(function(m) { return m.conversationId === conversationId; })
+  var filtered = msgs.filter(function(m) { return m.conversationId === conversationId; })
     .sort(function(a, b) { return a.createdAt - b.createdAt; });
+  var limit = opts.limit || 50;
+  var offset = opts.offset || 0;
+  return filtered.slice(offset, offset + limit);
+}
+
+function getMessageCount(conversationId) {
+  var msgs = getAllMessages();
+  var count = 0;
+  for (var i = 0; i < msgs.length; i++) {
+    if (msgs[i].conversationId === conversationId) count++;
+  }
+  return count;
 }
 
 function addMessage(opts) {
@@ -107,21 +128,19 @@ function addMessage(opts) {
   return msg;
 }
 
-function getMessageCount(conversationId) {
-  var msgs = getAllMessages();
-  var count = 0;
-  for (var i = 0; i < msgs.length; i++) {
-    if (msgs[i].conversationId === conversationId) count++;
-  }
-  return count;
-}
+
 
 function getStats() {
-  var convs = getAllConversations();
-  var msgs = getAllMessages();
+  var convs = localStorage.getJSON(CONVERSATIONS_KEY, []);
+  var msgs = localStorage.getJSON(MESSAGES_KEY, []);
+  // Estimate storage size
+  var convSize = JSON.stringify(convs).length;
+  var msgSize = JSON.stringify(msgs).length;
+  var totalKB = Math.round((convSize + msgSize) / 1024);
   return {
     conversations: convs.length,
-    messages: msgs.length
+    messages: msgs.length,
+    storageKB: totalKB
   };
 }
 

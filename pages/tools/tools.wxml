@@ -49,6 +49,30 @@
             <text class="coming-name">{{item.name}}</text>
           </view>
         </view>
+
+      <view class="section anim-fade anim-d2" wx:if="{{storageInfo}}">
+        <view class="section-header">
+          <text class="section-title">存储统计</text>
+        </view>
+        <view class="storage-grid">
+          <view class="storage-item">
+            <text class="storage-value">{{storageInfo.conversations}}</text>
+            <text class="storage-label">对话</text>
+          </view>
+          <view class="storage-item">
+            <text class="storage-value">{{storageInfo.messages}}</text>
+            <text class="storage-label">消息</text>
+          </view>
+          <view class="storage-item">
+            <text class="storage-value">{{storageInfo.assets}}</text>
+            <text class="storage-label">附件</text>
+          </view>
+          <view class="storage-item">
+            <text class="storage-value">{{storageInfo.storageKB}}KB</text>
+            <text class="storage-label">占用</text>
+          </view>
+        </view>
+      </view>
       </view>
     </view>
   </scroll-view>

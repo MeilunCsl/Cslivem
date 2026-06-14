@@ -54,3 +54,9 @@
 .settings-name { font-size: 30rpx; font-weight: 600; color: var(--color-text); margin-bottom: 6rpx; }
 .settings-desc { font-size: 22rpx; color: var(--color-text-secondary); }
 .settings-arrow { font-size: 32rpx; color: #D0D5DD; margin-left: 16rpx; }
+
+/* Storage Stats */
+.storage-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16rpx; }
+.storage-item { display: flex; flex-direction: column; align-items: center; padding: 20rpx; background: var(--csl-surface-muted); border-radius: 16rpx; }
+.storage-value { font-size: 36rpx; font-weight: 700; color: var(--color-primary); }
+.storage-label { font-size: 22rpx; color: var(--color-text-secondary); margin-top: 6rpx; }

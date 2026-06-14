@@ -30,6 +30,20 @@ Page({
   },
 
   loadTools: function() {
+    // Load storage stats
+    var convStore = require('../../core/conversation/store');
+    var assetStore = require('../../core/assets/local-asset-store');
+    var convStats = convStore.getStats();
+    var assetStats = assetStore.getStats();
+    this.setData({
+      storageInfo: {
+        conversations: convStats.conversations,
+        messages: convStats.messages,
+        assets: assetStats.count,
+        storageKB: convStats.storageKB || 0
+      }
+    });
+
     var all = toolRegistry.getEnabled();
     var tools = all.map(function(t) {
       return {
