@@ -44,6 +44,27 @@
         </view>
       </view>
 
+
+    <!-- Daily Dashboard -->
+    <view class="dashboard anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{dashboard.habits}}">
+      <view class="dash-item" bindtap="onDashTap" data-url="/pages/habit/habit">
+        <text class="dash-val">{{dashboard.habits.done}}/{{dashboard.habits.total}}</text>
+        <text class="dash-label">习惯</text>
+      </view>
+      <view class="dash-item" bindtap="onDashTap" data-url="/pages/flashcard/flashcard">
+        <text class="dash-val">{{dashboard.flashcards.due}}</text>
+        <text class="dash-label">待复习</text>
+      </view>
+      <view class="dash-item" bindtap="onDashTap" data-url="/pages/mood/mood">
+        <text class="dash-val">{{dashboard.mood > 0 ? '☺' : '-'}}</text>
+        <text class="dash-label">心情</text>
+      </view>
+      <view class="dash-item" bindtap="onDashTap" data-url="/pages/food/food">
+        <text class="dash-val">{{dashboard.calories}}</text>
+        <text class="dash-label">卡路里</text>
+      </view>
+    </view>
+
       <!-- Quick Suggestions -->
       <view class="suggestions anim-fade-up anim-d2 {{ready ? 'anim-visible' : ''}}">
         <view

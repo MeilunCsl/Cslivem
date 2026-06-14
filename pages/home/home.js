@@ -9,6 +9,7 @@ Page({
     ready: false,
     isSending: false,
     recentConversations: [],
+    dashboard: {},
     suggestions: [
       { icon: '✨', text: '记一下灵感' },
       { icon: '📚', text: '整理本周笔记' },
@@ -31,6 +32,31 @@ Page({
       this.getTabBar().setData({ selected: 0 });
     }
     this.loadRecentConversations();
+    this.loadDashboard();
+  },
+
+
+  loadDashboard: function() {
+    try {
+      var habitModule = require('../../modules/habit/public');
+      var fcModule = require('../../modules/flashcard/public');
+      var moodModule = require('../../modules/mood/public');
+      var foodModule = require('../../modules/food/public');
+
+      var habitStats = habitModule.getStats();
+      var fcStats = fcModule.getStats();
+      var moodToday = moodModule.getToday();
+      var foodSummary = foodModule.getTodaySummary();
+
+      this.setData({
+        dashboard: {
+          habits: { done: habitStats.todayDone || 0, total: habitStats.totalHabits || 0 },
+          flashcards: { due: fcStats.dueNow || 0, reviewed: fcStats.todayReviews || 0 },
+          mood: moodToday ? moodToday.mood : 0,
+          calories: foodSummary.totalCalories || 0
+        }
+      });
+    } catch(e) {}
   },
 
   loadRecentConversations: function() {
@@ -82,6 +108,11 @@ Page({
     });
     var self = this;
     setTimeout(function() { self.setData({ isSending: false }); }, 500);
+  },
+
+  onDashTap: function(e) {
+    var url = e.currentTarget.dataset.url;
+    if (url) wx.navigateTo({ url: url });
   },
 
   onSuggestionTap: function(e) {
