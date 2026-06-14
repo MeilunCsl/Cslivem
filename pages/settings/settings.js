@@ -12,21 +12,21 @@ Page({
     // AI Provider
     activeProvider: 'mimo',
     providers: [
-      { id: 'mimo', name: 'MiMo (本地)', desc: '小米 MiMo 本地模型' },
-      { id: 'ecs', name: 'ECS 服务端', desc: '阿里云 / 自建服务端' }
+      { id: 'mimo', name: 'Xiaomi MiMo', desc: '小米 MiMo 大模型', endpoint: 'api.mimo.xiaomi.com' },
+      { id: 'dashscope', name: 'DashScope (Qwen)', desc: '阿里云通义千问', endpoint: 'dashscope.aliyuncs.com' },
+      { id: 'deepseek', name: 'DeepSeek', desc: 'DeepSeek 大模型', endpoint: 'api.deepseek.com' },
+      { id: 'openai', name: 'OpenAI', desc: 'GPT-4o / GPT-4o-mini', endpoint: 'api.openai.com' },
+      { id: 'zhipu', name: 'Zhipu AI (GLM)', desc: '智谱 GLM-4 系列', endpoint: 'open.bigmodel.cn' },
+      { id: 'ecs', name: 'ECS 代理', desc: '阿里云 / 自建服务端代理', endpoint: '' }
     ],
 
-    // MiMo Config
-    mimoEnabled: true,
-    mimoEndpoint: 'http://127.0.0.1:11434/v1/chat/completions',
-    mimoApiKey: '',
-    mimoModel: 'mimo',
+    // Provider Config
+    providerEnabled: true,
+    providerEndpoint: '',
+    providerApiKey: '',
+    providerModel: '',
 
     // ECS Config
-    ecsEnabled: false,
-    ecsEndpoint: '',
-    ecsApiKey: '',
-    ecsModel: '',
 
     // Sync Status
     syncStatus: {
@@ -74,16 +74,14 @@ Page({
 
   loadConfig: function() {
     var config = apiConfig.getConfig();
+    var active = config.activeProvider || 'mimo';
+    var providerConfig = config[active] || config.mimo;
     this.setData({
-      activeProvider: config.activeProvider || 'mimo',
-      mimoEnabled: config.mimo.enabled,
-      mimoEndpoint: config.mimo.endpoint,
-      mimoApiKey: config.mimo.apiKey || '',
-      mimoModel: config.mimo.model,
-      ecsEnabled: config.ecs.enabled,
-      ecsEndpoint: config.ecs.endpoint || '',
-      ecsApiKey: config.ecs.apiKey || '',
-      ecsModel: config.ecs.model || ''
+      activeProvider: active,
+      providerEnabled: providerConfig.enabled,
+      providerEndpoint: providerConfig.endpoint || '',
+      providerApiKey: providerConfig.apiKey || '',
+      providerModel: providerConfig.model || ''
     });
   },
 
@@ -113,83 +111,57 @@ Page({
   // ===== Provider Switch =====
   onProviderChange: function(e) {
     var provider = e.currentTarget.dataset.provider;
-    this.setData({ activeProvider: provider });
-    apiConfig.updateProvider('active', { activeProvider: provider });
-    // Actually save the activeProvider
+    var presets = apiConfig.PROVIDER_PRESETS || {};
+    var preset = presets[provider] || {};
     var config = apiConfig.getConfig();
     config.activeProvider = provider;
     apiConfig.saveConfig(config);
-    wx.showToast({ title: '已切换到 ' + provider, icon: 'none' });
+    var providerConfig = config[provider] || {};
+    this.setData({
+      activeProvider: provider,
+      providerEnabled: providerConfig.enabled !== false,
+      providerEndpoint: providerConfig.endpoint || preset.endpoint || '',
+      providerApiKey: providerConfig.apiKey || '',
+      providerModel: providerConfig.model || preset.model || ''
+    });
+    wx.showToast({ title: '已切换到 ' + (preset.name || provider), icon: 'none' });
   },
 
   // ===== MiMo Config =====
-  onMimoEnabledChange: function(e) {
+  onProviderEnabledChange: function(e) {
     var enabled = e.detail.value;
-    this.setData({ mimoEnabled: enabled });
-    apiConfig.updateProvider('mimo', { enabled: enabled });
+    this.setData({ providerEnabled: enabled });
+    apiConfig.updateProvider(this.data.activeProvider, { enabled: enabled });
   },
 
-  onMimoEndpointInput: function(e) {
-    this.setData({ mimoEndpoint: e.detail.value });
+  onProviderEndpointInput: function(e) {
+    this.setData({ providerEndpoint: e.detail.value });
   },
 
-  onMimoEndpointSave: function() {
-    apiConfig.updateProvider('mimo', { endpoint: this.data.mimoEndpoint });
+  onProviderEndpointSave: function() {
+    apiConfig.updateProvider(this.data.activeProvider, { endpoint: this.data.providerEndpoint });
     wx.showToast({ title: '已保存', icon: 'success' });
   },
 
-  onMimoApiKeyInput: function(e) {
-    this.setData({ mimoApiKey: e.detail.value });
+  onProviderApiKeyInput: function(e) {
+    this.setData({ providerApiKey: e.detail.value });
   },
 
-  onMimoApiKeySave: function() {
-    apiConfig.updateProvider('mimo', { apiKey: this.data.mimoApiKey });
+  onProviderApiKeySave: function() {
+    apiConfig.updateProvider(this.data.activeProvider, { apiKey: this.data.providerApiKey });
     wx.showToast({ title: '已保存', icon: 'success' });
   },
 
-  onMimoModelInput: function(e) {
-    this.setData({ mimoModel: e.detail.value });
+  onProviderModelInput: function(e) {
+    this.setData({ providerModel: e.detail.value });
   },
 
-  onMimoModelSave: function() {
-    apiConfig.updateProvider('mimo', { model: this.data.mimoModel });
+  onProviderModelSave: function() {
+    apiConfig.updateProvider(this.data.activeProvider, { model: this.data.providerModel });
     wx.showToast({ title: '已保存', icon: 'success' });
   },
 
-  // ===== ECS Config =====
-  onEcsEnabledChange: function(e) {
-    var enabled = e.detail.value;
-    this.setData({ ecsEnabled: enabled });
-    apiConfig.updateProvider('ecs', { enabled: enabled });
-  },
-
-  onEcsEndpointInput: function(e) {
-    this.setData({ ecsEndpoint: e.detail.value });
-  },
-
-  onEcsEndpointSave: function() {
-    apiConfig.updateProvider('ecs', { endpoint: this.data.ecsEndpoint });
-    wx.showToast({ title: '已保存', icon: 'success' });
-  },
-
-  onEcsApiKeyInput: function(e) {
-    this.setData({ ecsApiKey: e.detail.value });
-  },
-
-  onEcsApiKeySave: function() {
-    apiConfig.updateProvider('ecs', { apiKey: this.data.ecsApiKey });
-    wx.showToast({ title: '已保存', icon: 'success' });
-  },
-
-  onEcsModelInput: function(e) {
-    this.setData({ ecsModel: e.detail.value });
-  },
-
-  onEcsModelSave: function() {
-    apiConfig.updateProvider('ecs', { model: this.data.ecsModel });
-    wx.showToast({ title: '已保存', icon: 'success' });
-  },
-
+  // ===== Test =====
   // ===== Test Connection =====
   onTestConnection: function() {
     var self = this;

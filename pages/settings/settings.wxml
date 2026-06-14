@@ -5,9 +5,15 @@
     <view class="content">
       <view class="section anim-fade-up {{ready ? 'anim-visible' : ''}}">
         <view class="section-title">AI 模型</view>
-        <view class="provider-list">
-          <view class="provider-item {{activeProvider === 'mimo' ? 'provider-active' : ''}}" bindtap="onProviderChange" data-provider="mimo">
-            <view class="provider-radio {{activeProvider === 'mimo' ? 'radio-active' : ''}}"></view>
+                <view class="provider-list">
+          <view class="provider-item {{activeProvider === item.id ? 'provider-active' : ''}}" wx:for="{{providers}}" wx:key="id" bindtap="onProviderChange" data-provider="{{item.id}}">
+            <view class="provider-radio {{activeProvider === item.id ? 'radio-active' : ''}}"></view>
+            <view class="provider-info">
+              <text class="provider-name">{{item.name}}</text>
+              <text class="provider-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </view>
             <view class="provider-info">
               <text class="provider-name">MiMo (本地)</text>
               <text class="provider-desc">小米 MiMo 本地模型，OpenAI 兼容格式</text>
@@ -23,23 +29,23 @@
         </view>
       </view>
 
-      <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider === 'mimo'}}">
-        <view class="section-title">MiMo 配置</view>
+      <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider !== 'ecs'}}">
+        <view class="section-title">提供商配置</view>
         <view class="config-row">
           <text class="config-label">启用</text>
-          <switch checked="{{mimoEnabled}}" bindchange="onMimoEnabledChange" color="#5B4CFF" />
+          <switch checked="{{providerEnabled}}" bindchange="onProviderEnabledChange" color="#5B4CFF" />
         </view>
         <view class="config-row config-input-row">
           <text class="config-label">Endpoint</text>
-          <input class="config-input" value="{{mimoEndpoint}}" bindinput="onMimoEndpointInput" bindblur="onMimoEndpointSave" placeholder="http://127.0.0.1:11434/v1/chat/completions" />
+          <input class="config-input" value="{{providerEndpoint}}" bindinput="onProviderEndpointInput" bindblur="onProviderEndpointSave" placeholder="http://127.0.0.1:11434/v1/chat/completions" />
         </view>
         <view class="config-row config-input-row">
           <text class="config-label">API Key</text>
-          <input class="config-input" value="{{mimoApiKey}}" bindinput="onMimoApiKeyInput" bindblur="onMimoApiKeySave" placeholder="可选" password="true" />
+          <input class="config-input" value="{{providerApiKey}}" bindinput="onProviderApiKeyInput" bindblur="onProviderApiKeySave" placeholder="可选" password="true" />
         </view>
         <view class="config-row config-input-row">
           <text class="config-label">Model</text>
-          <input class="config-input" value="{{mimoModel}}" bindinput="onMimoModelInput" bindblur="onMimoModelSave" placeholder="mimo" />
+          <input class="config-input" value="{{providerModel}}" bindinput="onProviderModelInput" bindblur="onProviderModelSave" placeholder="mimo" />
         </view>
         <view class="action-btn test-btn" bindtap="onTestConnection" hover-class="btn-press">
           <text>{{testingConnection ? '测试中...' : '测试连接'}}</text>
@@ -48,22 +54,22 @@
       </view>
 
       <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider === 'ecs'}}">
-        <view class="section-title">ECS 配置</view>
+        <view class="section-title">ECS 代理配置</view>
         <view class="config-row">
           <text class="config-label">启用</text>
-          <switch checked="{{ecsEnabled}}" bindchange="onEcsEnabledChange" color="#5B4CFF" />
+          <switch checked="{{providerEnabled}}" bindchange="onProviderEnabledChange" color="#5B4CFF" />
         </view>
         <view class="config-row config-input-row">
           <text class="config-label">Endpoint</text>
-          <input class="config-input" value="{{ecsEndpoint}}" bindinput="onEcsEndpointInput" bindblur="onEcsEndpointSave" placeholder="https://your-ecs-server.com/v1/chat/completions" />
+          <input class="config-input" value="{{providerEndpoint}}" bindinput="onProviderEndpointInput" bindblur="onProviderEndpointSave" placeholder="https://your-ecs-server.com/v1/chat/completions" />
         </view>
         <view class="config-row config-input-row">
           <text class="config-label">API Key</text>
-          <input class="config-input" value="{{ecsApiKey}}" bindinput="onEcsApiKeyInput" bindblur="onEcsApiKeySave" placeholder="Bearer Token" password="true" />
+          <input class="config-input" value="{{providerApiKey}}" bindinput="onProviderApiKeyInput" bindblur="onProviderApiKeySave" placeholder="Bearer Token" password="true" />
         </view>
         <view class="config-row config-input-row">
           <text class="config-label">Model</text>
-          <input class="config-input" value="{{ecsModel}}" bindinput="onEcsModelInput" bindblur="onEcsModelSave" placeholder="qwen-plus" />
+          <input class="config-input" value="{{providerModel}}" bindinput="onProviderModelInput" bindblur="onProviderModelSave" placeholder="qwen-plus" />
         </view>
         <view class="action-btn test-btn" bindtap="onTestConnection" hover-class="btn-press">
           <text>{{testingConnection ? '测试中...' : '测试连接'}}</text>
@@ -98,7 +104,41 @@
       </view>
 
       <view class="section anim-fade-up anim-d3 {{ready ? 'anim-visible' : ''}}">
-        <view class="section-title">数据管理</view>
+        
+      <view class="section anim-fade-up anim-d3 {{ready ? 'anim-visible' : ''}}">
+        <view class="section-title">域名白名单配置</view>
+        <view style="font-size: 24rpx; color: #7B8197; line-height: 1.6; margin-bottom: 20rpx;">
+          <text>微信小程序要求所有请求域名必须在管理后台注册。操作步骤：</text>
+        </view>
+        <view style="font-size: 24rpx; color: #3A3F50; line-height: 1.8;">
+          <text>1. 打开微信小程序管理平台 → 开发 → 开发设置 → 服务域名</text>
+        </view>
+        <view style="font-size: 24rpx; color: #3A3F50; line-height: 1.8;">
+          <text>2. 在 request 合法域名中添加以下域名：</text>
+        </view>
+        <view style="margin-top: 12rpx; padding: 16rpx; background: #F7F8FB; border-radius: 12rpx;">
+          <text style="font-size: 22rpx; color: #5B4CFF; font-weight: 600;">MiMo</text>
+          <text style="font-size: 22rpx; color: #7B8197;">  api.mimo.xiaomi.com</text>
+        </view>
+        <view style="margin-top: 8rpx; padding: 16rpx; background: #F7F8FB; border-radius: 12rpx;">
+          <text style="font-size: 22rpx; color: #5B4CFF; font-weight: 600;">DashScope</text>
+          <text style="font-size: 22rpx; color: #7B8197;">  dashscope.aliyuncs.com</text>
+        </view>
+        <view style="margin-top: 8rpx; padding: 16rpx; background: #F7F8FB; border-radius: 12rpx;">
+          <text style="font-size: 22rpx; color: #5B4CFF; font-weight: 600;">DeepSeek</text>
+          <text style="font-size: 22rpx; color: #7B8197;">  api.deepseek.com</text>
+        </view>
+        <view style="margin-top: 8rpx; padding: 16rpx; background: #F7F8FB; border-radius: 12rpx;">
+          <text style="font-size: 22rpx; color: #5B4CFF; font-weight: 600;">OpenAI</text>
+          <text style="font-size: 22rpx; color: #7B8197;">  api.openai.com</text>
+        </view>
+        <view style="margin-top: 8rpx; padding: 16rpx; background: #F7F8FB; border-radius: 12rpx;">
+          <text style="font-size: 22rpx; color: #5B4CFF; font-weight: 600;">Zhipu</text>
+          <text style="font-size: 22rpx; color: #7B8197;">  open.bigmodel.cn</text>
+        </view>
+      </view>
+
+      <view class="section-title">数据管理</view>
         <view class="stats-grid">
           <view class="stat-item">
             <text class="stat-value">{{dataStats.graphNodes}}</text>

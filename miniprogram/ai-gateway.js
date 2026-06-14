@@ -55,11 +55,17 @@ function callOpenAI(messages, options) {
             reject(new Error('Invalid response format'));
           }
         } else {
-          reject(new Error('API error: ' + res.statusCode));
+          var errMsg = (res.data && res.data.error && res.data.error.message) || '';
+          reject(new Error('API error ' + res.statusCode + (errMsg ? ': ' + errMsg : '')));
         }
       },
       fail: function(err) {
-        reject(new Error('Network error: ' + (err.errMsg || 'unknown')));
+        var msg = err.errMsg || 'unknown';
+        if (msg.indexOf('url not in domain') >= 0 || msg.indexOf('not in domain') >= 0) {
+          reject(new Error('Domain not whitelisted. Add this domain in WeChat MP admin -> Settings -> Server Domain.'));
+        } else {
+          reject(new Error('Network error: ' + msg));
+        }
       }
     });
   });
