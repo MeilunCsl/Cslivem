@@ -1,5 +1,6 @@
 // pages/note-editor/note-editor.js
 var noteModule = require('../../modules/note/public');
+var markdown = require('../../utils/markdown');
 var graphQuery = require('../../core/graph/graph-query');
 var types = require('../../core/graph/types');
 
@@ -14,6 +15,8 @@ Page({
     showToolbar: true,
     // Wiki-link suggestions
     showSuggestions: false,
+    previewMode: false,
+    htmlContent: '',
     linkQuery: '',
     suggestions: []
   },
@@ -44,8 +47,27 @@ Page({
   onContentInput: function(e) {
     var value = e.detail.value;
     this.setData({ content: value });
+    this.refreshPreview();
     // Detect [[ trigger for link suggestions
     this._checkLinkTrigger(value);
+  },
+
+
+  togglePreview: function() {
+    var isPreview = !this.data.previewMode;
+    if (isPreview) {
+      var html = markdown.parseMarkdown(this.data.content);
+      this.setData({ previewMode: true, htmlContent: html });
+    } else {
+      this.setData({ previewMode: false, htmlContent: '' });
+    }
+  },
+
+  refreshPreview: function() {
+    if (this.data.previewMode) {
+      var html = markdown.parseMarkdown(this.data.content);
+      this.setData({ htmlContent: html });
+    }
   },
 
   _checkLinkTrigger: function(text) {
@@ -59,7 +81,9 @@ Page({
         return;
       }
     }
-    this.setData({ showSuggestions: false, suggestions: [] });
+    this.setData({ showSuggestions: false,
+    previewMode: false,
+    htmlContent: '', suggestions: [] });
   },
 
   _searchSuggestions: function(query) {
@@ -94,7 +118,9 @@ Page({
     var lastOpen = content.lastIndexOf('[[');
     if (lastOpen >= 0) {
       var newContent = content.substring(0, lastOpen + 2) + label + ']]';
-      this.setData({ content: newContent, showSuggestions: false, suggestions: [] });
+      this.setData({ content: newContent, showSuggestions: false,
+    previewMode: false,
+    htmlContent: '', suggestions: [] });
     }
   },
 
@@ -151,6 +177,7 @@ Page({
             success: function(res) {
               if (res.confirm) {
                 var noteModule = require('../../modules/note/public');
+var markdown = require('../../utils/markdown');
                 tags.forEach(function(tag) {
                   try { noteModule.addTag(self.data.noteId, tag); } catch(e) {}
                 });

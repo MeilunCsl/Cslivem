@@ -19,6 +19,7 @@
     <view class="toolbar-item" bindtap="insertMarkdown" data-type="code" hover-class="press">&lt;/&gt;</view>
     <view class="toolbar-item" bindtap="insertMarkdown" data-type="link" hover-class="press">🔗</view>
     <view class="toolbar-item" bindtap="insertMarkdown" data-type="divider" hover-class="press">—</view>
+    <view class="toolbar-item toolbar-toggle {{previewMode ? 'toolbar-active' : ''}}" bindtap="togglePreview" hover-class="press">○</view>
   </view>
 
   <!-- AI Assist Toolbar -->
@@ -37,7 +38,8 @@
     </view>
   </view>
 
-  <view class="editor-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+  <!-- Edit Mode -->
+  <view class="editor-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}" wx:if="{{!previewMode}}">
     <textarea
       class="editor"
       value="{{content}}"
@@ -47,6 +49,12 @@
       cursor-spacing="120"
     />
   </view>
+
+  <!-- Preview Mode -->
+  <scroll-view scroll-y class="preview-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}" wx:if="{{previewMode}}">
+    <view class="preview-title">{{title || '无标题'}}</view>
+    <rich-text class="preview-content" nodes="{{htmlContent}}" />
+  </scroll-view>
 
   <!-- Wiki-Link Suggestions -->
   <view class="suggestions-panel {{showSuggestions ? 'show' : ''}}" wx:if="{{showSuggestions}}">
