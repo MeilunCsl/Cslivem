@@ -11,3 +11,4 @@
 .node-label { font-size: 26rpx; color: var(--color-text); }
 .confirm-btn { display: flex; align-items: center; justify-content: center; height: 88rpx; background: var(--csl-gradient); border-radius: 44rpx; color: #FFF; font-size: 30rpx; font-weight: 600; margin-top: 32rpx; }
 .ingested-info { text-align: center; padding: 32rpx; color: var(--color-success); font-size: 28rpx; }
+.page { padding-bottom: env(safe-area-inset-bottom); }

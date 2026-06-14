@@ -1,5 +1,5 @@
 /* pages/graph-view/graph-view.wxss */
-.page { height: 100vh; background: #F7F8FB; display: flex; flex-direction: column; }
+.page { height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; }
 
 .header {
   display: flex; align-items: center; gap: 12rpx;

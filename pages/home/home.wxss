@@ -109,7 +109,7 @@
   display: flex;
   align-items: center;
   background: var(--color-card, #FFFFFF);
-  border-radius: var(--csl-radius-input, 96rpx);
+  border-radius: var(--csl-radius-input, 48rpx);
   padding: 12rpx 14rpx 12rpx 36rpx;
   box-shadow: var(--shadow-input, 0 4rpx 24rpx rgba(91, 76, 255, 0.12));
   border: 2rpx solid var(--color-border, #E7EAF0);

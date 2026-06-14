@@ -10,7 +10,7 @@
 .press { opacity: 0.6; transform: scale(0.95); }
 
 .detail-scroll { flex: 1; height: 0; }
-.detail-container { padding: 16rpx 32rpx 200rpx; }
+.detail-container { padding: 16rpx 32rpx calc(200rpx + env(safe-area-inset-bottom)); }
 
 .title-section { margin-bottom: 16rpx; }
 .note-title { font-size: var(--font-size-title-lg); font-weight: 700; color: var(--color-text); line-height: 1.4; }
@@ -32,7 +32,7 @@
 .content-section { min-height: 400rpx; }
 .content-text { font-size: var(--font-size-body); color: var(--color-text); line-height: 1.8; white-space: pre-wrap; }
 .content-editor { font-size: var(--font-size-body); color: var(--color-text); width: 100%; min-height: 400rpx; line-height: 1.8; padding: 16rpx 0; }
-.empty-content { display: flex; align-items: center; justify-content: center; min-height: 200rpx; }
+.empty-content { display: flex; align-items: center; justify-content: center; min-height: calc(200rpx + env(safe-area-inset-bottom)); }
 .empty-hint { font-size: 26rpx; color: var(--color-text-placeholder); }
 
 .save-section { margin-top: 40rpx; }

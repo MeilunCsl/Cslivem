@@ -41,13 +41,10 @@
     </view>
   </scroll-view>
 
-  <view class="fab-graph" bindtap="openGraph" hover-class="fab-press">
-    <text class="fab-graph-icon">🕸</text>
   </view>
-
   <view class="fab-create" bindtap="createNote" hover-class="fab-press">
     <text class="fab-icon">+</text>
   </view>
 
-  <custom-tabbar selected="{{1}}" />
+  <custom-tabbar selected="{{2}}" />
 </view>

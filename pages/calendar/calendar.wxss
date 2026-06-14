@@ -43,7 +43,7 @@ header { padding: 24rpx 0 8rpx; }
 /* Add Button */
 .add-btn { width: 56rpx; height: 56rpx; border-radius: 50%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; }
 .add-btn text { color: #FFFFFF; font-size: 36rpx; font-weight: 300; }
-.add-0ress { transform: scale(0.9); opacity: 0.8; }
+.add-press { transform: scale(0.9); opacity: 0.8; }
 
 /* Create Form */
 .create-form { background: var(--color-card); border-radius: var(--radius-lg); padding: 24rpx; margin-bottom: 20rpx; box-shadow: var(--shadow-card); }

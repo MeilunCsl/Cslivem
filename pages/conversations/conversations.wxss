@@ -39,6 +39,6 @@
 .empty-text { font-size: 30rpx; color: var(--color-text-secondary); margin-bottom: 12rpx; }
 .empty-hint { font-size: 24rpx; color: var(--color-text-placeholder); }
 
-.fab-create { position: fixed; right: 40rpx; bottom: calc(190rpx + env(safe-area-inset-bottom)); width: 96rpx; height: 96rpx; border-radius: 50%; background: linear-gradient(135deg, #5B4CFF 0%, #3A7BFF 52%, #00D4D9 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 8rpx 24rpx rgba(91, 76, 255, 0.3); z-index: 90; transition: transform 0.2s ease; }
+.fab-create { position: fixed; right: 40rpx; bottom: calc(190rpx + env(safe-area-inset-bottom)); width: 96rpx; height: 96rpx; border-radius: 50%; background: var(--csl-gradient); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-fab); z-index: 90; transition: transform 0.2s ease; }
 .fab-press { transform: scale(0.92); }
 .fab-icon { font-size: 48rpx; color: #FFF; font-weight: 300; }

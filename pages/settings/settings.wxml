@@ -3,7 +3,7 @@
   <view style="height: {{statusBarHeight}}px;"></view>
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
     <view class="content">
-      <view class="section anim-fade-up {{ready ? 'anim-visible' : ''}}">
+      <view class="section anim-fade {{ready ? 'anim-show' : ''}}">
         <view class="section-title">AI 模型</view>
         <view class="provider-list">
           <view class="provider-item {{activeProvider === item.id ? 'provider-active' : ''}}" wx:for="{{providers}}" wx:key="id" bindtap="onProviderChange" data-provider="{{item.id}}">
@@ -16,7 +16,7 @@
         </view>
       </view>
 
-      <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider !== 'ecs'}}">
+      <view class="section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{activeProvider !== 'ecs'}}">
         <view class="section-title">提供商配置</view>
         <view class="config-row">
           <text class="config-label">启用</text>
@@ -40,7 +40,7 @@
         <view class="test-result" wx:if="{{testResult}}">{{testResult}}</view>
       </view>
 
-      <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider === 'ecs'}}">
+      <view class="section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{activeProvider === 'ecs'}}">
         <view class="section-title">ECS 代理配置</view>
         <view class="config-row">
           <text class="config-label">启用</text>
@@ -64,7 +64,7 @@
         <view class="test-result" wx:if="{{testResult}}">{{testResult}}</view>
       </view>
 
-      <view class="section anim-fade-up anim-d2 {{ready ? 'anim-visible' : ''}}">
+      <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
         <view class="section-title">同步状态</view>
         <view class="status-grid">
           <view class="status-item">
@@ -90,7 +90,7 @@
         </view>
       </view>
 
-            <view class="section anim-fade-up anim-d3 {{ready ? 'anim-visible' : ''}}">
+            <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
         <view class="section-title">域名白名单配置</view>
         <view style="font-size: 24rpx; color: #7B8197; line-height: 1.6; margin-bottom: 20rpx;">
           <text>微信小程序要求所有请求域名必须在管理后台注册。</text>
@@ -123,7 +123,7 @@
         </view>
       </view>
 
-<view class="section anim-fade-up anim-d3 {{ready ? 'anim-visible' : ''}}">
+<view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
         <view class="section-title">数据管理</view>
         <view class="stats-grid">
           <view class="stat-item">

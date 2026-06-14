@@ -74,3 +74,4 @@
 }
 .empty-icon { font-size: 64rpx; }
 .empty-text { font-size: 28rpx; color: var(--color-text-secondary); }
+.page { padding-bottom: env(safe-area-inset-bottom); }

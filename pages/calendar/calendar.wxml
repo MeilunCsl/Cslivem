@@ -82,5 +82,4 @@
 
     </view>
   </scroll-view>
-  <custom-tabbar selected="{{2}}" />
 </view>

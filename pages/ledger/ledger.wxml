@@ -141,5 +141,4 @@
     <view class="save-btn" bindtap="saveTransaction" hover-class="save-press">保存</view>
   </view>
 
-  <custom-tabbar selected="{{3}}" />
 </view>
