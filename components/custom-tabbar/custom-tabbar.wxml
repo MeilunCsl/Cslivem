@@ -21,6 +21,7 @@
     <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/tools/tools" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 3 ? 'tools-active' : 'tools'}}.png" mode="aspectFit" />
       <text class="tab-text">工具</text>
+      <view class="tab-badge" wx:if="{{badgeCount > 0}}"><text>{{badgeCount > 99 ? '99+' : badgeCount}}</text></view>
     </view>
     <view class="tab-indicator {{indicatorClass}}"></view>
   </view>

@@ -6,13 +6,15 @@ Component({
   data: {
     showPanel: false,
     tabReady: false,
-    indicatorClass: 'pos-0'
+    indicatorClass: 'pos-0',
+    badgeCount: 0
   },
 
   lifetimes: {
     attached() {
       setTimeout(() => { this.setData({ tabReady: true }); }, 200);
       this.updateIndicator(this.data.selected);
+      this.loadBadges();
     }
   },
 
@@ -29,6 +31,17 @@ Component({
       wx.vibrateShort({ type: 'light' }).catch(() => {});
       this.setData({ showPanel: false });
       wx.switchTab({ url });
+    },
+
+    loadBadges() {
+      try {
+        var fcModule = require('../../modules/flashcard/public');
+        var habitModule = require('../../modules/habit/public');
+        var fcStats = fcModule.getStats();
+        var habitStats = habitModule.getStats();
+        var total = (fcStats.dueNow || 0) + Math.max(0, (habitStats.totalHabits || 0) - (habitStats.todayDone || 0));
+        this.setData({ badgeCount: total });
+      } catch(e) {}
     },
 
     updateIndicator(selectedIndex) {
