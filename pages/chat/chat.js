@@ -326,36 +326,65 @@ Page({
     var self = this;
     wx.chooseImage({
       count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
       success: function (res) {
         var filePath = res.tempFilePaths[0];
-        assetStore.add({
-          conversationId: self.data.conversationId,
-          type: 'image',
-          filePath: filePath
+        var convId = self.data.conversationId;
+        // Save asset
+        var asset = assetStore.add({ conversationId: convId, type: 'image', filePath: filePath });
+        // Create user message with image indicator
+        var store = require('../../core/conversation/store');
+        var userMsg = store.addMessage({
+          conversationId: convId,
+          role: 'user',
+          content: '[图片] ' + filePath,
+          type: 'image'
         });
-        wx.showToast({ title: '图片已添加', icon: 'success' });
+        var msgs = store.getMessages(convId);
+        self.setData({
+          messages: msgs,
+          groupedMessages: self.groupByTime(msgs),
+          sending: true
+        });
+        self.scrollToBottom();
+        // Ask AI to analyze the image
+        gateway.ask('用户发送了一张图片，请描述你看到的内容并提供分析。', '你是一个有用的AI助手。用户发送了一张图片。')
+          .then(function (res) {
+            store.addMessage({ conversationId: convId, role: 'assistant', content: res.content || '(无回复)', model: res.model });
+            var updatedMsgs = store.getMessages(convId);
+            self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs), sending: false });
+            self.scrollToBottom();
+          })
+          .catch(function () {
+            store.addMessage({ conversationId: convId, role: 'assistant', content: '图片分析失败，请稍后重试。', isError: true });
+            var updatedMsgs = store.getMessages(convId);
+            self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs), sending: false });
+          });
       }
     });
   },
 
   onStartRecord: function () {
     var self = this;
-    recorder.start();
-    recorder.getRecorder().onStop = function (res) {
-      if (res.tempFilePath) {
-        assetStore.add({
-          conversationId: self.data.conversationId,
-          type: 'voice',
-          filePath: res.tempFilePath
-        });
+    self.setData({ recording: true });
+    recorder.onStop(function (res) {
+      if (res && res.tempFilePath) {
+        var convId = self.data.conversationId;
+        assetStore.add({ conversationId: convId, type: 'voice', filePath: res.tempFilePath });
+        var store = require('../../core/conversation/store');
+        store.addMessage({ conversationId: convId, role: 'user', content: '[语音消息]', type: 'voice' });
+        var msgs = store.getMessages(convId);
+        self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs), recording: false });
+        self.scrollToBottom();
       }
-    };
+    });
+    recorder.start();
     wx.showToast({ title: '录音中...', icon: 'none' });
   },
 
   onStopRecord: function () {
     recorder.stop();
-    wx.showToast({ title: '录音已保存', icon: 'success' });
   },
 
   onBack: function () {
@@ -363,9 +392,7 @@ Page({
   },
 
   onMore: function () {
-    wx.navigateTo({
-      url: '/pages/conversation-settings/conversation-settings?id=' + this.data.conversationId
-    });
+    wx.navigateTo({ url: '/pages/settings/settings' });
   },
 
   // ===== Typing effect =====
