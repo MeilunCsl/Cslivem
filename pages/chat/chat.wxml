@@ -1,54 +1,84 @@
 <!-- pages/chat/chat.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
-  
-  <!-- Nav bar -->
+
   <view class="nav-bar">
-    <view class="nav-back" bindtap="onBack" hover-class="nav-press">‹</view>
-    <view class="nav-title">{{conversation.title || '新对话'}}</view>
-    <view class="nav-more" bindtap="onMore">⋯</view>
+    <view class="nav-back" bindtap="onBack" hover-class="nav-press">&#x2039;</view>
+    <view class="nav-title">{{conversation.title || '\u65b0\u5bf9\u8bdd'}}</view>
+    <view class="nav-more" bindtap="onMore">&#x22EF;</view>
   </view>
 
-  <!-- Messages -->
-  <scroll-view scroll-y class="msg-scroll" scroll-into-view="{{scrollTarget}}" enhanced show-scrollbar="{{false}}">
+  <scroll-view scroll-y class="msg-scroll" enhanced show-scrollbar="{{false}}">
     <view class="msg-list">
-      <view class="msg-empty" wx:if="{{messages.length === 0}}">
-        <text class="msg-empty-text">开始你的对话吧</text>
+      <view class="msg-empty" wx:if="{{messages.length === 0 && !sending}}">
+        <text class="empty-icon">&#x1F4AC;</text>
+        <text class="empty-text">\u5f00\u59cb\u4f60\u7684\u5bf9\u8bdd\u5427</text>
+        <text class="empty-hint">\u53d1\u9001\u6587\u672c\u3001\u56fe\u7247\u6216\u8bed\u97f3</text>
       </view>
-      <view class="msg-item {{item.role}}" wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}" bindlongpress="onMessageLongPress" data-id="{{item.id}}">
-        <view class="msg-bubble">
-          <text class="msg-content">{{item.content}}</text>
-          <text class="msg-model" wx:if="{{item.model}}">{{item.model}}</text>
+
+      <block wx:for="{{groupedMessages}}" wx:key="time">
+        <view class="time-group">
+          <text class="time-label">{{item.time}}</text>
         </view>
-        <text class="msg-time">{{item.createdAt}}</text>
-      </view>
+        <view class="msg-item {{m.role}} {{m.isError ? 'msg-error' : ''}}" wx:for="{{item.messages}}" wx:for-item="m" wx:key="id" bindlongpress="onMessageLongPress" data-id="{{m.id}}" data-role="{{m.role}}">
+          <view class="msg-avatar" wx:if="{{m.role === 'assistant'}}">
+            <text class="avatar-text">AI</text>
+          </view>
+          <view class="msg-body">
+            <view class="msg-bubble">
+              <text class="msg-content">{{m.content}}</text>
+            </view>
+            <view class="msg-meta">
+              <text class="msg-model" wx:if="{{m.model}}">{{m.model}}</text>
+              <text class="msg-retry" wx:if="{{m.isError}}" bindtap="onRetry" data-id="{{m.id}}">&#x21BB; \u91cd\u8bd5</text>
+            </view>
+          </view>
+          <view class="msg-avatar user-avatar" wx:if="{{m.role === 'user'}}">
+            <text class="avatar-text">&#x1F464;</text>
+          </view>
+        </view>
+      </block>
+
       <view class="msg-item assistant" wx:if="{{sending}}">
-        <view class="msg-bubble">
-          <text class="msg-thinking">正在思考...</text>
+        <view class="msg-avatar">
+          <text class="avatar-text">AI</text>
+        </view>
+        <view class="msg-body">
+          <view class="msg-bubble thinking-bubble">
+            <view class="thinking-dots">
+              <view class="dot dot1"></view>
+              <view class="dot dot2"></view>
+              <view class="dot dot3"></view>
+            </view>
+            <text class="thinking-text">\u6b63\u5728\u601d\u8003...</text>
+          </view>
         </view>
       </view>
     </view>
   </scroll-view>
 
-  <!-- Input -->
   <view class="input-bar">
-    <input class="msg-input" placeholder="输入消息..." value="{{inputText}}" bindinput="onInput" bindconfirm="onSend" confirm-type="send" />
+    <view class="input-wrap">
+      <input class="msg-input" placeholder="\u8f93\u5165\u6d88\u606f..." value="{{inputText}}" bindinput="onInput" bindconfirm="onSend" confirm-type="send" />
+    </view>
     <view class="send-btn {{inputText ? 'active' : ''}}" bindtap="onSend" hover-class="send-press">
-      <text class="send-arrow">↑</text>
+      <text class="send-arrow">&#x2191;</text>
     </view>
   </view>
 
-  <!-- Actions overlay -->
-  <view class="actions-overlay {{showActions ? 'show' : ''}}" bindtap="hideActions"></view>
-  <view class="actions-panel {{showActions ? 'show' : ''}}">
+  <view class="actions-overlay {{showActions ? 'show' : ''}}" bindtap="hideActions" catchtouchmove="hideActions"></view>
+  <view class="actions-panel {{showActions ? 'show' : ''}}" catchtap="noop">
     <view class="action-item" bindtap="onCopyMessage">
-      <text>📋 复制</text>
+      <text class="action-icon">&#x1F4CB;</text>
+      <text>\u590d\u5236</text>
     </view>
-    <view class="action-item" bindtap="onSaveAsNote">
-      <text>📝 保存为笔记</text>
+    <view class="action-item" bindtap="onSaveAsNote" wx:if="{{selectedMsgRole === 'assistant'}}">
+      <text class="action-icon">&#x1F4DD;</text>
+      <text>\u4fdd\u5b58\u4e3a\u7b14\u8bb0</text>
     </view>
     <view class="action-item action-danger" bindtap="onDeleteMessage">
-      <text>🗑 删除</text>
+      <text class="action-icon">&#x1F5D1;</text>
+      <text>\u5220\u9664</text>
     </view>
   </view>
 </view>
