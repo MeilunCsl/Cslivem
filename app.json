@@ -23,6 +23,7 @@
     "pages/ocr/ocr",
     "pages/pdf/pdf",
     "pages/pomodoro/pomodoro",
+    "pages/random/random",
     "pages/scanner/scanner",
     "pages/search/search",
     "pages/settings/settings",

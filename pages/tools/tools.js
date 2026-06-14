@@ -81,6 +81,7 @@ Page({
       'food': '/pages/food/food',
       'flashcard': '/pages/flashcard/flashcard',
       'mood': '/pages/mood/mood',
+      'random': '/pages/random/random',
       'todo': '/pages/todo/todo'
     };
     if (routes[id]) {

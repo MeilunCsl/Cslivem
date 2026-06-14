@@ -1,0 +1,64 @@
+<!-- pages/random/random.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="content">
+      <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+        <text class="page-title">随机决策</text>
+      </view>
+
+      <view class="mode-tabs anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="mode-tab {{mode === 'coin' ? 'active' : ''}}" bindtap="onModeChange" data-mode="coin">投硬币</view>
+        <view class="mode-tab {{mode === 'dice' ? 'active' : ''}}" bindtap="onModeChange" data-mode="dice">抛骰子</view>
+        <view class="mode-tab {{mode === 'yesno' ? 'active' : ''}}" bindtap="onModeChange" data-mode="yesno">是否</view>
+        <view class="mode-tab {{mode === 'number' ? 'active' : ''}}" bindtap="onModeChange" data-mode="number">随机数</view>
+      </view>
+
+      <!-- Result Display -->
+      <view class="result-area anim-scale-in {{resultVisible ? 'anim-show' : ''}}">
+        <text class="result-text">{{result}}</text>
+      </view>
+
+      <!-- Coin -->
+      <view class="action-area anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" wx:if="{{mode === 'coin'}}">
+        <view class="action-btn-main" bindtap="flipCoin" hover-class="btn-press">投掷</view>
+      </view>
+
+      <!-- Dice -->
+      <view class="action-area anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" wx:if="{{mode === 'dice'}}">
+        <view class="dice-count">
+          <text class="count-label">骰子数量:</text>
+          <slider min="1" max="6" value="{{diceCount}}" bindchange="onDiceCountChange" activeColor="#5B4CFF" show-value />
+        </view>
+        <view class="action-btn-main" bindtap="rollDice" hover-class="btn-press">抛骰子</view>
+        <view class="dice-display" wx:if="{{diceResults.length > 0}}">
+          <text class="dice-icon" wx:for="{{diceResults}}" wx:key="index">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- Yes/No -->
+      <view class="action-area anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" wx:if="{{mode === 'yesno'}}">
+        <input class="question-input" value="{{question}}" bindinput="onQuestionInput" placeholder="输入你的问题..." />
+        <view class="action-btn-main" bindtap="askYesNo" hover-class="btn-press">提问</view>
+      </view>
+
+      <!-- Random Number -->
+      <view class="action-area anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" wx:if="{{mode === 'number'}}">
+        <view class="action-btn-main" bindtap="generateRandom" hover-class="btn-press">生成 1-100</view>
+      </view>
+
+      <!-- History -->
+      <view class="history-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}" wx:if="{{history.length > 0}}">
+        <view class="section-header">
+          <text class="section-title">历史</text>
+          <view class="clear-btn" bindtap="clearHistory" hover-class="press">清空</view>
+        </view>
+        <view class="history-item" wx:for="{{history}}" wx:key="index">
+          <text class="history-text">{{item.text}}</text>
+          <text class="history-time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <custom-tabbar selected="{{-1}}" />
+</view>
