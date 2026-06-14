@@ -22,7 +22,8 @@ Page({
     selectedNode: null,
     searchQuery: '',
     searchResults: [],
-    showSearch: false
+    showSearch: false,
+    neighborNodes: []
   },
 
   canvas: null,
@@ -253,10 +254,20 @@ Page({
       // Single tap: highlight
       if (this.highlightedNode === tapped.id) {
         this.highlightedNode = null;
-        this.setData({ selectedNode: null });
+        this.setData({ selectedNode: null, neighborNodes: [] });
       } else {
         this.highlightedNode = tapped.id;
-        this.setData({ selectedNode: tapped });
+        // Load neighbor details
+        var neighborNodes = [];
+        (tapped.neighbors || []).forEach(function(nid) {
+          for (var i = 0; i < self.nodes.length; i++) {
+            if (self.nodes[i].id === nid) {
+              neighborNodes.push(self.nodes[i]);
+              break;
+            }
+          }
+        });
+        this.setData({ selectedNode: tapped, neighborNodes: neighborNodes.slice(0, 6) });
       }
 
       // Start drag
@@ -267,7 +278,7 @@ Page({
     } else {
       // Tap on canvas: start panning
       this.highlightedNode = null;
-      this.setData({ selectedNode: null });
+      this.setData({ selectedNode: null, neighborNodes: [] });
       this._panStartX = touch.x;
       this._panStartY = touch.y;
       this._panOffsetX = this.offsetX;
@@ -352,6 +363,27 @@ Page({
     var node = this.data.selectedNode;
     if (node && node.refId) {
       wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + node.refId });
+    }
+  },
+
+  onNeighborTap: function(e) {
+    var nodeId = e.currentTarget.dataset.id;
+    var node = null;
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].id === nodeId) { node = this.nodes[i]; break; }
+    }
+    if (node) {
+      this.offsetX = this.canvasW / 2 - node.x * this.scale;
+      this.offsetY = this.canvasH / 2 - node.y * this.scale;
+      this.highlightedNode = nodeId;
+      var neighborNodes = [];
+      var self = this;
+      (node.neighbors || []).forEach(function(nid) {
+        for (var i = 0; i < self.nodes.length; i++) {
+          if (self.nodes[i].id === nid) { neighborNodes.push(self.nodes[i]); break; }
+        }
+      });
+      this.setData({ selectedNode: node, neighborNodes: neighborNodes.slice(0, 6) });
     }
   },
 

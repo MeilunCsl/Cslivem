@@ -15,21 +15,37 @@
           <view class="logo-glow"></view>
         </view>
         <text class="brand-name">Cslivem</text>
-        <text class="brand-tagline">今天想了解什么？</text>
+        <text class="brand-tagline">????????</text>
       </view>
 
-      <!-- 搜索框（点击跳转搜索页） -->
+      <!-- Input Box (real input) -->
       <view class="input-wrapper anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}">
-        <view class="input-box" bindtap="onInputTap" hover-class="input-tap-press">
-          <text class="input-placeholder-text">输入你的问题...</text>
-          <view class="send-btn send-btn-active">
-            <text class="send-arrow">→</text>
+        <view class="input-box {{inputFocused ? 'input-focused' : ''}}">
+          <input
+            class="input-field"
+            placeholder="??????..."
+            placeholder-class="input-placeholder"
+            value="{{inputValue}}"
+            bindinput="onInput"
+            bindfocus="onFocus"
+            bindblur="onBlur"
+            bindconfirm="onSend"
+            confirm-type="send"
+            adjust-position="{{true}}"
+            hold-keyboard
+          />
+          <view
+            class="send-btn {{inputValue ? 'send-btn-active' : ''}}"
+            bindtap="onSend"
+            hover-class="send-btn-hover"
+          >
+            <text class="send-arrow">\u2192</text>
           </view>
         </view>
       </view>
 
-      <!-- 快捷建议 -->
-      <view class="suggestions" wx:if="{{!inputValue}}">
+      <!-- Quick Suggestions -->
+      <view class="suggestions">
         <view
           class="chip anim-fade-up anim-d{{index + 2}} {{ready ? 'anim-visible' : ''}}"
           wx:for="{{suggestions}}"

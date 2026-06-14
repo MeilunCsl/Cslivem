@@ -4,9 +4,9 @@
 
   <!-- Header -->
   <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
-    <view class="back-btn" bindtap="onBack" hover-class="btn-press">←</view>
-    <text class="header-title">AI 助手</text>
-    <view class="clear-btn" bindtap="onClear" hover-class="btn-press">清空</view>
+    <view class="back-btn" bindtap="onBack" hover-class="btn-press">\u2190</view>
+    <text class="header-title">Cslivem AI</text>
+    <view class="clear-btn" bindtap="onClear" hover-class="btn-press">\u6e05\u7a7a</view>
   </view>
 
   <!-- Messages -->
@@ -14,9 +14,25 @@
     <view class="chat-container">
       <!-- Welcome -->
       <view class="welcome anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{messages.length === 0}}">
-        <text class="welcome-icon">🤖</text>
-        <text class="welcome-title">Cslivem AI 助手</text>
-        <text class="welcome-desc">有什么可以帮你的？</text>
+        <view class="welcome-icon-wrap">
+          <image class="welcome-logo" src="/assets/icons/cslivem-mark-256.png" mode="aspectFit" />
+        </view>
+        <text class="welcome-title">Cslivem AI \u52a9\u624b</text>
+        <text class="welcome-desc">\u6709\u4ec0\u4e48\u53ef\u4ee5\u5e2e\u4f60\u7684\uff1f</text>
+
+        <!-- Quick Suggestions -->
+        <view class="welcome-suggestions">
+          <view
+            class="welcome-chip"
+            wx:for="{{suggestions}}"
+            wx:key="text"
+            bindtap="onSuggestionTap"
+            data-text="{{item.text}}"
+            hover-class="chip-press"
+          >
+            <text class="welcome-chip-text">{{item.text}}</text>
+          </view>
+        </view>
       </view>
 
       <!-- Message Bubbles -->
@@ -28,14 +44,29 @@
       >
         <view class="msg-bubble {{item.role}}">
           <text class="msg-content">{{item.content}}</text>
-          <text class="msg-meta">{{item.time}} {{item.mode === 'local' ? '📱' : ''}}</text>
+          <view class="msg-footer">
+            <text class="msg-meta">{{item.time}} {{item.mode === 'local' ? '\ud83d\udce1' : ''}}</text>
+            <view
+              class="msg-save-btn"
+              wx:if="{{item.role === 'assistant' && item.canSave}}"
+              bindtap="onSaveAsNote"
+              data-content="{{item.content}}"
+              hover-class="btn-press"
+            >
+              <text class="msg-save-text">\ud83d\udcbe \u4fdd\u5b58</text>
+            </view>
+          </view>
         </view>
       </view>
 
       <!-- Typing Indicator -->
       <view class="msg-row msg-ai" wx:if="{{isTyping}}">
         <view class="msg-bubble assistant typing-bubble">
-          <text class="typing-dots">...</text>
+          <view class="typing-indicator">
+            <view class="typing-dot"></view>
+            <view class="typing-dot"></view>
+            <view class="typing-dot"></view>
+          </view>
         </view>
       </view>
     </view>
@@ -45,7 +76,7 @@
   <view class="input-bar">
     <input
       class="chat-input"
-      placeholder="输入你的问题..."
+      placeholder="\u8f93\u5165\u4f60\u7684\u95ee\u9898..."
       value="{{inputValue}}"
       bindinput="onInput"
       bindconfirm="onSend"
@@ -58,7 +89,7 @@
       bindtap="onSend"
       hover-class="send-press"
     >
-      <text class="send-icon">↑</text>
+      <text class="send-icon">\u2192</text>
     </view>
   </view>
 </view>

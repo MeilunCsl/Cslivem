@@ -36,15 +36,34 @@
     bindtouchend="onTouchEnd"
   />
 
-  <!-- Selected Node Info -->
+  <!-- Selected Node Info Card -->
   <view class="node-info {{selectedNode ? 'show' : ''}}" wx:if="{{selectedNode}}">
-    <view class="node-info-row">
-      <view class="node-dot" style="background: {{selectedNode.type === 'note' ? '#5B4CFF' : selectedNode.type === 'tag' ? '#3A7BFF' : '#00D4D9'}}"></view>
+    <view class="node-info-header">
+      <view class="node-dot" style="background: {{selectedNode.type === 'note' ? '#5B4CFF' : selectedNode.type === 'tag' ? '#3A7BFF' : selectedNode.type === 'concept' ? '#00D4D9' : selectedNode.type === 'entity' ? '#F59E0B' : '#FF6B6B'}}"></view>
       <view class="node-info-text">
         <text class="node-label">{{selectedNode.label}}</text>
         <text class="node-type">{{selectedNode.type}} · {{selectedNode.neighbors.length}} 连接</text>
       </view>
     </view>
+
+    <!-- Neighbor Nodes -->
+    <view class="neighbor-list" wx:if="{{neighborNodes.length > 0}}">
+      <text class="neighbor-title">关联节点</text>
+      <view class="neighbor-items">
+        <view
+          class="neighbor-chip"
+          wx:for="{{neighborNodes}}"
+          wx:key="id"
+          bindtap="onNeighborTap"
+          data-id="{{item.id}}"
+          hover-class="chip-press"
+        >
+          <view class="neighbor-dot" style="background: {{item.type === 'note' ? '#5B4CFF' : item.type === 'tag' ? '#3A7BFF' : '#00D4D9'}}"></view>
+          <text class="neighbor-name">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
     <view class="node-actions">
       <view class="node-action" bindtap="onNodeDetail" hover-class="action-press" wx:if="{{selectedNode.refId}}">
         <text>查看笔记 →</text>

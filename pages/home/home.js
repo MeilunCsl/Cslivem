@@ -1,57 +1,77 @@
+// pages/home/home.js
+var aiGateway = require('../../miniprogram/ai-gateway');
+var graphQuery = require('../../core/graph/graph-query');
+
 Page({
   data: {
     statusBarHeight: 20,
     inputValue: '',
     inputFocused: false,
     ready: false,
+    isSending: false,
     suggestions: [
-      { icon: '💡', text: '记一下灵感' },
-      { icon: '📋', text: '整理本周笔记' },
-      { icon: '🔍', text: '搜索知识库' }
+      { icon: '\u2728', text: '?????' },
+      { icon: '\ud83d\udcda', text: '??????' },
+      { icon: '\ud83d\udd0d', text: '?????' },
+      { icon: '\ud83e\udde0', text: 'AI ??????' }
     ]
   },
 
-  onLoad() {
+  onLoad: function() {
     try {
-      const sys = wx.getSystemInfoSync();
+      var sys = wx.getSystemInfoSync();
       this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     } catch (e) {}
-    setTimeout(() => { this.setData({ ready: true }); }, 100);
+    var self = this;
+    setTimeout(function() { self.setData({ ready: true }); }, 100);
   },
 
-  onShow() {
+  onShow: function() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 0 });
     }
   },
 
-  onInput(e) {
+  onInput: function(e) {
     this.setData({ inputValue: e.detail.value });
   },
 
-  onFocus() {
+  onFocus: function() {
     this.setData({ inputFocused: true });
   },
 
-  onBlur() {
+  onBlur: function() {
     this.setData({ inputFocused: false });
   },
 
-  onInputTap() {
-    wx.navigateTo({ url: '/pages/search/search' });
+  onSend: function() {
+    var text = this.data.inputValue.trim();
+    if (!text || this.data.isSending) return;
+    wx.vibrateShort({ type: 'light' }).catch(function() {});
+    this.setData({ isSending: true, inputValue: '' });
+    // Navigate to AI chat with the question
+    wx.navigateTo({
+      url: '/pages/ai-chat/ai-chat?query=' + encodeURIComponent(text),
+      complete: function() {
+        // Reset sending state after navigation
+      }
+    });
+    var self = this;
+    setTimeout(function() { self.setData({ isSending: false }); }, 500);
   },
 
-  onSend() {
-    const text = this.data.inputValue.trim();
-    if (!text) return;
-    wx.vibrateShort({ type: 'light' }).catch(() => {});
-    wx.showToast({ title: 'AI 功能开发中', icon: 'none' });
-    this.setData({ inputValue: '' });
+  onSuggestionTap: function(e) {
+    var text = e.currentTarget.dataset.text;
+    wx.vibrateShort({ type: 'light' }).catch(function() {});
+    // Check if it's a search-type suggestion
+    if (text.indexOf('\u641c\u7d22') >= 0 || text.indexOf('\u6574\u7406') >= 0) {
+      wx.navigateTo({ url: '/pages/search/search?query=' + encodeURIComponent(text) });
+    } else {
+      wx.navigateTo({ url: '/pages/ai-chat/ai-chat?query=' + encodeURIComponent(text) });
+    }
   },
 
-  onSuggestionTap(e) {
-    const text = e.currentTarget.dataset.text;
-    wx.vibrateShort({ type: 'light' }).catch(() => {});
-    wx.navigateTo({ url: '/pages/search/search?query=' + encodeURIComponent(text) });
+  onInputTap: function() {
+    // Focus the input instead of navigating away
   }
 });
