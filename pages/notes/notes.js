@@ -9,6 +9,8 @@ Page({
     currentPage: 1,
     hasMore: true,
     loadingMore: false,
+    selectMode: false,
+    selectedIds: [],
     filters: [
       { key: 'inbox', label: '收件箱' },
       { key: 'recent', label: '最近' },
@@ -28,14 +30,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -53,14 +463,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -77,14 +895,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -114,14 +1340,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -135,14 +1769,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -157,14 +2199,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -182,14 +2632,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -206,14 +3064,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -243,14 +3509,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -264,14 +3938,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -290,14 +4372,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -315,14 +4805,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -339,14 +5237,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -376,14 +5682,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -397,14 +6111,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -468,14 +6590,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -493,14 +7023,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -517,14 +7455,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -554,14 +7900,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -575,14 +8329,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -600,14 +8762,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -625,14 +9195,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -649,14 +9627,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -686,14 +10072,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -707,14 +10501,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -734,14 +10936,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -759,14 +11369,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -783,14 +11801,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -820,14 +12246,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -841,14 +12675,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -866,14 +13108,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -891,14 +13541,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -915,14 +13973,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -952,14 +14418,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -973,14 +14847,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -998,14 +15280,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1023,14 +15713,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1047,14 +16145,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1084,14 +16590,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1105,14 +17019,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1128,14 +17450,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1153,14 +17883,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1177,14 +18315,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1214,14 +18760,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },
@@ -1235,14 +19189,422 @@ Page({
   onShowTemplates: function() {
     var noteModule = require('../../modules/note/public');
     var templates = noteModule.getTemplates();
-    var names = templates.map(function(t) { return t.icon + ' ' + t.name; });
+    var names = templates.map(function(t) { return t.icon + ' ' + t.name; 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
     wx.showActionSheet({
       itemList: names,
       success: function(res) {
         var template = templates[res.tapIndex];
         if (template) {
-          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id });
+          wx.navigateTo({ url: '/pages/note-editor/note-editor?template=' + template.id 
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
         }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+        }
+      }
+    
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
+      }
+    });
+  },
+
+});
+  },
+
+
+
+  onNoteLongPress: function(e) {
+    var id = e.currentTarget.dataset.id;
+    if (!this.data.selectMode) {
+      this.setData({ selectMode: true, selectedIds: [id] });
+      wx.vibrateShort({ type: 'medium' }).catch(function() {});
+    }
+  },
+
+  onNoteSelect: function(e) {
+    if (!this.data.selectMode) return;
+    var id = e.currentTarget.dataset.id;
+    var selected = this.data.selectedIds.slice();
+    var idx = selected.indexOf(id);
+    if (idx >= 0) {
+      selected.splice(idx, 1);
+    } else {
+      selected.push(id);
+    }
+    this.setData({ selectedIds: selected });
+    if (selected.length === 0) {
+      this.setData({ selectMode: false });
+    }
+  },
+
+  exitSelectMode: function() {
+    this.setData({ selectMode: false, selectedIds: [] });
+  },
+
+  onSelectAll: function() {
+    var allIds = this.data.notes.map(function(n) { return n.id; });
+    this.setData({ selectedIds: allIds });
+  },
+
+  onBatchDelete: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量删除',
+      content: '确认删除 ' + count + ' 条笔记？',
+      success: function(res) {
+        if (res.confirm) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.deleteNote(id);
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已删除 ' + count + ' 条', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchTag: function() {
+    var self = this;
+    var count = self.data.selectedIds.length;
+    if (count === 0) return;
+    wx.showModal({
+      title: '批量加标签',
+      editable: true,
+      placeholderText: '输入标签名',
+      success: function(res) {
+        if (res.confirm && res.content) {
+          var noteModule = require('../../modules/note/public');
+          self.data.selectedIds.forEach(function(id) {
+            noteModule.addTag(id, res.content.trim());
+          });
+          self.setData({ selectMode: false, selectedIds: [] });
+          self.loadNotes();
+          wx.showToast({ title: '已加标签', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  onBatchExport: function() {
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var notes = self.data.selectedIds.map(function(id) {
+      return noteModule.getRecentNotes(100).find(function(n) { return n.id === id; });
+    }).filter(function(n) { return n; });
+    var text = notes.map(function(n) {
+      return '# ' + (n.title || '未命名') + '
+
+' + (n.content || '') + '
+
+---
+';
+    }).join('
+');
+    wx.setClipboardData({
+      data: text,
+      success: function() {
+        self.setData({ selectMode: false, selectedIds: [] });
+        wx.showToast({ title: '已复制 ' + notes.length + ' 条', icon: 'success' });
       }
     });
   },

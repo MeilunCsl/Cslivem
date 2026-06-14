@@ -54,5 +54,20 @@
     </view>
 
     <view class="template-btn" bindtap="onShowTemplates" hover-class="btn-press"><text class="template-icon">+</text><text class="template-label">模板</text></view>
+
+    <!-- Batch Actions Bar -->
+    <view class="batch-bar {{selectMode ? 'show' : ''}}" wx:if="{{selectMode}}">
+      <view class="batch-info">
+        <text class="batch-count">已选 {{selectedIds.length}} 项</text>
+      </view>
+      <view class="batch-actions">
+        <view class="batch-btn" bindtap="onSelectAll" hover-class="press">全选</view>
+        <view class="batch-btn" bindtap="onBatchTag" hover-class="press">加标签</view>
+        <view class="batch-btn" bindtap="onBatchExport" hover-class="press">导出</view>
+        <view class="batch-btn batch-danger" bindtap="onBatchDelete" hover-class="press">删除</view>
+        <view class="batch-btn" bindtap="exitSelectMode" hover-class="press">取消</view>
+      </view>
+    </view>
+
   <custom-tabbar selected="{{2}}" />
 </view>
