@@ -1,7 +1,6 @@
 {
   "navigationBarTitleText": "笔记详情",
   "usingComponents": {
-    "nav-bar": "/components/nav-bar/nav-bar",
     "custom-tabbar": "/components/custom-tabbar/custom-tabbar"
   },
   "navigationStyle": "custom"
