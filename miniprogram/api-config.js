@@ -11,10 +11,10 @@ var PROVIDER_PRESETS = {
     id: 'mimo',
     name: 'Xiaomi MiMo',
     description: '小米 MiMo 大模型',
-    endpoint: 'https://api.mimo.xiaomi.com/v1/chat/completions',
+    endpoint: 'https://token-plan-cn.xiaomimimo.com/v1/chat/completions',
     model: 'MiMo-7B-RL',
     authPrefix: 'Bearer ',
-    domain: 'api.mimo.xiaomi.com',
+    domain: 'token-plan-cn.xiaomimimo.com',
     isNative: false
   },
   dashscope: {
