@@ -369,3 +369,81 @@
 ---
 
 *v1.5.0 ?????? — ECS ??? ????? ???/??? ????????
+
+## v1.7.0 — Tools-Complete + UX Enhancement (2026-06-14)
+
+**验收人**: cansen (auto-verify)
+**环境**: Windows, 微信开发者工具 2.01.2510290, 基础库 3.16.1
+
+### PDF Tool (v1.7.0)
+
+- [x] `core/pdf/pdf-writer.js` — 轻量 PDF 生成库 (4853 bytes, 18/18 braces)
+- [x] `modules/tool-pdf/public.js` — 真实 PDF 实现 (32/32 braces)
+- [x] `pages/pdf/pdf.js` — 页面逻辑 (42/42 braces)
+- [x] `pages/pdf/pdf.json` — JSON valid
+- [x] `pages/pdf/pdf.wxml` — 27/27 view tags balanced
+- [x] `pages/pdf/pdf.wxss` — 38/38 braces balanced
+- [x] app.json 已注册 pages/pdf/pdf
+- [x] tools.js 路由 tool-pdf -> /pages/pdf/pdf
+- [x] manifest v1.7.0 lifecycle=stable
+- [x] 所有文件无 BOM
+
+### Scanner Tool (v1.7.0)
+
+- [x] `modules/tool-scanner/public.js` — Canvas 图像增强 (33/33 braces)
+- [x] `pages/scanner/scanner.js` — 页面逻辑 (41/41 braces)
+- [x] `pages/scanner/scanner.json` — JSON valid
+- [x] `pages/scanner/scanner.wxml` — 29/29 view tags balanced
+- [x] `pages/scanner/scanner.wxss` — 37/37 braces balanced
+- [x] app.json 已注册 pages/scanner/scanner
+- [x] tools.js 路由 tool-scanner -> /pages/scanner/scanner
+- [x] manifest v1.7.0 lifecycle=stable
+- [x] 所有文件无 BOM
+
+### Knowledge Graph Enhancement
+
+- [x] 缩放控件 (zoom in/out/reset/fit-all)
+- [x] WXML 添加 zoom-controls 组件
+- [x] WXSS 添加 zoom 控件样式 (43/43 braces)
+- [x] JS 添加 onZoomIn/onZoomOut/onResetView/onFitAll 方法
+- [x] 节点标签已在 Canvas 内渲染
+
+### Calendar Enhancement
+
+- [x] viewMode 数据字段 (month/week/day)
+- [x] buildWeekView() — 周视图 7 天网格
+- [x] buildDayView() — 日视图时间线 6:00-23:00
+- [x] switchViewMode() — 视图切换
+- [x] WXML 添加 view-toggle 组件
+- [x] WXSS 添加周/日视图样式 (75/75 braces)
+- [x] JS 花括号平衡 (89/89)
+
+### Note Editor Markdown Preview
+
+- [x] `utils/markdown.js` — Markdown 解析器 (27/27 braces)
+- [x] 支持: 标题/粗体/斜体/代码/列表/链接/引用/分割线/Wiki-link
+- [x] 编辑器 JS 添加 previewMode toggle (106/106 braces)
+- [x] WXML 添加 rich-text 预览组件 (24/24 views)
+- [x] WXSS 添加预览样式 (36/36 braces)
+
+### 质量检查
+
+- [x] 0 个文件有 BOM
+- [x] 所有 JS 花括号配对通过
+- [x] 所有 WXSS 花括号配对通过
+- [x] 所有 JSON 格式正确
+- [x] 所有 WXML 标签配对通过
+- [x] app.json 路由注册正确
+- [x] Git 提交 7 个 commit 已推送到 GitHub
+
+### 遗留问题
+
+| # | 问题 | 状态 | 备注 |
+|---|------|------|------|
+| 1 | PDF 生成在大图片下可能内存压力 | 待真机验证 | wx.canvasToTempFilePath |
+| 2 | 扫描增强 Canvas 像素操作性能 | 待低端机验证 | 大图可能卡顿 |
+| 3 | Markdown rich-text 复杂 HTML 渲染 | 待验证 | 代码块样式可能不理想 |
+
+---
+
+*v1.7.0 验收通过 — 工具层完成，可进入下一阶段开发。*
