@@ -1,4 +1,4 @@
-// pages/tools/tools.js
+﻿// pages/tools/tools.js
 var toolRegistry = require('../../miniprogram/tool-registry');
 
 Page({
@@ -71,7 +71,7 @@ Page({
       'ledger': '/pages/ledger/ledger',
       'tool-pdf': '/pages/pdf/pdf',
       'tool-ocr': '/pages/ocr/ocr',
-      'tool-scanner': '/pages/scanner/scanner'
+      'tool-scanner': '/pages/scanner/scanner',
       'tool-compress': '/pages/compress/compress',
       'tool-text': '/pages/text-tool/text-tool',
       'tool-convert': '/pages/convert/convert',
