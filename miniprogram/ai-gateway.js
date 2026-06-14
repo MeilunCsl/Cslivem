@@ -172,9 +172,7 @@ function localAnswerQuestion(query) {
   var answer = '';
 
   if (results.notes.length > 0) {
-    answer += '找到以下相关笔记：
-
-';
+    answer += '找到以下相关笔记：\n\n';
     results.notes.forEach(function(note, i) {
       answer += (i + 1) + '. ' + note.title;
       if (note.tags && note.tags.length > 0) {
