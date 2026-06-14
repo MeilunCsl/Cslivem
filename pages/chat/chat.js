@@ -5,6 +5,7 @@ var types = require('../../core/conversation/types');
 var assetStore = require('../../core/assets/local-asset-store');
 var format = require('../../utils/format');
 var recorder = require('../../core/audio/recorder');
+var promptRegistry = require('../../miniprogram/prompt-registry');
 
 Page({
   data: {

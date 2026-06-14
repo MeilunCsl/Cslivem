@@ -219,15 +219,17 @@ Page({
     }
     self.setData({ aiProcessing: true, showAiMenu: false });
     var gateway = require('../../miniprogram/ai-gateway');
-    var prompts = {
-      continue: '请根据以下内容继续写下去，保持风格一致，只输出续写部分：',
-      summarize: '请用一段话总结以下内容的核心要点：',
-      rewrite: '请重新改写以下内容，使其更清晰、更有条理：',
-      extract: '请从以下内容中提取待办任务，每行一个，用 - [ ] 开头：',
-      expand: '请扩充以下内容，增加更多细节和例子：',
-      shorten: '请精简以下内容，保留核心信息，删除冗余部分：'
+    var promptRegistry = require('../../miniprogram/prompt-registry');
+    var promptKeys = {
+      continue: 'continueWriting',
+      summarize: 'summarize',
+      rewrite: 'rewrite',
+      extract: 'extractTasks',
+      expand: 'expand',
+      shorten: 'shorten'
     };
-    var systemPrompt = prompts[task] || prompts.summarize;
+    var promptKey = promptKeys[task] || 'summarize';
+    var systemPrompt = promptRegistry.getSystem(promptKey) || '请处理以下内容：';
     gateway.ask(content.substring(0, 2000), systemPrompt)
       .then(function (res) {
         var result = res.content || '';
