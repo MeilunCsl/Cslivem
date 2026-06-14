@@ -201,7 +201,7 @@ function localAnswerQuestion(query) {
 function selectModel(text, hasImage) {
   var config = apiConfig.getActiveConfig();
   if (!config) return null;
-  var baseModel = config.model || 'MiMo-7B-RL';
+  var baseModel = config.model || 'mimo-v2.5-pro';
   
   // Image → vision model
   if (hasImage) {
@@ -220,7 +220,7 @@ function selectModel(text, hasImage) {
   }
   
   // Simple text → fast model
-  return baseModel.includes('mimo') ? 'MiMo-7B-RL' : baseModel;
+  return baseModel.includes('mimo') ? 'mimo-v2.5-pro' : baseModel;
 }
 
 // ===== Public API =====

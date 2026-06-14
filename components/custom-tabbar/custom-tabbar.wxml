@@ -4,10 +4,12 @@
     <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/home/home" hover-class="tab-press">
       <text class="tab-icon-text">🏠</text>
       <text class="tab-text">首页</text>
+      <view class="tab-indicator" wx:if="{{selected === 0}}"></view>
     </view>
     <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/conversations/conversations" hover-class="tab-press">
       <text class="tab-icon-text">💬</text>
       <text class="tab-text">对话</text>
+      <view class="tab-indicator" wx:if="{{selected === 1}}"></view>
     </view>
     <view class="tab-item tab-center" bindtap="togglePanel">
       <view class="fab {{showPanel ? 'fab-rotated' : ''}}">
@@ -17,13 +19,14 @@
     <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/notes/notes" hover-class="tab-press">
       <text class="tab-icon-text">📖</text>
       <text class="tab-text">知识</text>
+      <view class="tab-indicator" wx:if="{{selected === 3}}"></view>
     </view>
     <view class="tab-item {{selected === 4 ? 'active' : ''}}" bindtap="switchTab" data-index="4" data-url="/pages/tools/tools" hover-class="tab-press">
       <text class="tab-icon-text">🛠️</text>
       <text class="tab-text">工具</text>
+      <view class="tab-indicator" wx:if="{{selected === 4}}"></view>
       <view class="tab-badge" wx:if="{{badgeCount > 0}}"><text>{{badgeCount > 99 ? '99+' : badgeCount}}</text></view>
     </view>
-    <view class="tab-indicator" style="left: {{indicatorLeft}};"></view>
   </view>
 </view>
 

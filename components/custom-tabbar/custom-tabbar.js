@@ -6,31 +6,25 @@ Component({
   data: {
     showPanel: false,
     tabReady: false,
-    indicatorLeft: '10%',
     badgeCount: 0
   },
 
   lifetimes: {
     attached() {
-      setTimeout(() => { this.setData({ tabReady: true }); }, 200);
-      this.updateIndicator(this.data.selected);
+      var self = this;
+      setTimeout(function() { self.setData({ tabReady: true }); }, 200);
       this.loadBadges();
-    }
-  },
-
-  observers: {
-    'selected': function(val) {
-      this.updateIndicator(val);
     }
   },
 
   methods: {
     switchTab(e) {
-      const { index, url } = e.currentTarget.dataset;
+      var index = parseInt(e.currentTarget.dataset.index);
+      var url = e.currentTarget.dataset.url;
       if (index === this.data.selected) return;
-      wx.vibrateShort({ type: 'light' }).catch(() => {});
+      wx.vibrateShort({ type: 'light' }).catch(function() {});
       this.setData({ showPanel: false });
-      wx.switchTab({ url });
+      wx.switchTab({ url: url });
     },
 
     loadBadges() {
@@ -44,13 +38,8 @@ Component({
       } catch(e) {}
     },
 
-    updateIndicator(selectedIndex) {
-      var positions = { 0: '10%', 1: '30%', 3: '70%', 4: '90%' };
-      var left = positions[selectedIndex] || '10%';
-      this.setData({ indicatorLeft: left });
-    },
     togglePanel() {
-      wx.vibrateShort({ type: 'light' }).catch(() => {});
+      wx.vibrateShort({ type: 'light' }).catch(function() {});
       this.setData({ showPanel: !this.data.showPanel });
     },
 
@@ -59,9 +48,9 @@ Component({
     },
 
     onAction(e) {
-      const type = e.currentTarget.dataset.type;
+      var type = e.currentTarget.dataset.type;
       this.setData({ showPanel: false });
-      const labels = { text: '文字记录', photo: '拍照', voice: '语音', scan: '扫描' };
+      var labels = { text: '文字记录', photo: '拍照', voice: '语音', scan: '扫描' };
       wx.showToast({ title: labels[type] || type, icon: 'none' });
     },
 
