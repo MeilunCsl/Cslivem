@@ -1,0 +1,64 @@
+<!-- pages/ai-chat/ai-chat.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+
+  <!-- Header -->
+  <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+    <view class="back-btn" bindtap="onBack" hover-class="btn-press">←</view>
+    <text class="header-title">AI 助手</text>
+    <view class="clear-btn" bindtap="onClear" hover-class="btn-press">清空</view>
+  </view>
+
+  <!-- Messages -->
+  <scroll-view scroll-y class="chat-scroll" enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollIntoView}}">
+    <view class="chat-container">
+      <!-- Welcome -->
+      <view class="welcome anim-fade anim-d1 {{ready ? 'anim-show' : ''}}" wx:if="{{messages.length === 0}}">
+        <text class="welcome-icon">🤖</text>
+        <text class="welcome-title">Cslivem AI 助手</text>
+        <text class="welcome-desc">有什么可以帮你的？</text>
+      </view>
+
+      <!-- Message Bubbles -->
+      <view
+        id="msg-{{index}}"
+        class="msg-row {{item.role === 'user' ? 'msg-user' : 'msg-ai'}}"
+        wx:for="{{messages}}"
+        wx:key="index"
+      >
+        <view class="msg-bubble {{item.role}}">
+          <text class="msg-content">{{item.content}}</text>
+          <text class="msg-meta">{{item.time}} {{item.mode === 'local' ? '📱' : ''}}</text>
+        </view>
+      </view>
+
+      <!-- Typing Indicator -->
+      <view class="msg-row msg-ai" wx:if="{{isTyping}}">
+        <view class="msg-bubble assistant typing-bubble">
+          <text class="typing-dots">...</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Input Bar -->
+  <view class="input-bar">
+    <input
+      class="chat-input"
+      placeholder="输入你的问题..."
+      value="{{inputValue}}"
+      bindinput="onInput"
+      bindconfirm="onSend"
+      confirm-type="send"
+      adjust-position="{{true}}"
+      hold-keyboard
+    />
+    <view
+      class="send-btn {{inputValue ? 'active' : ''}}"
+      bindtap="onSend"
+      hover-class="send-press"
+    >
+      <text class="send-icon">↑</text>
+    </view>
+  </view>
+</view>
