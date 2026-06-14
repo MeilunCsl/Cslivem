@@ -50,10 +50,18 @@ Page({
         id: t.id,
         icon: t.icon || '◻',
         name: t.name,
-        description: t.description || ''
+        description: t.description || '',
+        category: t.category || '其他'
       };
     });
-    this.setData({ tools: tools });
+    // Group by category
+    var catMap = {};
+    tools.forEach(function(t) {
+      if (!catMap[t.category]) catMap[t.category] = { id: t.category, name: t.category, tools: [] };
+      catMap[t.category].tools.push(t);
+    });
+    var categories = Object.values(catMap);
+    this.setData({ tools: tools, categories: categories });
   },
 
   onSettingsTap: function() {

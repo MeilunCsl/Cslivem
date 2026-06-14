@@ -44,7 +44,7 @@ Page({
 
     if (options && options.send) {
       setTimeout(function () {
-        self.setData({ inputText: options.send });
+        self.setData({ inputText: decodeURIComponent(options.send || '') });
         self.onSend();
       }, 300);
     }

@@ -36,6 +36,16 @@
 
 .tab-press { transform: scale(0.94); }
 
+
+.tab-icon-text {
+  font-size: 38rpx;
+  margin-bottom: 6rpx;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+.tab-item.active .tab-icon-text {
+  transform: translateY(-4rpx) scale(1.1);
+}
 .tab-icon {
   width: 40rpx;
   height: 40rpx;
@@ -43,7 +53,17 @@
   transition: transform 200ms ease;
 }
 
-.tab-item.active .tab-icon {
+.tab-item.active 
+.tab-icon-text {
+  font-size: 38rpx;
+  margin-bottom: 6rpx;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+.tab-item.active .tab-icon-text {
+  transform: translateY(-4rpx) scale(1.1);
+}
+.tab-icon {
   transform: translateY(-4rpx) scale(1.05);
 }
 
