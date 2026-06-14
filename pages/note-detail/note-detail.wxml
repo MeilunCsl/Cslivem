@@ -53,6 +53,15 @@
       <view class="save-section anim-fade anim-d5 {{ready ? 'anim-show' : ''}}" wx:if="{{isEditing}}">
         <view class="save-btn" bindtap="saveNote" hover-class="press">保存</view>
       </view>
+
+      <!-- Backlinks -->
+      <view class="backlinks-section anim-fade anim-d5 {{ready ? 'anim-show' : ''}}" wx:if="{{backlinks.length > 0}}">
+        <text class="backlinks-title">🔗 被引用 ({{backlinks.length}})</text>
+        <view class="backlink-item" wx:for="{{backlinks}}" wx:key="id" bindtap="onTapBacklink" data-id="{{item.id}}" hover-class="press">
+          <text class="backlink-title">{{item.title || '未命名笔记'}}</text>
+          <text class="backlink-summary">{{item.summary}}</text>
+        </view>
+      </view>
     </view>
   </scroll-view>
 </view>

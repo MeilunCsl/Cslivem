@@ -7,6 +7,7 @@ Page({
     isEditing: false,
     editContent: '',
     showTagInput: false,
+    backlinks: [],
     newTag: ''
   },
 
@@ -78,6 +79,17 @@ Page({
     const tag = e.currentTarget.dataset.tag;
     const updated = noteModule.removeTag(noteId, tag);
     this.setData({ note: updated });
+  },
+
+  loadBacklinks(id) {
+    const noteRepo = require('../../modules/note/repository');
+    const backlinks = noteRepo.getBacklinks(id);
+    this.setData({ backlinks: backlinks });
+  },
+
+  onTapBacklink(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.redirectTo({ url: '/pages/note-detail/note-detail?id=' + id });
   },
 
   goBack() { wx.navigateBack(); },

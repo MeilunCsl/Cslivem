@@ -45,3 +45,11 @@
 .anim-d3 { transition-delay: 0.24s; }
 .anim-d4 { transition-delay: 0.32s; }
 .anim-d5 { transition-delay: 0.4s; }
+
+/* Backlinks */
+.backlinks-section { margin-top: 40rpx; padding-top: 32rpx; border-top: 1rpx solid var(--color-divider); }
+.backlinks-title { font-size: 26rpx; font-weight: 700; color: var(--color-text-secondary); display: block; margin-bottom: 16rpx; }
+.backlink-item { background: var(--csl-surface-muted); border-radius: var(--radius-md); padding: 16rpx 20rpx; margin-bottom: 12rpx; }
+.backlink-item:active, .press { transform: scale(0.97); }
+.backlink-title { font-size: 26rpx; font-weight: 600; color: var(--color-primary); display: block; }
+.backlink-summary { font-size: 22rpx; color: var(--color-text-secondary); display: block; margin-top: 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

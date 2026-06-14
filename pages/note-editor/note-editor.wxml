@@ -1,7 +1,7 @@
 <!-- pages/note-editor/note-editor.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
-  
+
   <view class="top-bar anim-fade {{ready ? 'anim-show' : ''}}">
     <view class="back-btn" bindtap="goBack" hover-class="press">← 返回</view>
     <view class="save-btn" bindtap="save" hover-class="press">保存</view>
@@ -22,6 +22,34 @@
   </view>
 
   <view class="editor-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
-    <textarea class="editor" value="{{content}}" bindinput="onContentInput" placeholder="开始写作..." auto-height cursor-spacing="120" />
+    <textarea
+      class="editor"
+      value="{{content}}"
+      bindinput="onContentInput"
+      placeholder="开始写作... (输入 [[ 触发链接提示)"
+      auto-height
+      cursor-spacing="120"
+    />
+  </view>
+
+  <!-- Wiki-Link Suggestions -->
+  <view class="suggestions-panel {{showSuggestions ? 'show' : ''}}" wx:if="{{showSuggestions}}">
+    <view class="suggestions-header">
+      <text>链接到: {{linkQuery || '最近笔记'}}</text>
+    </view>
+    <scroll-view scroll-y class="suggestions-list" enhanced show-scrollbar="{{false}}">
+      <view
+        class="suggestion-item"
+        wx:for="{{suggestions}}"
+        wx:key="id"
+        bindtap="onSuggestionTap"
+        data-label="{{item.label}}"
+        hover-class="suggestion-press"
+      >
+        <text class="suggestion-icon">{{item.type === 'note' ? '📝' : item.type === 'tag' ? '🏷' : '💡'}}</text>
+        <text class="suggestion-label">{{item.label}}</text>
+        <text class="suggestion-type">{{item.type}}</text>
+      </view>
+    </scroll-view>
   </view>
 </view>

@@ -21,3 +21,23 @@
 .anim-d1 { transition-delay: 0.08s; }
 .anim-d2 { transition-delay: 0.16s; }
 .anim-d3 { transition-delay: 0.24s; }
+
+/* Wiki-Link Suggestions Panel */
+.suggestions-panel {
+  position: fixed; left: 32rpx; right: 32rpx;
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  background: var(--color-card); border-radius: var(--radius-lg);
+  box-shadow: 0 -4rpx 24rpx rgba(10,15,26,0.12);
+  max-height: 400rpx; z-index: 90;
+  transform: translateY(20rpx); opacity: 0;
+  transition: transform 0.2s var(--ease-spring), opacity 0.2s ease;
+  pointer-events: none;
+}
+.suggestions-panel.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.suggestions-header { padding: 16rpx 24rpx; font-size: 24rpx; color: var(--color-text-secondary); border-bottom: 1rpx solid var(--color-divider); }
+.suggestions-list { max-height: 320rpx; }
+.suggestion-item { display: flex; align-items: center; gap: 12rpx; padding: 16rpx 24rpx; }
+.suggestion-item:active, .suggestion-press { background: var(--csl-surface-muted); }
+.suggestion-icon { font-size: 28rpx; flex-shrink: 0; }
+.suggestion-label { flex: 1; font-size: 28rpx; color: var(--color-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.suggestion-type { font-size: 20rpx; color: var(--color-text-placeholder); padding: 2rpx 12rpx; background: var(--csl-surface-muted); border-radius: var(--radius-sm); }
