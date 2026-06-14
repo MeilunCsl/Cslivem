@@ -13,9 +13,9 @@ Page({
     isTyping: false,
     scrollIntoView: '',
     suggestions: [
-      { text: '???????' },
-      { text: '????????????' },
-      { text: '??????????' }
+      { text: '总结最近的笔记' },
+      { text: '我的知识图谱有哪些节点？' },
+      { text: '帮我整理一下待办事项' }
     ]
   },
 
@@ -25,8 +25,6 @@ Page({
     } catch (e) {}
     var self = this;
     setTimeout(function() { self.setData({ ready: true }); }, 100);
-
-    // Auto-send if query param exists
     if (options && options.query) {
       var query = decodeURIComponent(options.query);
       self.setData({ inputValue: query });
@@ -41,23 +39,15 @@ Page({
   onSend: function() {
     var text = this.data.inputValue.trim();
     if (!text || this.data.isTyping) return;
-
     var messages = this.data.messages.concat([{
       role: 'user',
       content: text,
       time: new Date().toLocaleTimeString()
     }]);
-    this.setData({
-      messages: messages,
-      inputValue: '',
-      isTyping: true
-    });
+    this.setData({ messages: messages, inputValue: '', isTyping: true });
     this.scrollToBottom();
-
     var self = this;
-    // Build rich context from knowledge graph
     var context = self.buildContext(text);
-
     aiGateway.ask(text, context).then(function(result) {
       var msgs = self.data.messages.concat([{
         role: 'assistant',
@@ -71,7 +61,7 @@ Page({
     }).catch(function(err) {
       var msgs = self.data.messages.concat([{
         role: 'assistant',
-        content: '\u274c \u53d1\u9001\u5931\u8d25: ' + err.message,
+        content: '❌ 发送失败: ' + err.message,
         mode: 'error',
         time: new Date().toLocaleTimeString()
       }]);
@@ -80,50 +70,41 @@ Page({
   },
 
   buildContext: function(query) {
-    var context = '?? Cslivem ????????????????????????????\n\n';
-
-    // Search related nodes in knowledge graph
+    var ctx = '你是 Cslivem 智能助手，帮助用户管理知识、笔记和任务。简洁明了地回答。\n\n';
     var related = graphQuery.searchNodes(query);
     if (related.length > 0) {
-      context += '????????????\n';
+      ctx += '用户知识库中的相关内容：\n';
       related.slice(0, 8).forEach(function(n) {
-        context += '- ' + n.label + ' (' + n.type + ')';
+        ctx += '- ' + n.label + ' (' + n.type + ')';
         if (n.metadata && n.metadata.description) {
-          context += ': ' + n.metadata.description.substring(0, 60);
+          ctx += ': ' + n.metadata.description.substring(0, 60);
         }
-        context += '\n';
+        ctx += '\n';
       });
-      context += '\n';
-
-      // Get neighbors of top results for deeper context
+      ctx += '\n';
       var topNode = related[0];
       var neighbors = graphQuery.traverse(topNode.id, 1);
       if (neighbors.length > 0) {
-        context += '?????';
+        ctx += '关联节点：';
         neighbors.slice(0, 5).forEach(function(n) {
-          context += n.node.label + ', ';
+          ctx += n.node.label + ', ';
         });
-        context += '\n';
+        ctx += '\n';
       }
     }
-
-    // Graph stats
     var stats = graphEngine.getStats();
-    context += '??????' + stats.nodeCount + ' ????' + stats.edgeCount + ' ????\n';
-
-    // Recent notes
+    ctx += '知识库概览：' + stats.nodeCount + ' 个节点，' + stats.edgeCount + ' 条关联。\n';
     try {
       var notes = notePublic.getAll ? notePublic.getAll() : [];
       if (notes.length > 0) {
-        context += '?????';
+        ctx += '最近笔记：';
         notes.slice(0, 3).forEach(function(n) {
-          context += '"' + n.title + '", ';
+          ctx += '"' + n.title + '", ';
         });
-        context += '\n';
+        ctx += '\n';
       }
     } catch (e) {}
-
-    return context;
+    return ctx;
   },
 
   onSuggestionTap: function(e) {
@@ -135,8 +116,8 @@ Page({
   onClear: function() {
     var self = this;
     wx.showModal({
-      title: '\u6e05\u7a7a\u5bf9\u8bdd',
-      content: '\u786e\u5b9a\u8981\u6e05\u7a7a\u6240\u6709\u5bf9\u8bdd\u8bb0\u5f55\u5417\uff1f',
+      title: '清空对话',
+      content: '确定要清空所有对话记录吗？',
       success: function(res) {
         if (res.confirm) {
           self.setData({ messages: [] });
@@ -150,8 +131,8 @@ Page({
     var content = e.currentTarget.dataset.content;
     var self = this;
     wx.showModal({
-      title: '\u4fdd\u5b58\u4e3a\u7b14\u8bb0',
-      content: '\u5c06\u8fd9\u6761 AI \u56de\u7b54\u4fdd\u5b58\u4e3a\u7b14\u8bb0\uff1f',
+      title: '保存为笔记',
+      content: '将这条 AI 回答保存为笔记？',
       success: function(res) {
         if (res.confirm) {
           try {
@@ -159,12 +140,12 @@ Page({
             notePublic.createNote({
               title: title,
               content: content,
-              tags: ['AI\u56de\u7b54', '\u6536\u4ef6\u7bb1'],
+              tags: ['AI回答', '收件箱'],
               source: 'ai-chat'
             });
-            wx.showToast({ title: '\u5df2\u4fdd\u5b58', icon: 'success' });
+            wx.showToast({ title: '已保存', icon: 'success' });
           } catch (e) {
-            wx.showToast({ title: '\u4fdd\u5b58\u5931\u8d25', icon: 'none' });
+            wx.showToast({ title: '保存失败', icon: 'none' });
           }
         }
       }

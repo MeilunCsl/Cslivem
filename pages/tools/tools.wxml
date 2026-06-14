@@ -32,8 +32,8 @@
             <text class="settings-icon-text">⚙</text>
           </view>
           <view class="settings-info">
-            <text class="settings-name">??</text>
-            <text class="settings-desc">AI ???ECS ???????</text>
+            <text class="settings-name">设置</text>
+            <text class="settings-desc">AI 模型、ECS 同步、数据管理</text>
           </view>
           <text class="settings-arrow">›</text>
         </view>

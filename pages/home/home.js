@@ -10,10 +10,10 @@ Page({
     ready: false,
     isSending: false,
     suggestions: [
-      { icon: '\u2728', text: '?????' },
-      { icon: '\ud83d\udcda', text: '??????' },
-      { icon: '\ud83d\udd0d', text: '?????' },
-      { icon: '\ud83e\udde0', text: 'AI ??????' }
+      { icon: '\u2728', text: '记一下灵感' },
+      { icon: '\ud83d\udcda', text: '整理本周笔记' },
+      { icon: '\ud83d\udd0d', text: '记一下灵感' },
+      { icon: '\ud83e\udde0', text: 'AI 总结最近内容' }
     ]
   },
 

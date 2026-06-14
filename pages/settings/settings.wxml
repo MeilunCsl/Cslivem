@@ -1,266 +1,163 @@
 <!-- pages/settings/settings.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
-
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
     <view class="content">
-
-      <!-- AI Provider -->
       <view class="section anim-fade-up {{ready ? 'anim-visible' : ''}}">
-        <view class="section-title">AI ??</view>
-
+        <view class="section-title">AI 模型</view>
         <view class="provider-list">
-          <view
-            class="provider-item {{activeProvider === 'mimo' ? 'provider-active' : ''}}"
-            bindtap="onProviderChange"
-            data-provider="mimo"
-          >
+          <view class="provider-item {{activeProvider === 'mimo' ? 'provider-active' : ''}}" bindtap="onProviderChange" data-provider="mimo">
             <view class="provider-radio {{activeProvider === 'mimo' ? 'radio-active' : ''}}"></view>
             <view class="provider-info">
-              <text class="provider-name">MiMo (??)</text>
-              <text class="provider-desc">?? MiMo ?????OpenAI ????</text>
+              <text class="provider-name">MiMo (本地)</text>
+              <text class="provider-desc">小米 MiMo 本地模型，OpenAI 兼容格式</text>
             </view>
           </view>
-          <view
-            class="provider-item {{activeProvider === 'ecs' ? 'provider-active' : ''}}"
-            bindtap="onProviderChange"
-            data-provider="ecs"
-          >
+          <view class="provider-item {{activeProvider === 'ecs' ? 'provider-active' : ''}}" bindtap="onProviderChange" data-provider="ecs">
             <view class="provider-radio {{activeProvider === 'ecs' ? 'radio-active' : ''}}"></view>
             <view class="provider-info">
-              <text class="provider-name">ECS ???</text>
-              <text class="provider-desc">??? / ???????</text>
+              <text class="provider-name">ECS 服务端</text>
+              <text class="provider-desc">阿里云 / 自建服务端代理</text>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- MiMo Config -->
       <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider === 'mimo'}}">
-        <view class="section-title">MiMo ??</view>
-
+        <view class="section-title">MiMo 配置</view>
         <view class="config-row">
-          <text class="config-label">??</text>
+          <text class="config-label">启用</text>
           <switch checked="{{mimoEnabled}}" bindchange="onMimoEnabledChange" color="#5B4CFF" />
         </view>
-
         <view class="config-row config-input-row">
           <text class="config-label">Endpoint</text>
-          <input
-            class="config-input"
-            value="{{mimoEndpoint}}"
-            bindinput="onMimoEndpointInput"
-            bindblur="onMimoEndpointSave"
-            placeholder="http://127.0.0.1:11434/v1/chat/completions"
-          />
+          <input class="config-input" value="{{mimoEndpoint}}" bindinput="onMimoEndpointInput" bindblur="onMimoEndpointSave" placeholder="http://127.0.0.1:11434/v1/chat/completions" />
         </view>
-
         <view class="config-row config-input-row">
           <text class="config-label">API Key</text>
-          <input
-            class="config-input"
-            value="{{mimoApiKey}}"
-            bindinput="onMimoApiKeyInput"
-            bindblur="onMimoApiKeySave"
-            placeholder="??"
-            password="true"
-          />
+          <input class="config-input" value="{{mimoApiKey}}" bindinput="onMimoApiKeyInput" bindblur="onMimoApiKeySave" placeholder="可选" password="true" />
         </view>
-
         <view class="config-row config-input-row">
           <text class="config-label">Model</text>
-          <input
-            class="config-input"
-            value="{{mimoModel}}"
-            bindinput="onMimoModelInput"
-            bindblur="onMimoModelSave"
-            placeholder="mimo"
-          />
+          <input class="config-input" value="{{mimoModel}}" bindinput="onMimoModelInput" bindblur="onMimoModelSave" placeholder="mimo" />
         </view>
-
         <view class="action-btn test-btn" bindtap="onTestConnection" hover-class="btn-press">
-          <text>{{testingConnection ? '???...' : '????'}}</text>
+          <text>{{testingConnection ? '测试中...' : '测试连接'}}</text>
         </view>
         <view class="test-result" wx:if="{{testResult}}">{{testResult}}</view>
       </view>
 
-      <!-- ECS Config -->
       <view class="section anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}" wx:if="{{activeProvider === 'ecs'}}">
-        <view class="section-title">ECS ??</view>
-
+        <view class="section-title">ECS 配置</view>
         <view class="config-row">
-          <text class="config-label">??</text>
+          <text class="config-label">启用</text>
           <switch checked="{{ecsEnabled}}" bindchange="onEcsEnabledChange" color="#5B4CFF" />
         </view>
-
         <view class="config-row config-input-row">
           <text class="config-label">Endpoint</text>
-          <input
-            class="config-input"
-            value="{{ecsEndpoint}}"
-            bindinput="onEcsEndpointInput"
-            bindblur="onEcsEndpointSave"
-            placeholder="https://your-ecs-server.com/v1/chat/completions"
-          />
+          <input class="config-input" value="{{ecsEndpoint}}" bindinput="onEcsEndpointInput" bindblur="onEcsEndpointSave" placeholder="https://your-ecs-server.com/v1/chat/completions" />
         </view>
-
         <view class="config-row config-input-row">
           <text class="config-label">API Key</text>
-          <input
-            class="config-input"
-            value="{{ecsApiKey}}"
-            bindinput="onEcsApiKeyInput"
-            bindblur="onEcsApiKeySave"
-            placeholder="Bearer Token"
-            password="true"
-          />
+          <input class="config-input" value="{{ecsApiKey}}" bindinput="onEcsApiKeyInput" bindblur="onEcsApiKeySave" placeholder="Bearer Token" password="true" />
         </view>
-
         <view class="config-row config-input-row">
           <text class="config-label">Model</text>
-          <input
-            class="config-input"
-            value="{{ecsModel}}"
-            bindinput="onEcsModelInput"
-            bindblur="onEcsModelSave"
-            placeholder="qwen-plus"
-          />
+          <input class="config-input" value="{{ecsModel}}" bindinput="onEcsModelInput" bindblur="onEcsModelSave" placeholder="qwen-plus" />
         </view>
-
         <view class="action-btn test-btn" bindtap="onTestConnection" hover-class="btn-press">
-          <text>{{testingConnection ? '???...' : '????'}}</text>
+          <text>{{testingConnection ? '测试中...' : '测试连接'}}</text>
         </view>
         <view class="test-result" wx:if="{{testResult}}">{{testResult}}</view>
       </view>
 
-      <!-- Sync Status -->
       <view class="section anim-fade-up anim-d2 {{ready ? 'anim-visible' : ''}}">
-        <view class="section-title">????</view>
-
+        <view class="section-title">同步状态</view>
         <view class="status-grid">
           <view class="status-item">
             <text class="status-value">{{syncStatus.pending}}</text>
-            <text class="status-label">???</text>
+            <text class="status-label">待同步</text>
           </view>
           <view class="status-item">
             <text class="status-value">{{syncStatus.failed}}</text>
-            <text class="status-label">??</text>
+            <text class="status-label">失败</text>
           </view>
           <view class="status-item">
             <text class="status-value">{{syncStatus.version}}</text>
-            <text class="status-label">??</text>
+            <text class="status-label">版本</text>
           </view>
         </view>
-
         <view class="status-detail" wx:if="{{syncStatus.lastSyncAt}}">
-          <text class="status-time">????: {{syncStatus.lastSyncAt}}</text>
+          <text class="status-time">上次同步: {{syncStatus.lastSyncAt}}</text>
         </view>
-
         <view class="action-row">
-          <view class="action-btn" bindtap="onSync" hover-class="btn-press">
-            <text>????</text>
-          </view>
-          <view class="action-btn action-secondary" bindtap="onRetryFailed" wx:if="{{syncStatus.failed > 0}}" hover-class="btn-press">
-            <text>????</text>
-          </view>
-          <view class="action-btn action-danger" bindtap="onClearQueue" wx:if="{{syncStatus.total > 0}}" hover-class="btn-press">
-            <text>????</text>
-          </view>
+          <view class="action-btn" bindtap="onSync" hover-class="btn-press"><text>立即同步</text></view>
+          <view class="action-btn action-secondary" bindtap="onRetryFailed" wx:if="{{syncStatus.failed > 0}}" hover-class="btn-press"><text>重试失败</text></view>
+          <view class="action-btn action-danger" bindtap="onClearQueue" wx:if="{{syncStatus.total > 0}}" hover-class="btn-press"><text>清空队列</text></view>
         </view>
       </view>
 
-      <!-- Data Management -->
       <view class="section anim-fade-up anim-d3 {{ready ? 'anim-visible' : ''}}">
-        <view class="section-title">????</view>
-
+        <view class="section-title">数据管理</view>
         <view class="stats-grid">
           <view class="stat-item">
             <text class="stat-value">{{dataStats.graphNodes}}</text>
-            <text class="stat-label">????</text>
+            <text class="stat-label">知识节点</text>
           </view>
           <view class="stat-item">
             <text class="stat-value">{{dataStats.graphEdges}}</text>
-            <text class="stat-label">???</text>
+            <text class="stat-label">关联边</text>
           </view>
           <view class="stat-item">
             <text class="stat-value">{{dataStats.notes}}</text>
-            <text class="stat-label">??</text>
+            <text class="stat-label">笔记</text>
           </view>
           <view class="stat-item">
             <text class="stat-value">{{dataStats.storageUsed}}</text>
-            <text class="stat-label">????</text>
+            <text class="stat-label">存储占用</text>
           </view>
         </view>
-
         <view class="action-row">
-          <view class="action-btn" bindtap="onExport" hover-class="btn-press">
-            <text>????</text>
-          </view>
-          <view class="action-btn action-secondary" bindtap="onImport" hover-class="btn-press">
-            <text>????</text>
-          </view>
+          <view class="action-btn" bindtap="onExport" hover-class="btn-press"><text>导出数据</text></view>
+          <view class="action-btn action-secondary" bindtap="onImport" hover-class="btn-press"><text>导入数据</text></view>
         </view>
-
         <view class="action-row" style="margin-top: 20rpx;">
-          <view class="action-btn action-danger" bindtap="onResetGraph" hover-class="btn-press">
-            <text>??????</text>
-          </view>
+          <view class="action-btn action-danger" bindtap="onResetGraph" hover-class="btn-press"><text>重置知识图谱</text></view>
         </view>
       </view>
-
     </view>
   </scroll-view>
 
-  <!-- Export Modal -->
   <view class="modal-overlay {{showExportModal ? 'show' : ''}}" catchtap="onExportClose"></view>
   <view class="modal {{showExportModal ? 'modal-in' : ''}}">
-    <view class="modal-title">????</view>
+    <view class="modal-title">导出数据</view>
     <view class="modal-body" wx:if="{{exportPreview}}">
-      <view class="preview-item">
-        <text>????: {{exportPreview.graphNodes}}</text>
-      </view>
-      <view class="preview-item">
-        <text>???: {{exportPreview.graphEdges}}</text>
-      </view>
-      <view class="preview-item">
-        <text>??: {{exportPreview.notes}}</text>
-      </view>
-      <view class="preview-item">
-        <text>????: {{exportPreview.calendarEvents}}</text>
-      </view>
-      <view class="preview-item">
-        <text>??: {{exportPreview.ledgerTransactions}}</text>
-      </view>
-      <view class="modal-tip">???????????</view>
+      <view class="preview-item"><text>知识节点: {{exportPreview.graphNodes}}</text></view>
+      <view class="preview-item"><text>关联边: {{exportPreview.graphEdges}}</text></view>
+      <view class="preview-item"><text>笔记: {{exportPreview.notes}}</text></view>
+      <view class="preview-item"><text>日历事件: {{exportPreview.calendarEvents}}</text></view>
+      <view class="preview-item"><text>账单: {{exportPreview.ledgerTransactions}}</text></view>
+      <view class="modal-tip">导出数据将复制到剪贴板</view>
     </view>
     <view class="modal-actions">
-      <view class="modal-btn" bindtap="onExportClose">??</view>
-      <view class="modal-btn modal-btn-primary" bindtap="onExportConfirm">????</view>
+      <view class="modal-btn" bindtap="onExportClose">取消</view>
+      <view class="modal-btn modal-btn-primary" bindtap="onExportConfirm">确认导出</view>
     </view>
   </view>
 
-  <!-- Import Modal -->
   <view class="modal-overlay {{showImportModal ? 'show' : ''}}" catchtap="onImportClose"></view>
   <view class="modal {{showImportModal ? 'modal-in' : ''}}">
-    <view class="modal-title">????</view>
+    <view class="modal-title">导入数据</view>
     <view class="modal-body">
-      <textarea
-        class="import-textarea"
-        value="{{importJson}}"
-        bindinput="onImportJsonInput"
-        placeholder="????? JSON ??..."
-        maxlength="-1"
-        auto-height
-      />
+      <textarea class="import-textarea" value="{{importJson}}" bindinput="onImportJsonInput" placeholder="粘贴导出的 JSON 数据..." maxlength="-1" auto-height />
       <view class="action-btn action-secondary" bindtap="onImportFromClipboard" hover-class="btn-press" style="margin-top: 16rpx;">
-        <text>??????</text>
+        <text>从剪贴板粘贴</text>
       </view>
-      <view class="modal-tip">?????????????ID????????</view>
+      <view class="modal-tip">导入将合并到现有数据，相同ID的更新为最新版本</view>
     </view>
     <view class="modal-actions">
-      <view class="modal-btn" bindtap="onImportClose">??</view>
-      <view class="modal-btn modal-btn-primary" bindtap="onImportConfirm">????</view>
+      <view class="modal-btn" bindtap="onImportClose">取消</view>
+      <view class="modal-btn modal-btn-primary" bindtap="onImportConfirm">确认导入</view>
     </view>
   </view>
-
 </view>

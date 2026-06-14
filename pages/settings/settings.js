@@ -12,8 +12,8 @@ Page({
     // AI Provider
     activeProvider: 'mimo',
     providers: [
-      { id: 'mimo', name: 'MiMo (??)', desc: '?? MiMo ????' },
-      { id: 'ecs', name: 'ECS ???', desc: '??? / ????' }
+      { id: 'mimo', name: 'MiMo (本地)', desc: '小米 MiMo 本地模型' },
+      { id: 'ecs', name: 'ECS 服务端', desc: '阿里云 / 自建服务端' }
     ],
 
     // MiMo Config
@@ -119,7 +119,7 @@ Page({
     var config = apiConfig.getConfig();
     config.activeProvider = provider;
     apiConfig.saveConfig(config);
-    wx.showToast({ title: '???? ' + provider, icon: 'none' });
+    wx.showToast({ title: '已切换到 ' + provider, icon: 'none' });
   },
 
   // ===== MiMo Config =====
@@ -135,7 +135,7 @@ Page({
 
   onMimoEndpointSave: function() {
     apiConfig.updateProvider('mimo', { endpoint: this.data.mimoEndpoint });
-    wx.showToast({ title: '???', icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   onMimoApiKeyInput: function(e) {
@@ -144,7 +144,7 @@ Page({
 
   onMimoApiKeySave: function() {
     apiConfig.updateProvider('mimo', { apiKey: this.data.mimoApiKey });
-    wx.showToast({ title: '???', icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   onMimoModelInput: function(e) {
@@ -153,7 +153,7 @@ Page({
 
   onMimoModelSave: function() {
     apiConfig.updateProvider('mimo', { model: this.data.mimoModel });
-    wx.showToast({ title: '???', icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   // ===== ECS Config =====
@@ -169,7 +169,7 @@ Page({
 
   onEcsEndpointSave: function() {
     apiConfig.updateProvider('ecs', { endpoint: this.data.ecsEndpoint });
-    wx.showToast({ title: '???', icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   onEcsApiKeyInput: function(e) {
@@ -178,7 +178,7 @@ Page({
 
   onEcsApiKeySave: function() {
     apiConfig.updateProvider('ecs', { apiKey: this.data.ecsApiKey });
-    wx.showToast({ title: '???', icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   onEcsModelInput: function(e) {
@@ -187,7 +187,7 @@ Page({
 
   onEcsModelSave: function() {
     apiConfig.updateProvider('ecs', { model: this.data.ecsModel });
-    wx.showToast({ title: '???', icon: 'success' });
+    wx.showToast({ title: '已保存', icon: 'success' });
   },
 
   // ===== Test Connection =====
@@ -195,15 +195,15 @@ Page({
     var self = this;
     self.setData({ testingConnection: true, testResult: '' });
     var gateway = require('../../miniprogram/ai-gateway');
-    gateway.ask('??', '????').then(function(result) {
+    gateway.ask('你好', '测试连接').then(function(result) {
       self.setData({
         testingConnection: false,
-        testResult: '???? (' + result.mode + '): ' + result.content.substring(0, 50)
+        testResult: '连接成功 (' + result.mode + '): ' + result.content.substring(0, 50)
       });
     }).catch(function(err) {
       self.setData({
         testingConnection: false,
-        testResult: '????: ' + err.message
+        testResult: '连接失败: ' + err.message
       });
     });
   },
@@ -211,36 +211,36 @@ Page({
   // ===== Sync Actions =====
   onSync: function() {
     var self = this;
-    wx.showLoading({ title: '???...' });
+    wx.showLoading({ title: '同步中...' });
     ecsAdapter.sync().then(function(result) {
       wx.hideLoading();
       self.loadSyncStatus();
       wx.showToast({
-        title: result.mode === 'offline' ? '???ECS' : '????',
+        title: result.mode === 'offline' ? '未配置ECS' : '同步完成',
         icon: result.mode === 'offline' ? 'none' : 'success'
       });
     }).catch(function(err) {
       wx.hideLoading();
-      wx.showToast({ title: '????: ' + err.message, icon: 'none' });
+      wx.showToast({ title: '同步失败: ' + err.message, icon: 'none' });
     });
   },
 
   onRetryFailed: function() {
     var count = ecsAdapter.retryFailed();
     this.loadSyncStatus();
-    wx.showToast({ title: '??? ' + count + ' ?', icon: 'none' });
+    wx.showToast({ title: '已重试 ' + count + ' 条', icon: 'none' });
   },
 
   onClearQueue: function() {
     var self = this;
     wx.showModal({
-      title: '????',
-      content: '????????????',
+      title: '已同步',
+      content: '确定清空所有待同步操作？',
       success: function(res) {
         if (res.confirm) {
           ecsAdapter.clearQueue();
           self.loadSyncStatus();
-          wx.showToast({ title: '???', icon: 'success' });
+          wx.showToast({ title: '已保存', icon: 'success' });
         }
       }
     });
@@ -259,7 +259,7 @@ Page({
       data: jsonStr,
       success: function() {
         self.setData({ showExportModal: false });
-        wx.showToast({ title: '???????', icon: 'success' });
+        wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
       }
     });
   },
@@ -283,7 +283,7 @@ Page({
       success: function(res) {
         if (res.data) {
           self.setData({ importJson: res.data });
-          wx.showToast({ title: '???', icon: 'success' });
+          wx.showToast({ title: '已保存', icon: 'success' });
         }
       }
     });
@@ -293,21 +293,21 @@ Page({
     var self = this;
     var jsonStr = this.data.importJson.trim();
     if (!jsonStr) {
-      wx.showToast({ title: '???JSON??', icon: 'none' });
+      wx.showToast({ title: '请输入JSON数据', icon: 'none' });
       return;
     }
     wx.showModal({
-      title: '????',
-      content: '?????????????????',
+      title: '已同步',
+      content: '导入将合并到现有数据，确定继续？',
       success: function(res) {
         if (res.confirm) {
           var result = ecsAdapter.importData(jsonStr);
           if (result.success) {
             self.setData({ showImportModal: false });
             self.loadStats();
-            wx.showToast({ title: '????', icon: 'success' });
+            wx.showToast({ title: '已同步', icon: 'success' });
           } else {
-            wx.showToast({ title: '????: ' + result.error, icon: 'none' });
+            wx.showToast({ title: '导入失败: ' + result.error, icon: 'none' });
           }
         }
       }
@@ -322,13 +322,13 @@ Page({
   onResetGraph: function() {
     var self = this;
     wx.showModal({
-      title: '??????',
-      content: '???????????????????',
+      title: '清空队列',
+      content: '此操作不可恢复，确定清空所有节点和边？',
       success: function(res) {
         if (res.confirm) {
           graphEngine.resetGraph();
           self.loadStats();
-          wx.showToast({ title: '???', icon: 'success' });
+          wx.showToast({ title: '已保存', icon: 'success' });
         }
       }
     });

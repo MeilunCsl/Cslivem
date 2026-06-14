@@ -15,7 +15,7 @@
           <view class="logo-glow"></view>
         </view>
         <text class="brand-name">Cslivem</text>
-        <text class="brand-tagline">????????</text>
+        <text class="brand-tagline">今天想了解什么？</text>
       </view>
 
       <!-- Input Box (real input) -->
@@ -23,7 +23,7 @@
         <view class="input-box {{inputFocused ? 'input-focused' : ''}}">
           <input
             class="input-field"
-            placeholder="??????..."
+            placeholder="输入你的问题..."
             placeholder-class="input-placeholder"
             value="{{inputValue}}"
             bindinput="onInput"
