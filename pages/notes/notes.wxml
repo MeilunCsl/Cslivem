@@ -41,7 +41,6 @@
     </view>
   </scroll-view>
 
-  </view>
   <view class="fab-create" bindtap="createNote" hover-class="fab-press">
     <text class="fab-icon">+</text>
   </view>
