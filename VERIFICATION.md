@@ -527,3 +527,35 @@
 ---
 
 *v1.0.0-rc.1 验收通过 — 全功能完成，可进入正式发布。*
+
+## v2.0.0 — Full Platform (2026-06-14)
+
+**验收人**: cansen (auto-verify)
+
+### New Modules (5)
+- [x] Flashcard: SM-2 algorithm, deck/card CRUD, review mode, stats
+- [x] Mood: 5-level selection, daily record, streak, 7-day history
+- [x] Image Compression: wx.compressImage, quality slider, batch, save
+- [x] Text Processing: char count, case convert, sort, dedup, reverse
+- [x] Unit Conversion: 5 categories, 20+ units, real-time, swap
+
+### Quality Checks (all 5 modules)
+- [x] All files BOM clean
+- [x] All JS braces balanced
+- [x] All WXSS braces balanced
+- [x] All JSON valid
+- [x] All WXML tags balanced
+- [x] All registered in app.json
+- [x] All registered in app.js (tool-registry)
+- [x] All routes in tools.js
+
+### Final Project Stats
+- [x] 27 pages
+- [x] 16 modules
+- [x] 4 components
+- [x] 240+ files
+- [x] All commits pushed to GitHub
+
+---
+
+*v2.0.0 验收通过 — 平台完成。*
