@@ -297,7 +297,7 @@
 
 /* Quick Tools Grid */
 .quick-tools { margin-bottom: 32rpx; }
-.tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20rpx; }
+.tools-grid { display: flex; gap: 24rpx; overflow-x: auto; white-space: nowrap; padding-bottom: 8rpx; }
 .tool-item { display: flex; flex-direction: column; align-items: center; padding: 24rpx 0; background: var(--color-card); border-radius: 24rpx; }
 .tool-icon { font-size: 40rpx; margin-bottom: 8rpx; }
 .tool-name { font-size: 22rpx; color: var(--color-text-secondary); }
