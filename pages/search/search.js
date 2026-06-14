@@ -2,6 +2,11 @@
 var noteModule = require('../../modules/note/public');
 var calendarModule = require('../../modules/calendar/public');
 var ledgerModule = require('../../modules/ledger/public');
+var habitModule = require('../../modules/habit/public');
+var fcModule = require('../../modules/flashcard/public');
+var foodModule = require('../../modules/food/public');
+var cdModule = require('../../modules/countdown/public');
+var convStore = require('../../core/conversation/store');
 
 Page({
   data: {
@@ -10,7 +15,7 @@ Page({
     query: '',
     results: [],
     searched: false,
-    hotKeys: ['笔记', '今日', '收支', '支出', '收藏']
+    hotKeys: ['笔记', '习惯', '闪卡', '饮食', '心情']
   },
 
   onLoad: function(options) {
@@ -89,6 +94,58 @@ Page({
             id: tx.id,
             url: '/pages/ledger/ledger'
           });
+        }
+      });
+    } catch (e) {}
+
+
+    // Search habits
+    try {
+      var habits = habitModule.getHabits();
+      habits.forEach(function(h) {
+        if (h.name && h.name.toLowerCase().indexOf(qLower) >= 0) {
+          results.push({ type: 'habit', icon: h.icon, title: h.name, subtitle: '习惯', id: h.id, url: '/pages/habit/habit' });
+        }
+      });
+    } catch (e) {}
+
+    // Search flashcard decks
+    try {
+      var decks = fcModule.getDecks();
+      decks.forEach(function(d) {
+        if (d.name && d.name.toLowerCase().indexOf(qLower) >= 0) {
+          results.push({ type: 'flashcard', icon: '◆', title: d.name, subtitle: d.cardCount + ' 张', id: d.id, url: '/pages/flashcard/flashcard' });
+        }
+      });
+    } catch (e) {}
+
+    // Search food records
+    try {
+      var today = new Date().toISOString().substring(0, 10);
+      var foodRecords = foodModule.getByDate(today);
+      foodRecords.forEach(function(r) {
+        if (r.name && r.name.toLowerCase().indexOf(qLower) >= 0) {
+          results.push({ type: 'food', icon: '◈', title: r.name, subtitle: r.calories + '卡', id: r.id, url: '/pages/food/food' });
+        }
+      });
+    } catch (e) {}
+
+    // Search countdowns
+    try {
+      var countdowns = cdModule.getAll();
+      countdowns.forEach(function(c) {
+        if (c.title && c.title.toLowerCase().indexOf(qLower) >= 0) {
+          results.push({ type: 'countdown', icon: c.icon, title: c.title, subtitle: c.date, id: c.id, url: '/pages/countdown/countdown' });
+        }
+      });
+    } catch (e) {}
+
+    // Search conversations
+    try {
+      var convs = convStore.getRecentConversations(50);
+      convs.forEach(function(c) {
+        if ((c.title || '').toLowerCase().indexOf(qLower) >= 0) {
+          results.push({ type: 'conversation', icon: '○', title: c.title || '新对话', subtitle: (c.summary || '').substring(0, 40), id: c.id, url: '/pages/chat/chat?id=' + c.id });
         }
       });
     } catch (e) {}
