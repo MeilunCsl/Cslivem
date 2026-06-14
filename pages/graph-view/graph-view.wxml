@@ -6,9 +6,23 @@
   <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
     <view class="back-btn" bindtap="onBack" hover-class="btn-press">←</view>
     <text class="header-title">知识图谱</text>
-    <view class="stats">
-      <text class="stat">{{nodeCount}} 节点</text>
-      <text class="stat">{{edgeCount}} 边</text>
+    <view class="header-actions">
+      <view class="search-toggle" bindtap="toggleSearch" hover-class="btn-press">🔍</view>
+      <view class="stats">
+        <text class="stat">{{nodeCount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Search Bar -->
+  <view class="search-bar {{showSearch ? 'show' : ''}}" wx:if="{{showSearch}}">
+    <input class="search-input" placeholder="搜索节点..." value="{{searchQuery}}" bindinput="onSearchInput" focus="{{showSearch}}" />
+    <view class="search-results" wx:if="{{searchResults.length > 0}}">
+      <view class="search-item" wx:for="{{searchResults}}" wx:key="id" bindtap="onSearchResultTap" data-id="{{item.id}}" hover-class="item-press">
+        <view class="search-dot" style="background: {{item.type === 'note' ? '#5B4CFF' : item.type === 'tag' ? '#3A7BFF' : '#00D4D9'}}"></view>
+        <text class="search-label">{{item.label}}</text>
+        <text class="search-type">{{item.type}}</text>
+      </view>
     </view>
   </view>
 
@@ -24,12 +38,17 @@
 
   <!-- Selected Node Info -->
   <view class="node-info {{selectedNode ? 'show' : ''}}" wx:if="{{selectedNode}}">
-    <view class="node-info-header">
-      <text class="node-label">{{selectedNode.label}}</text>
-      <text class="node-type">{{selectedNode.type}}</text>
+    <view class="node-info-row">
+      <view class="node-dot" style="background: {{selectedNode.type === 'note' ? '#5B4CFF' : selectedNode.type === 'tag' ? '#3A7BFF' : '#00D4D9'}}"></view>
+      <view class="node-info-text">
+        <text class="node-label">{{selectedNode.label}}</text>
+        <text class="node-type">{{selectedNode.type}} · {{selectedNode.neighbors.length}} 连接</text>
+      </view>
     </view>
-    <view class="node-action" bindtap="onNodeTap" hover-class="action-press" wx:if="{{selectedNode.refId}}">
-      <text>查看笔记 →</text>
+    <view class="node-actions">
+      <view class="node-action" bindtap="onNodeDetail" hover-class="action-press" wx:if="{{selectedNode.refId}}">
+        <text>查看笔记 →</text>
+      </view>
     </view>
   </view>
 </view>

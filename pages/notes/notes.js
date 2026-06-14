@@ -70,7 +70,11 @@ Page({
     wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + id });
   },
 
-  createNote() {
+  openGraph: function() {
+    wx.navigateTo({ url: '/pages/graph-view/graph-view' });
+  },
+
+  createNote: function() {
     wx.navigateTo({ url: '/pages/note-editor/note-editor' });
   }
 });
