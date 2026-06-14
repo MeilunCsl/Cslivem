@@ -51,7 +51,7 @@ Page({
     this.setData({ isSending: true, inputValue: '' });
     // Navigate to AI chat with the question
     wx.navigateTo({
-      url: '/pages/ai-chat/ai-chat?query=' + encodeURIComponent(text),
+      url: '/pages/chat/chat?send=' + encodeURIComponent(text),
       complete: function() {
         // Reset sending state after navigation
       }
@@ -67,7 +67,7 @@ Page({
     if (text.indexOf('搜索') >= 0 || text.indexOf('整理') >= 0) {
       wx.navigateTo({ url: '/pages/search/search?query=' + encodeURIComponent(text) });
     } else {
-      wx.navigateTo({ url: '/pages/ai-chat/ai-chat?query=' + encodeURIComponent(text) });
+      wx.navigateTo({ url: '/pages/chat/chat?send=' + encodeURIComponent(text) });
     }
   },
 

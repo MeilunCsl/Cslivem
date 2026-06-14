@@ -1,0 +1,54 @@
+﻿<!-- pages/chat/chat.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  
+  <!-- Nav bar -->
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack" hover-class="nav-press">‹</view>
+    <view class="nav-title">{{conversation.title || '新对话'}}</view>
+    <view class="nav-more" bindtap="onMore">⋯</view>
+  </view>
+
+  <!-- Messages -->
+  <scroll-view scroll-y class="msg-scroll" scroll-into-view="{{scrollTarget}}" enhanced show-scrollbar="{{false}}">
+    <view class="msg-list">
+      <view class="msg-empty" wx:if="{{messages.length === 0}}">
+        <text class="msg-empty-text">开始你的对话吧</text>
+      </view>
+      <view class="msg-item {{item.role}}" wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}" bindlongpress="onMessageLongPress" data-id="{{item.id}}">
+        <view class="msg-bubble">
+          <text class="msg-content">{{item.content}}</text>
+          <text class="msg-model" wx:if="{{item.model}}">{{item.model}}</text>
+        </view>
+        <text class="msg-time">{{item.createdAt}}</text>
+      </view>
+      <view class="msg-item assistant" wx:if="{{sending}}">
+        <view class="msg-bubble">
+          <text class="msg-thinking">正在思考...</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Input -->
+  <view class="input-bar">
+    <input class="msg-input" placeholder="输入消息..." value="{{inputText}}" bindinput="onInput" bindconfirm="onSend" confirm-type="send" />
+    <view class="send-btn {{inputText ? 'active' : ''}}" bindtap="onSend" hover-class="send-press">
+      <text class="send-arrow">↑</text>
+    </view>
+  </view>
+
+  <!-- Actions overlay -->
+  <view class="actions-overlay {{showActions ? 'show' : ''}}" bindtap="hideActions"></view>
+  <view class="actions-panel {{showActions ? 'show' : ''}}">
+    <view class="action-item" bindtap="onCopyMessage">
+      <text>📋 复制</text>
+    </view>
+    <view class="action-item" bindtap="onSaveAsNote">
+      <text>📝 保存为笔记</text>
+    </view>
+    <view class="action-item action-danger" bindtap="onDeleteMessage">
+      <text>🗑 删除</text>
+    </view>
+  </view>
+</view>

@@ -2,6 +2,8 @@
   "pages": [
     "pages/home/home",
     "pages/notes/notes",
+    "pages/chat/chat",
+    "pages/conversations/conversations",
     "pages/note-detail/note-detail",
     "pages/note-editor/note-editor",
     "pages/calendar/calendar",
@@ -34,16 +36,16 @@
         "selectedIconPath": "assets/icons/home-active.png"
       },
       {
-        "pagePath": "pages/notes/notes",
-        "text": "知识",
+        "pagePath": "pages/conversations/conversations",
+        "text": "对话",
         "iconPath": "assets/icons/notes.png",
         "selectedIconPath": "assets/icons/notes-active.png"
       },
       {
-        "pagePath": "pages/calendar/calendar",
-        "text": "日历",
-        "iconPath": "assets/icons/calendar.png",
-        "selectedIconPath": "assets/icons/calendar-active.png"
+        "pagePath": "pages/notes/notes",
+        "text": "知识",
+        "iconPath": "assets/icons/notes.png",
+        "selectedIconPath": "assets/icons/notes-active.png"
       },
       {
         "pagePath": "pages/tools/tools",

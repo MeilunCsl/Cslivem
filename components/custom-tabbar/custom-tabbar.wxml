@@ -5,18 +5,18 @@
       <image class="tab-icon" src="/assets/icons/{{selected === 0 ? 'home-active' : 'home'}}.png" mode="aspectFit" />
       <text class="tab-text">首页</text>
     </view>
-    <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/notes/notes" hover-class="tab-press">
+    <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/conversations/conversations" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 1 ? 'notes-active' : 'notes'}}.png" mode="aspectFit" />
-      <text class="tab-text">知识</text>
+      <text class="tab-text">对话</text>
     </view>
     <view class="tab-item tab-center" bindtap="togglePanel">
       <view class="fab {{showPanel ? 'fab-rotated' : ''}}">
         <text class="fab-icon">+</text>
       </view>
     </view>
-    <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/calendar/calendar" hover-class="tab-press">
-      <image class="tab-icon" src="/assets/icons/{{selected === 2 ? 'calendar-active' : 'calendar'}}.png" mode="aspectFit" />
-      <text class="tab-text">日历</text>
+    <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/notes/notes" hover-class="tab-press">
+      <image class="tab-icon" src="/assets/icons/{{selected === 2 ? 'notes-active' : 'notes'}}.png" mode="aspectFit" />
+      <text class="tab-text">知识</text>
     </view>
     <view class="tab-item {{selected === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3" data-url="/pages/tools/tools" hover-class="tab-press">
       <image class="tab-icon" src="/assets/icons/{{selected === 3 ? 'tools-active' : 'tools'}}.png" mode="aspectFit" />

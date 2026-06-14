@@ -1,0 +1,61 @@
+﻿<!-- pages/conversations/conversations.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="page-container">
+      <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+        <text class="page-title">对话</text>
+        <text class="page-sub">{{stats.conversations}} 个会话 · {{stats.messages}} 条消息</text>
+      </view>
+
+      <view class="search-section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="search-box">
+          <text class="search-icon">🔍</text>
+          <input class="search-field" placeholder="搜索对话..." value="{{searchQuery}}" bindinput="onSearch" />
+          <text class="clear-btn" wx:if="{{searchQuery}}" bindtap="onClearSearch">✕</text>
+        </view>
+      </view>
+
+      <scroll-view scroll-x class="filters-scroll anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" enhanced show-scrollbar="{{false}}">
+        <view class="filters-row">
+          <view class="filter {{activeFilter === item.key ? 'active' : ''}}" wx:for="{{filters}}" wx:key="key" bindtap="setFilter" data-filter="{{item.key}}" hover-class="filter-press">
+            {{item.label}}
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="conv-list">
+        <card className="conv-item anim-fade anim-d{{index < 4 ? index + 3 : 5}} {{ready ? 'anim-show' : ''}}" wx:for="{{conversations}}" wx:key="id" bindtap="onTapConversation" data-id="{{item.id}}" hover-class="conv-press">
+          <view class="conv-header">
+            <text class="conv-icon">{{item.typeIcon}}</text>
+            <view class="conv-info">
+              <text class="conv-title">{{item.title || '新对话'}}</text>
+              <text class="conv-meta">{{item.messageCount}} 条消息 · {{item.timeAgo}}</text>
+            </view>
+            <view class="conv-actions">
+              <text class="conv-pin" wx:if="{{item.pinned}}" bindtap="onTogglePin" data-id="{{item.id}}">📌</text>
+              <text class="conv-delete" bindtap="onDelete" data-id="{{item.id}}">🗑</text>
+            </view>
+          </view>
+          <text class="conv-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
+          <view class="conv-footer">
+            <text class="conv-status {{item.ingested ? 'status-ingested' : ''}}">{{item.ingested ? '已入库' : '未入库'}}</text>
+            <text class="conv-model" wx:if="{{item.model}}">{{item.model}}</text>
+          </view>
+        </card>
+      </view>
+
+      <view class="empty anim-fade {{ready ? 'anim-show' : ''}}" wx:if="{{conversations.length === 0}}">
+        <text class="empty-icon">💬</text>
+        <text class="empty-text">还没有对话</text>
+        <text class="empty-hint">从首页开始你的第一次对话</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="fab-create" bindtap="onCreateNew" hover-class="fab-press">
+    <text class="fab-icon">+</text>
+  </view>
+
+  <custom-tabbar selected="{{1}}" />
+</view>
