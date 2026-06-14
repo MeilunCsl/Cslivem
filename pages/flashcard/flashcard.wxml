@@ -1,0 +1,55 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">{{view === 'review' ? '复习' : view === 'deck-detail' ? currentDeck.name : '闪卡复习'}}</view>
+  </view>
+
+  <!-- Deck List -->
+  <scroll-view scroll-y class="content" wx:if="{{view === 'decks'}}">
+    <view class="stats-bar">
+      <view class="stat-item"><text class="stat-val">{{stats.totalCards || 0}}</text><text class="stat-lbl">总卡片</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.dueNow || 0}}</text><text class="stat-lbl">待复习</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.todayReviews || 0}}</text><text class="stat-lbl">今日</text></view>
+    </view>
+    <view class="deck-list">
+      <view class="deck-card" wx:for="{{decks}}" wx:key="id" bindtap="onDeckTap" data-id="{{item.id}}" hover-class="deck-press">
+        <view class="deck-info"><text class="deck-name">{{item.name}}</text><text class="deck-meta">{{item.cardCount}} 张 · {{item.dueCount}} 待复习</text></view>
+        <view class="deck-del" catchtap="onDeleteDeck" data-id="{{item.id}}">×</view>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{decks.length === 0}}"><text class="empty-icon">◆</text><text class="empty-text">还没有卡组</text></view>
+    <view class="create-btn" bindtap="toggleCreateDeck" hover-class="btn-press"><text>＋ 新建卡组</text></view>
+    <view class="create-form" wx:if="{{showCreateDeck}}">
+      <input class="form-input" placeholder="卡组名称" value="{{newDeckName}}" bindinput="onDeckNameInput" />
+      <view class="submit-btn" bindtap="onCreateDeck" hover-class="btn-press">创建</view>
+    </view>
+  </scroll-view>
+
+  <!-- Deck Detail -->
+  <view class="content" wx:if="{{view === 'deck-detail'}}">
+    <view class="detail-header">
+      <text class="detail-count">{{dueCards.length}} 张待复习</text>
+      <view class="review-btn" bindtap="onStartReview" hover-class="btn-press"><text>开始复习</text></view>
+    </view>
+    <view class="create-btn" bindtap="toggleCreateCard" hover-class="btn-press"><text>＋ 添加卡片</text></view>
+    <view class="create-form" wx:if="{{showCreateCard}}">
+      <input class="form-input" placeholder="正面 (问题)" value="{{newCardFront}}" bindinput="onCardFrontInput" />
+      <input class="form-input" placeholder="反面 (答案)" value="{{newCardBack}}" bindinput="onCardBackInput" />
+      <view class="submit-btn" bindtap="onCreateCard" hover-class="btn-press">添加</view>
+    </view>
+  </view>
+
+  <!-- Review Mode -->
+  <view class="review-area" wx:if="{{view === 'review' && currentCard}}">
+    <view class="review-progress"><text>{{cardIndex + 1}} / {{dueCards.length}}</text></view>
+    <view class="flashcard {{showAnswer ? 'flipped' : ''}}" bindtap="onFlipCard">
+      <view class="card-face card-front"><text class="card-text">{{currentCard.front}}</text></view>
+      <view class="card-face card-back"><text class="card-text">{{currentCard.back}}</text></view>
+    </view>
+    <view class="rating-btns" wx:if="{{showAnswer}}">
+      <view class="rate-btn rate-hard" bindtap="onRateCard" data-quality="1" hover-class="btn-press"><text>困难</text></view>
+      <view class="rate-btn rate-ok" bindtap="onRateCard" data-quality="3" hover-class="btn-press"><text>还行</text></view>
+      <view class="rate-btn rate-easy" bindtap="onRateCard" data-quality="5" hover-class="btn-press"><text>简单</text></view>
+    </view>
+  </view>
+</view>
