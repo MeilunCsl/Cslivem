@@ -4,6 +4,7 @@ var gateway = require('../../miniprogram/ai-gateway');
 var types = require('../../core/conversation/types');
 var assetStore = require('../../core/assets/local-asset-store');
 var format = require('../../utils/format');
+var recorder = require('../../core/audio/recorder');
 
 Page({
   data: {
@@ -325,6 +326,44 @@ Page({
       this._typingTimer = null;
     }
     this.setData({ isStreaming: false, streamingContent: '' });
+  },
+
+
+  onChooseImage: function() {
+    var self = this;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: function(res) {
+        var filePath = res.tempFilePaths[0];
+        self.setData({ pendingAttachment: { type: 'image', filePath: filePath } });
+        wx.showToast({ title: '图片已选择', icon: 'success' });
+      }
+    });
+  },
+
+  onStartRecord: function() {
+    var self = this;
+    recorder.onStop(function(res) {
+      var tempFilePath = res.tempFilePath;
+      self.setData({
+        pendingAttachment: { type: 'voice', filePath: tempFilePath },
+        recording: false
+      });
+      wx.showToast({ title: '录音完成', icon: 'success' });
+    });
+    recorder.onError(function(err) {
+      self.setData({ recording: false });
+      wx.showToast({ title: '录音失败', icon: 'none' });
+    });
+    recorder.start({ duration: 60000 });
+    self.setData({ recording: true });
+    wx.showToast({ title: '正在录音...', icon: 'none', duration: 60000 });
+  },
+
+  onStopRecord: function() {
+    recorder.stop();
   },
 
   onBack: function() {
