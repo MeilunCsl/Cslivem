@@ -1,5 +1,7 @@
 // pages/ai-chat/ai-chat.js
 var aiGateway = require('../../miniprogram/ai-gateway');
+var graphQuery = require('../../core/graph/graph-query');
+var graphEngine = require('../../core/graph/graph-engine');
 
 Page({
   data: {
@@ -39,7 +41,20 @@ Page({
     this.scrollToBottom();
 
     var self = this;
-    aiGateway.ask(text).then(function(result) {
+    // Build context from knowledge graph
+    var context = 'You are Cslivem AI assistant. ';
+    var related = graphQuery.searchNodes(text);
+    if (related.length > 0) {
+      context += 'Related knowledge from user\'s graph: ';
+      related.slice(0, 5).forEach(function(n) {
+        context += n.label + ' (' + n.type + '), ';
+      });
+      context += '. ';
+    }
+    var stats = graphEngine.getStats();
+    context += 'User has ' + stats.nodeCount + ' knowledge nodes and ' + stats.edgeCount + ' connections. ';
+
+    aiGateway.ask(text, context).then(function(result) {
       var msgs = self.data.messages.concat([{
         role: 'assistant',
         content: result.content,

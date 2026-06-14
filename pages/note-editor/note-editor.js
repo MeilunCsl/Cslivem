@@ -117,6 +117,57 @@ Page({
     }
   },
 
+  // AI Assistance
+  aiSuggestTitle: function() {
+    if (!this.data.content.trim()) {
+      wx.showToast({ title: '请先输入内容', icon: 'none' });
+      return;
+    }
+    var self = this;
+    var aiGateway = require('../../miniprogram/ai-gateway');
+    aiGateway.ask('为以下内容生成一个简洁标题（不超过20字，只返回标题）：\n' + self.data.content.substring(0, 500))
+      .then(function(r) {
+        self.setData({ title: r.content.replace(/['"]/g, '').trim() });
+        wx.showToast({ title: '标题已生成', icon: 'success' });
+      })
+      .catch(function() { wx.showToast({ title: 'AI 服务不可用', icon: 'none' }); });
+  },
+
+  aiSuggestTags: function() {
+    if (!this.data.content.trim()) {
+      wx.showToast({ title: '请先输入内容', icon: 'none' });
+      return;
+    }
+    var self = this;
+    var aiGateway = require('../../miniprogram/ai-gateway');
+    aiGateway.suggestTags(self.data.content)
+      .then(function(r) {
+        var tags = r.tags || [];
+        if (tags.length > 0) {
+          wx.showToast({ title: '建议标签: ' + tags.join(', '), icon: 'none', duration: 3000 });
+        }
+      })
+      .catch(function() { wx.showToast({ title: 'AI 服务不可用', icon: 'none' }); });
+  },
+
+  aiSummarize: function() {
+    if (!this.data.content.trim()) {
+      wx.showToast({ title: '请先输入内容', icon: 'none' });
+      return;
+    }
+    var self = this;
+    var aiGateway = require('../../miniprogram/ai-gateway');
+    aiGateway.summarize(self.data.content)
+      .then(function(r) {
+        wx.showModal({
+          title: 'AI 摘要',
+          content: r.summary || '(空)',
+          showCancel: false
+        });
+      })
+      .catch(function() { wx.showToast({ title: 'AI 服务不可用', icon: 'none' }); });
+  },
+
   goBack: function() { wx.navigateBack(); },
 
   save: function() {
