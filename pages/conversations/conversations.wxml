@@ -1,7 +1,7 @@
 <!-- pages/conversations/conversations.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
-  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}" bindscrolltolower="onScrollToLower" lower-threshold="200">
     <view class="page-container">
       <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
         <text class="page-title">对话</text>
