@@ -26,6 +26,7 @@
     "pages/scanner/scanner",
     "pages/search/search",
     "pages/settings/settings",
+    "pages/stats/stats",
     "pages/text-tool/text-tool",
     "pages/todo/todo",
     "pages/tools/tools"

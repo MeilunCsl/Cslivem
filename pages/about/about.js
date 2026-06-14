@@ -82,6 +82,10 @@ Page({
     });
   },
 
+  onGoStats: function() {
+    wx.navigateTo({ url: '/pages/stats/stats' });
+  },
+
   onFeedback: function() {
     wx.setClipboardData({
       data: 'https://github.com/MeilunCsl/Cslivem/issues',

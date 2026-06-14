@@ -53,6 +53,7 @@
       </view>
 
       <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="action-btn" bindtap="onGoStats" hover-class="btn-press"><text>数据统计</text></view>
         <view class="action-btn" bindtap="onClearCache" hover-class="btn-press">
           <text>清理缓存</text>
         </view>

@@ -1,0 +1,86 @@
+<!-- pages/stats/stats.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="content">
+      <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+        <text class="page-title">数据统计</text>
+        <view class="header-actions">
+          <view class="refresh-btn" bindtap="onRefresh" hover-class="press">刷新</view>
+          <view class="export-btn" bindtap="onExportStats" hover-class="press">导出</view>
+        </view>
+      </view>
+
+      <view class="overview-grid anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="overview-card">
+          <text class="ov-val">{{stats.notesTotal}}</text>
+          <text class="ov-label">笔记</text>
+          <text class="ov-sub">本周 {{stats.notesWeek}}</text>
+        </view>
+        <view class="overview-card">
+          <text class="ov-val">{{stats.todoPending}}</text>
+          <text class="ov-label">待办</text>
+          <text class="ov-sub">已完成 {{stats.todoCompleted}}</text>
+        </view>
+        <view class="overview-card">
+          <text class="ov-val">{{stats.habitDone}}/{{stats.habitTotal}}</text>
+          <text class="ov-label">习惯</text>
+          <text class="ov-sub">最长连续 {{stats.habitStreak}}</text>
+        </view>
+        <view class="overview-card">
+          <text class="ov-val">{{stats.fcDue}}</text>
+          <text class="ov-label">待复习</text>
+          <text class="ov-sub">已复习 {{stats.fcReviewed}}</text>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">知识图谱</view>
+        <view class="detail-row">
+          <text class="detail-label">节点</text>
+          <text class="detail-value">{{stats.graphNodes}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">关联边</text>
+          <text class="detail-value">{{stats.graphEdges}}</text>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">对话</view>
+        <view class="detail-row">
+          <text class="detail-label">对话数</text>
+          <text class="detail-value">{{stats.convTotal}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">消息数</text>
+          <text class="detail-value">{{stats.convMessages}}</text>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d4 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">存储</view>
+        <view class="storage-bar-bg">
+          <view class="storage-bar-fill" style="width: {{stats.storageUsed / stats.storageTotal * 100}}%;"></view>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">已用 / 总量</text>
+          <text class="detail-value">{{stats.storageDisplay}} / {{stats.storageTotal}}KB</text>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d5 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">今日</view>
+        <view class="detail-row">
+          <text class="detail-label">心情</text>
+          <text class="detail-value">{{stats.moodToday > 0 ? '\u263a' : '-'}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">卡路里</text>
+          <text class="detail-value">{{stats.foodCalories}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <custom-tabbar selected="{{-1}}" />
+</view>
