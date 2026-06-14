@@ -1,11 +1,14 @@
-{
+﻿{
     "pages":  [
+                  "pages/home/home",
+                  "pages/conversations/conversations",
+                  "pages/chat/chat",
+                  "pages/notes/notes",
+                  "pages/tools/tools",
                   "pages/about/about",
                   "pages/ai-chat/ai-chat",
                   "pages/calendar/calendar",
-                  "pages/chat/chat",
                   "pages/compress/compress",
-                  "pages/conversations/conversations",
                   "pages/convert/convert",
                   "pages/countdown/countdown",
                   "pages/flashcard/flashcard",
@@ -14,13 +17,11 @@
                   "pages/graph-ingest/graph-ingest",
                   "pages/graph-view/graph-view",
                   "pages/habit/habit",
-                  "pages/home/home",
                   "pages/ledger/ledger",
                   "pages/mood/mood",
                   "pages/node-detail/node-detail",
                   "pages/note-detail/note-detail",
                   "pages/note-editor/note-editor",
-                  "pages/notes/notes",
                   "pages/ocr/ocr",
                   "pages/pdf/pdf",
                   "pages/pomodoro/pomodoro",
@@ -30,8 +31,7 @@
                   "pages/settings/settings",
                   "pages/stats/stats",
                   "pages/text-tool/text-tool",
-                  "pages/todo/todo",
-                  "pages/tools/tools"
+                  "pages/todo/todo"
               ],
     "window":  {
                    "navigationBarBackgroundColor":  "#F7F7FA",
