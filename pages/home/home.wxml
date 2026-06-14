@@ -18,7 +18,7 @@
         <text class="brand-tagline">今天想了解什么？</text>
       </view>
 
-      <!-- Input Box (real input) -->
+      <!-- Input Box -->
       <view class="input-wrapper anim-fade-up anim-d1 {{ready ? 'anim-visible' : ''}}">
         <view class="input-box {{inputFocused ? 'input-focused' : ''}}">
           <input
@@ -45,9 +45,9 @@
       </view>
 
       <!-- Quick Suggestions -->
-      <view class="suggestions">
+      <view class="suggestions anim-fade-up anim-d2 {{ready ? 'anim-visible' : ''}}">
         <view
-          class="chip anim-fade-up anim-d{{index + 2}} {{ready ? 'anim-visible' : ''}}"
+          class="chip"
           wx:for="{{suggestions}}"
           wx:key="text"
           bindtap="onSuggestionTap"
@@ -56,6 +56,30 @@
         >
           <text class="chip-icon">{{item.icon}}</text>
           <text class="chip-text">{{item.text}}</text>
+        </view>
+      </view>
+
+      <!-- Recent Conversations -->
+      <view class="recent-section anim-fade-up anim-d3 {{ready ? 'anim-visible' : ''}}" wx:if="{{recentConversations.length > 0}}">
+        <view class="section-header">
+          <text class="section-label">最近对话</text>
+        </view>
+        <view
+          class="recent-item"
+          wx:for="{{recentConversations}}"
+          wx:key="id"
+          bindtap="onConversationTap"
+          data-id="{{item.id}}"
+          hover-class="recent-press"
+        >
+          <view class="recent-info">
+            <text class="recent-title">{{item.title}}</text>
+            <text class="recent-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
+          </view>
+          <view class="recent-meta">
+            <text class="recent-time">{{item.timeAgo}}</text>
+            <text class="recent-count">{{item.messageCount}} 条</text>
+          </view>
         </view>
       </view>
     </view>

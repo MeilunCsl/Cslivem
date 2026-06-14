@@ -200,3 +200,84 @@
   font-size: 26rpx;
   color: var(--color-text-secondary, #7B8197);
 }
+
+
+/* ===== Recent Conversations ===== */
+.recent-section {
+  width: 100%;
+  margin-top: 48rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.section-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary, #7B8197);
+}
+
+.recent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-lg, 32rpx);
+  padding: 24rpx 28rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid var(--color-border, #E7EAF0);
+  transition: all 0.2s ease;
+}
+
+.recent-press {
+  transform: scale(0.98);
+  border-color: var(--color-primary, #5B4CFF);
+}
+
+.recent-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text, #0A0F1A);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 6rpx;
+}
+
+.recent-summary {
+  display: block;
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #7B8197);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  margin-left: 20rpx;
+}
+
+.recent-time {
+  font-size: 22rpx;
+  color: var(--color-text-placeholder, #B0B8C9);
+  margin-bottom: 4rpx;
+}
+
+.recent-count {
+  font-size: 20rpx;
+  color: var(--color-text-placeholder, #B0B8C9);
+}

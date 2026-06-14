@@ -1,6 +1,5 @@
 // pages/home/home.js
-var aiGateway = require('../../miniprogram/ai-gateway');
-var graphQuery = require('../../core/graph/graph-query');
+var conversationStore = require('../../core/conversation/store');
 
 Page({
   data: {
@@ -9,10 +8,11 @@ Page({
     inputFocused: false,
     ready: false,
     isSending: false,
+    recentConversations: [],
     suggestions: [
       { icon: '✨', text: '记一下灵感' },
       { icon: '📚', text: '整理本周笔记' },
-      { icon: '🔍', text: '记一下灵感' },
+      { icon: '🔍', text: '搜索知识库' },
       { icon: '🧠', text: 'AI 总结最近内容' }
     ]
   },
@@ -29,6 +29,33 @@ Page({
   onShow: function() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 0 });
+    }
+    this.loadRecentConversations();
+  },
+
+  loadRecentConversations: function() {
+    try {
+      var recent = conversationStore.getRecentConversations(3);
+      var formatted = recent.map(function(c) {
+        var now = Date.now();
+        var diff = now - c.updatedAt;
+        var timeAgo = '';
+        if (diff < 60000) timeAgo = '刚刚';
+        else if (diff < 3600000) timeAgo = Math.floor(diff / 60000) + '分钟前';
+        else if (diff < 86400000) timeAgo = Math.floor(diff / 3600000) + '小时前';
+        else timeAgo = Math.floor(diff / 86400000) + '天前';
+        return {
+          id: c.id,
+          title: c.title || '新对话',
+          summary: c.summary || '',
+          messageCount: c.messageCount || 0,
+          model: c.model || '',
+          timeAgo: timeAgo
+        };
+      });
+      this.setData({ recentConversations: formatted });
+    } catch (e) {
+      this.setData({ recentConversations: [] });
     }
   },
 
@@ -49,12 +76,9 @@ Page({
     if (!text || this.data.isSending) return;
     wx.vibrateShort({ type: 'light' }).catch(function() {});
     this.setData({ isSending: true, inputValue: '' });
-    // Navigate to AI chat with the question
     wx.navigateTo({
       url: '/pages/chat/chat?send=' + encodeURIComponent(text),
-      complete: function() {
-        // Reset sending state after navigation
-      }
+      complete: function() {}
     });
     var self = this;
     setTimeout(function() { self.setData({ isSending: false }); }, 500);
@@ -63,15 +87,13 @@ Page({
   onSuggestionTap: function(e) {
     var text = e.currentTarget.dataset.text;
     wx.vibrateShort({ type: 'light' }).catch(function() {});
-    // Check if it's a search-type suggestion
-    if (text.indexOf('搜索') >= 0 || text.indexOf('整理') >= 0) {
-      wx.navigateTo({ url: '/pages/search/search?query=' + encodeURIComponent(text) });
-    } else {
-      wx.navigateTo({ url: '/pages/chat/chat?send=' + encodeURIComponent(text) });
-    }
+    wx.navigateTo({ url: '/pages/chat/chat?send=' + encodeURIComponent(text) });
   },
 
-  onInputTap: function() {
-    // Focus the input instead of navigating away
-  }
+  onConversationTap: function(e) {
+    var id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/chat/chat?id=' + id });
+  },
+
+  onInputTap: function() {}
 });
