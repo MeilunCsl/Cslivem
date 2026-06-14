@@ -21,6 +21,7 @@ const toolText = require('./modules/tool-text/public');
 const toolConvert = require('./modules/tool-convert/public');
 const syncManager = require('./miniprogram/sync-manager');
 const ecsAdapter = require('./miniprogram/ecs-adapter');
+const migrationManager = require('./miniprogram/migration-manager');
 
 App({
   globalData: {
@@ -54,6 +55,7 @@ App({
     ledgerModule.init();
     syncManager.init();
 
+    migrationManager.runAll();
     storage.init();
     ecsAdapter.init();
     this.restoreUserInfo();

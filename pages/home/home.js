@@ -10,6 +10,16 @@ Page({
     isSending: false,
     recentConversations: [],
     dashboard: {},
+    quickTools: [
+      { icon: '✍', name: '笔记', url: '/pages/notes/notes' },
+      { icon: '◆', name: '日历', url: '/pages/calendar/calendar' },
+      { icon: '¥', name: '记账', url: '/pages/ledger/ledger' },
+      { icon: '⬡', name: '图谱', url: '/pages/graph-view/graph-view' },
+      { icon: '≣', name: 'OCR', url: '/pages/ocr/ocr' },
+      { icon: '▣', name: 'PDF', url: '/pages/pdf/pdf' },
+      { icon: '☆', name: '闪卡', url: '/pages/flashcard/flashcard' },
+      { icon: '⏰', name: '番茄钟', url: '/pages/pomodoro/pomodoro' }
+    ],
     suggestions: [
       { icon: '✨', text: '记一下灵感' },
       { icon: '📚', text: '整理本周笔记' },
@@ -124,6 +134,11 @@ Page({
   onConversationTap: function(e) {
     var id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: '/pages/chat/chat?id=' + id });
+  },
+
+  onQuickToolTap: function(e) {
+    var url = e.currentTarget.dataset.url;
+    if (url) wx.navigateTo({ url: url });
   },
 
   onInputTap: function() {}

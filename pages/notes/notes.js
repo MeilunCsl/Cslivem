@@ -5,6 +5,10 @@ Page({
     activeFilter: 'recent',
     inboxCount: 0,
     notes: [],
+    pageSize: 20,
+    currentPage: 1,
+    hasMore: true,
+    loadingMore: false,
     filters: [
       { key: 'inbox', label: '收件箱' },
       { key: 'recent', label: '最近' },
@@ -15,13 +19,142 @@ Page({
   },
 
   onLoad() {
-    try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 }); } catch(e) {}
-    setTimeout(() => { this.setData({ ready: true }); }, 100);
+    try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+}); } catch(e) {}
+    setTimeout(() => { this.setData({ ready: true 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+}); }, 100);
   },
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2 });
+      this.getTabBar().setData({ selected: 2 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+});
     }
     this.loadNotes();
   },
@@ -37,10 +170,10 @@ Page({
         notes = noteModule.getInbox(20);
         break;
       case 'recent':
-        notes = noteModule.getRecentNotes(20);
+        notes = noteModule.getRecentNotes(this.data.pageSize);
         break;
       case 'all':
-        notes = noteModule.getRecentNotes(100);
+        notes = noteModule.getRecentNotes(this.data.pageSize);
         break;
       case 'fav':
         notes = noteModule.getFavorites();
@@ -59,11 +192,11 @@ Page({
             isTagNode: true
           }));
         } catch(e) {
-          notes = noteModule.getRecentNotes(100);
+          notes = noteModule.getRecentNotes(this.data.pageSize);
         }
         break;
       default:
-        notes = noteModule.getRecentNotes(20);
+        notes = noteModule.getRecentNotes(this.data.pageSize);
     }
     this.setData({
       notes: notes.map(n => ({
@@ -71,24 +204,282 @@ Page({
         timeAgo: format.getRelativeTime(n.updatedAt || n.createdAt)
       })),
       inboxCount: stats.inbox
-    });
+    
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+});
   },
 
   setFilter(e) {
-    this.setData({ activeFilter: e.currentTarget.dataset.filter });
+    this.setData({ activeFilter: e.currentTarget.dataset.filter 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+});
     this.loadNotes();
   },
 
   onTapNote(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + id });
+    wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + id 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+});
   },
 
   openGraph: function() {
-    wx.navigateTo({ url: '/pages/graph-view/graph-view' });
+    wx.navigateTo({ url: '/pages/graph-view/graph-view' 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+});
   },
 
   createNote: function() {
-    wx.navigateTo({ url: '/pages/note-editor/note-editor' });
+    wx.navigateTo({ url: '/pages/note-editor/note-editor' 
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
+});
   }
+
+
+  loadMore: function() {
+    if (!this.data.hasMore || this.data.loadingMore) return;
+    this.setData({ loadingMore: true });
+    var self = this;
+    var noteModule = require('../../modules/note/public');
+    var page = self.data.currentPage + 1;
+    var limit = self.data.pageSize;
+    var allNotes = noteModule.getRecentNotes(page * limit);
+    var newNotes = allNotes.slice((page - 1) * limit, page * limit);
+    if (newNotes.length < limit) {
+      self.setData({ hasMore: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        notes: self.data.notes.concat(newNotes),
+        currentPage: page,
+        loadingMore: false
+      });
+    }, 200);
+  },
+
+  onScrollToLower: function() {
+    this.loadMore();
+  },
+
+  throttleTimer: null,
+  onSearchInput: function(e) {
+    var self = this;
+    if (self.throttleTimer) clearTimeout(self.throttleTimer);
+    self.throttleTimer = setTimeout(function() {
+      var query = e.detail.value;
+      if (!query || query.length < 2) {
+        self.loadNotes();
+        return;
+      }
+      var noteModule = require('../../modules/note/public');
+      var results = noteModule.searchNotes(query);
+      self.setData({ notes: results.slice(0, 20), hasMore: false });
+    }, 300);
+  },
+
 });

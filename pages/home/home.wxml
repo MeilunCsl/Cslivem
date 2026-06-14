@@ -65,6 +65,19 @@
       </view>
     </view>
 
+      <!-- Quick Tools -->
+      <view class="quick-tools anim-fade-up anim-d2 {{ready ? 'anim-visible' : ''}}">
+        <view class="section-header">
+          <text class="section-label">快捷工具</text>
+        </view>
+        <view class="tools-grid">
+          <view class="tool-item" wx:for="{{quickTools}}" wx:key="name" bindtap="onQuickToolTap" data-url="{{item.url}}" hover-class="tool-press">
+            <text class="tool-icon">{{item.icon}}</text>
+            <text class="tool-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
       <!-- Quick Suggestions -->
       <view class="suggestions anim-fade-up anim-d2 {{ready ? 'anim-visible' : ''}}">
         <view

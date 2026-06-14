@@ -1,7 +1,7 @@
 <!-- pages/notes/notes.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
-  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}" bindscrolltolower="onScrollToLower" lower-threshold="200">
     <view class="page-container">
       <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
         <text class="page-title">知识</text>
@@ -44,6 +44,14 @@
   <view class="fab-create" bindtap="createNote" hover-class="fab-press">
     <text class="fab-icon">+</text>
   </view>
+
+
+    <view class="loading-more" wx:if="{{loadingMore}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+    <view class="no-more" wx:if="{{!hasMore && notes.length > 0}}">
+      <text class="no-more-text">没有更多了</text>
+    </view>
 
   <custom-tabbar selected="{{2}}" />
 </view>

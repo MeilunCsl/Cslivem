@@ -40,3 +40,9 @@
 .fab-press { transform: scale(0.92); box-shadow: 0 4rpx 12rpx rgba(91, 76, 255, 0.2); }
 .fab-icon { font-size: 48rpx; color: #FFF; font-weight: 300; }
 
+
+/* Pagination */
+.loading-more { text-align: center; padding: 24rpx; }
+.loading-text { font-size: 24rpx; color: var(--color-text-secondary); }
+.no-more { text-align: center; padding: 24rpx; }
+.no-more-text { font-size: 22rpx; color: var(--color-text-placeholder); }
