@@ -18,7 +18,7 @@
   border-radius: 26rpx;
   overflow: hidden;
   padding: 0;
-  background: rgba(255, 255, 255, 0.96);
+  background: #FFFFFF;
   border: none; box-shadow: 0 -2rpx 16rpx rgba(0,0,0,0.06);
   transition: opacity 260ms ease, transform 260ms ease;
 }

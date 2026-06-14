@@ -166,7 +166,7 @@ function localAnswerQuestion(query) {
   var results = localSearchKnowledge(query);
 
   if (results.notes.length === 0 && results.nodes.length === 0) {
-    return '本地知识库中没有找到相关内容。请尝试重新表述问题，或在设置中配置 AI 服务以获得更好的回答。';
+    return '你好！我是 Cslivem AI 助手 👋\n\n目前没有配置 AI 服务，但我可以帮你搜索本地笔记。\n\n试试问我关于你笔记内容的问题，比如：\n• 找一下关于 XX 的笔记\n• 总结最近的学习内容\n• 帮我整理本周的记录\n\n配置 AI API Key 后可以获得更智能的回答。';
   }
 
   var answer = '';

@@ -26,6 +26,7 @@ const migrationManager = require('./miniprogram/migration-manager');
 
 App({
   globalData: {
+    version: 'v1.7.1',
     userInfo: null,
     theme: 'light',
     appName: 'Cslivem'

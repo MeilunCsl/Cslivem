@@ -22,6 +22,20 @@
 
 ## v1.7.0 — Tools-Complete (2026-06-14)
 
+
+## v1.7.1 -- Navigation-Fix (2026-06-14)
+
+### Fixed
+- **导航栏描点问题**: 修复 WXML 中 selected 值与页面 setData 不匹配
+  - 知识页: selected === 2 -> selected === 3
+  - 工具页: selected === 3 -> selected === 4
+  - 现在指示器正确对齐到 grid 列中心
+- **导航栏背景**: 从半透明白色 gba(255,255,255,0.96) 改为纯白 #FFFFFF
+- **AI 回复优化**: 无 API Key 时返回友好引导语而非冷冰冰错误
+
+### Note
+- 本次修复解决了"从右边回来点描点不对"的竞态问题
+- 版本号已添加至 app.js globalData
 ### New
 - **PDF Tool**: Real image-to-PDF generation
   - Select up to 9 images from album/camera
