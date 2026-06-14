@@ -17,7 +17,9 @@ Page({
     showActions: false,
     selectedMessageId: '',
     selectedMsgRole: '',
-    scrollTarget: ''
+    scrollTarget: '',
+    streamingContent: '',
+    isStreaming: false
   },
 
   onLoad: function(options) {
@@ -165,13 +167,6 @@ Page({
         model: result.model || 'MiMo'
       });
 
-      var updatedMsgs = conversationStore.getMessages(convId);
-      self.setData({
-        messages: updatedMsgs,
-        groupedMessages: self.groupByTime(updatedMsgs),
-        sending: false
-      });
-
       var conv = conversationStore.getConversation(convId);
       if (conv && conv.messageCount <= 2) {
         conversationStore.updateConversation(convId, {
@@ -179,7 +174,19 @@ Page({
           model: result.model || 'MiMo'
         });
       }
-      self.scrollToBottom();
+
+      self.startTypingEffect(result.content, convId);
+      
+      setTimeout(function() {
+        self.stopTypingEffect();
+        var updatedMsgs = conversationStore.getMessages(convId);
+        self.setData({
+          messages: updatedMsgs,
+          groupedMessages: self.groupByTime(updatedMsgs),
+          sending: false
+        });
+        self.scrollToBottom();
+      }, Math.min(result.content.length * 30, 3000));
     }).catch(function(err) {
       conversationStore.addMessage({
         conversationId: convId,
@@ -188,6 +195,7 @@ Page({
         type: 'text',
         isError: true
       });
+      self.stopTypingEffect();
       var updatedMsgs = conversationStore.getMessages(convId);
       self.setData({
         messages: updatedMsgs,
@@ -278,6 +286,45 @@ Page({
       }
     });
     this.hideActions();
+  },
+
+
+  startTypingEffect: function(fullText, convId) {
+    var self = this;
+    var index = 0;
+    var chars = fullText.split('');
+    var chunkSize = 2;
+    var interval = 30;
+
+    self.setData({ isStreaming: true, streamingContent: '' });
+
+    function typeNext() {
+      if (index >= chars.length) {
+        self.setData({ isStreaming: false, streamingContent: '' });
+        return;
+      }
+      var end = Math.min(index + chunkSize, chars.length);
+      var partial = chars.slice(0, end).join('');
+      self.setData({ streamingContent: partial });
+      index = end;
+      self.scrollToBottom();
+
+      if (index < chars.length) {
+        self._typingTimer = setTimeout(typeNext, interval);
+      } else {
+        self.setData({ isStreaming: false, streamingContent: '' });
+      }
+    }
+
+    typeNext();
+  },
+
+  stopTypingEffect: function() {
+    if (this._typingTimer) {
+      clearTimeout(this._typingTimer);
+      this._typingTimer = null;
+    }
+    this.setData({ isStreaming: false, streamingContent: '' });
   },
 
   onBack: function() {

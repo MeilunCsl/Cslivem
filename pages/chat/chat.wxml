@@ -39,7 +39,7 @@
         </view>
       </block>
 
-      <view class="msg-item assistant" wx:if="{{sending}}">
+      <view class="msg-item assistant" wx:if="{{sending && !isStreaming}}">
         <view class="msg-avatar">
           <text class="avatar-text">AI</text>
         </view>
@@ -51,6 +51,17 @@
               <view class="dot dot3"></view>
             </view>
             <text class="thinking-text">正在思考...</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="msg-item assistant" wx:if="{{isStreaming}}">
+        <view class="msg-avatar">
+          <text class="avatar-text">AI</text>
+        </view>
+        <view class="msg-body">
+          <view class="msg-bubble">
+            <text class="msg-content">{{streamingContent}}▌</text>
           </view>
         </view>
       </view>
