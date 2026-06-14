@@ -387,6 +387,43 @@ Page({
     }
   },
 
+
+
+  // ===== Zoom Controls =====
+  onZoomIn: function() {
+    this.scale = Math.min(3, this.scale * 1.2);
+  },
+
+  onZoomOut: function() {
+    this.scale = Math.max(0.3, this.scale / 1.2);
+  },
+
+  onResetView: function() {
+    this.scale = 1;
+    this.offsetX = 0;
+    this.offsetY = 0;
+    this.highlightedNode = null;
+    this.setData({ selectedNode: null, neighborNodes: [] });
+  },
+
+  onFitAll: function() {
+    if (this.nodes.length === 0) return;
+    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    this.nodes.forEach(function(n) {
+      if (n.x < minX) minX = n.x;
+      if (n.x > maxX) maxX = n.x;
+      if (n.y < minY) minY = n.y;
+      if (n.y > maxY) maxY = n.y;
+    });
+    var graphW = maxX - minX + 80;
+    var graphH = maxY - minY + 80;
+    this.scale = Math.min(this.canvasW / graphW, this.canvasH / graphH, 2);
+    var cx = (minX + maxX) / 2;
+    var cy = (minY + maxY) / 2;
+    this.offsetX = this.canvasW / 2 - cx * this.scale;
+    this.offsetY = this.canvasH / 2 - cy * this.scale;
+  },
+
   onBack: function() {
     if (this.animFrame) this.canvas.cancelAnimationFrame(this.animFrame);
     wx.navigateBack();

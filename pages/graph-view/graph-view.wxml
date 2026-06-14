@@ -36,6 +36,15 @@
     bindtouchend="onTouchEnd"
   />
 
+
+  <!-- Zoom Controls -->
+  <view class="zoom-controls">
+    <view class="zoom-btn" bindtap="onZoomIn" hover-class="zoom-press">+</view>
+    <view class="zoom-btn" bindtap="onZoomOut" hover-class="zoom-press">-</view>
+    <view class="zoom-btn zoom-reset" bindtap="onResetView" hover-class="zoom-press">↺</view>
+    <view class="zoom-btn zoom-fit" bindtap="onFitAll" hover-class="zoom-press">⧉</view>
+  </view>
+
   <!-- Selected Node Info Card -->
   <view class="node-info {{selectedNode ? 'show' : ''}}" wx:if="{{selectedNode}}">
     <view class="node-info-header">

@@ -74,3 +74,21 @@
 .neighbor-dot { width: 10rpx; height: 10rpx; border-radius: 50%; flex-shrink: 0; }
 .neighbor-name { font-size: 22rpx; color: var(--color-text); }
 .chip-press { transform: scale(0.95); border-color: var(--color-primary); }
+
+/* Zoom Controls */
+.zoom-controls {
+  position: fixed; right: 24rpx;
+  top: calc(120rpx + env(safe-area-inset-top));
+  display: flex; flex-direction: column; gap: 8rpx; z-index: 10;
+}
+.zoom-btn {
+  width: 64rpx; height: 64rpx;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-card); border-radius: 50%;
+  font-size: 32rpx; color: var(--color-text);
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+  border: 1rpx solid var(--color-border);
+}
+.zoom-press { transform: scale(0.9); opacity: 0.7; }
+.zoom-reset { font-size: 28rpx; }
+.zoom-fit { font-size: 24rpx; }
