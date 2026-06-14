@@ -20,26 +20,190 @@ Page({
     selectedMsgRole: '',
     scrollTarget: '',
     streamingContent: '',
-    isStreaming: false
+    isStreaming: false,
+    messagePageSize: 50,
+    messagePage: 1,
+    hasMoreMessages: true,
+    loadingOlder: false
   },
 
   onLoad: function(options) {
     var self = this;
     try {
-      self.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 });
+      self.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     } catch (e) {}
 
     if (options && options.id) {
-      self.setData({ conversationId: options.id });
+      self.setData({ conversationId: options.id 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       self.loadConversation(options.id);
     } else {
-      self.setData({ conversationId: '' });
+      self.setData({ conversationId: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     }
 
     if (options && options.send) {
       var msg = decodeURIComponent(options.send);
       setTimeout(function() {
-        self.setData({ inputText: msg });
+        self.setData({ inputText: msg 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         self.onSend();
       }, 300);
     }
@@ -53,15 +217,135 @@ Page({
 
   loadConversation: function(id) {
     var conv = conversationStore.getConversation(id);
-    var msgs = conversationStore.getMessages(id, { limit: 100 });
+    var msgs = conversationStore.getMessages(id, { limit: 100 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     if (conv) {
       var grouped = this.groupByTime(msgs);
       this.setData({
         conversation: conv,
         messages: msgs,
         groupedMessages: grouped
+      
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
       });
-      wx.setNavigationBarTitle({ title: conv.title || '\u5bf9\u8bdd' });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+      wx.setNavigationBarTitle({ title: conv.title || '\u5bf9\u8bdd' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     }
     this.scrollToBottom();
   },
@@ -110,7 +394,47 @@ Page({
   },
 
   onInput: function(e) {
-    this.setData({ inputText: e.detail.value });
+    this.setData({ inputText: e.detail.value 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   onSend: function() {
@@ -118,16 +442,136 @@ Page({
     var text = self.data.inputText.trim();
     if (!text || self.data.sending) return;
 
-    self.setData({ sending: true, inputText: '' });
+    self.setData({ sending: true, inputText: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
 
     var convId = self.data.conversationId;
     if (!convId) {
       var conv = conversationStore.createConversation({
         title: text.substring(0, 30),
         model: 'MiMo'
+      
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
       });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       convId = conv.id;
-      self.setData({ conversationId: convId, conversation: conv });
+      self.setData({ conversationId: convId, conversation: conv 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     }
 
     conversationStore.addMessage({
@@ -135,32 +579,432 @@ Page({
       role: 'user',
       content: text,
       type: 'text'
-    });
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
 
     var msgs = conversationStore.getMessages(convId);
-    self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs) });
+    self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs) 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     self.scrollToBottom();
 
     // Check for pending attachment
     var attachment = self.data.pendingAttachment;
     if (attachment && attachment.type === 'image') {
       gateway.analyzeImage(attachment.filePath, text).then(function(result) {
-        conversationStore.addMessage({ conversationId: convId, role: 'assistant', content: result.content, type: 'text', model: result.model || 'MiMo' });
-        self.setData({ pendingAttachment: null });
+        conversationStore.addMessage({ conversationId: convId, role: 'assistant', content: result.content, type: 'text', model: result.model || 'MiMo' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        self.setData({ pendingAttachment: null 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         var updatedMsgs = conversationStore.getMessages(convId);
-        self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs), sending: false });
+        self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs), sending: false 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         self.scrollToBottom();
       }).catch(function(err) {
-        conversationStore.addMessage({ conversationId: convId, role: 'assistant', content: 'Image analysis failed: ' + err.message, type: 'text', isError: true });
-        self.setData({ pendingAttachment: null, sending: false });
-        var updatedMsgs = conversationStore.getMessages(convId);
-        self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs) });
+        conversationStore.addMessage({ conversationId: convId, role: 'assistant', content: 'Image analysis failed: ' + err.message, type: 'text', isError: true 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
       });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        self.setData({ pendingAttachment: null, sending: false 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        var updatedMsgs = conversationStore.getMessages(convId);
+        self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs) 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+      
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       return;
     }
 
     var streamContent = '';
-    self.setData({ isStreaming: true, streamingContent: '' });
+    self.setData({ isStreaming: true, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
 
     var streamTask = gateway.streamChat(
       [{ role: 'user', content: text }],
@@ -168,15 +1012,135 @@ Page({
       // onChunk
       function(chunk, full) {
         streamContent = full;
-        self.setData({ streamingContent: full });
+        self.setData({ streamingContent: full 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         self.scrollToBottom();
       },
       // onDone
       function(fullContent) {
-        self.setData({ isStreaming: false, streamingContent: '' });
+        self.setData({ isStreaming: false, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         var content = fullContent || streamContent;
         if (!content) {
-          self.setData({ sending: false });
+          self.setData({ sending: false 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
           return;
         }
         conversationStore.addMessage({
@@ -185,7 +1149,47 @@ Page({
           content: content,
           type: 'text',
           model: 'AI'
-        });
+        
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         var conv = conversationStore.getConversation(convId);
         if (conv && conv.messageCount <= 2) {
           self.generateTitle(convId, text, content);
@@ -195,12 +1199,92 @@ Page({
           messages: updatedMsgs,
           groupedMessages: self.groupByTime(updatedMsgs),
           sending: false
-        });
+        
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         self.scrollToBottom();
       },
       // onError
       function(err) {
-        self.setData({ isStreaming: false, streamingContent: '' });
+        self.setData({ isStreaming: false, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         // Fallback to non-streaming
         gateway.ask(text).then(function(result) {
           conversationStore.addMessage({
@@ -209,7 +1293,47 @@ Page({
             content: result.content,
             type: 'text',
             model: result.model || 'MiMo'
-          });
+          
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
           self.startTypingEffect(result.content, convId);
           setTimeout(function() {
             self.stopTypingEffect();
@@ -218,7 +1342,47 @@ Page({
               messages: updatedMsgs,
               groupedMessages: self.groupByTime(updatedMsgs),
               sending: false
-            });
+            
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
             self.scrollToBottom();
           }, Math.min(result.content.length * 30, 3000));
         }).catch(function() {
@@ -228,11 +1392,171 @@ Page({
             content: '\u62b1\u6b49\uff0cAI \u670d\u52a1\u6682\u65f6\u4e0d\u53ef\u7528\uff0c\u8bf7\u68c0\u67e5\u7f51\u7edc\u548c API \u914d\u7f6e\u3002',
             type: 'text',
             isError: true
-          });
-          self.setData({ sending: false });
+          
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+          self.setData({ sending: false 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
           var updatedMsgs = conversationStore.getMessages(convId);
-          self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs) });
-        });
+          self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs) 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       }
     );
     }).catch(function(err) {
@@ -242,16 +1566,136 @@ Page({
         content: '\u274c \u8fde\u63a5\u5931\u8d25: ' + err.message,
         type: 'text',
         isError: true
+      
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
       });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       self.stopTypingEffect();
       var updatedMsgs = conversationStore.getMessages(convId);
       self.setData({
         messages: updatedMsgs,
         groupedMessages: self.groupByTime(updatedMsgs),
         sending: false
+      
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
       });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       self.scrollToBottom();
-    });
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   onRetry: function(e) {
@@ -259,7 +1703,47 @@ Page({
     var msgs = this.data.messages;
     for (var i = msgs.length - 1; i >= 0; i--) {
       if (msgs[i].id === msgId && msgs[i].role === 'user') {
-        this.setData({ inputText: msgs[i].content });
+        this.setData({ inputText: msgs[i].content 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         this.onSend();
         return;
       }
@@ -270,18 +1754,138 @@ Page({
     var self = this;
     if (self._scrollTimer) clearTimeout(self._scrollTimer);
     self._scrollTimer = setTimeout(function() {
-      wx.pageScrollTo({ scrollTop: 99999, duration: 200 });
+      wx.pageScrollTo({ scrollTop: 99999, duration: 200 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     }, 200);
   },
 
   onMessageLongPress: function(e) {
     var id = e.currentTarget.dataset.id;
     var role = e.currentTarget.dataset.role;
-    this.setData({ showActions: true, selectedMessageId: id, selectedMsgRole: role });
+    this.setData({ showActions: true, selectedMessageId: id, selectedMsgRole: role 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   hideActions: function() {
-    this.setData({ showActions: false, selectedMessageId: '', selectedMsgRole: '' });
+    this.setData({ showActions: false, selectedMessageId: '', selectedMsgRole: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   onCopyMessage: function() {
@@ -289,8 +1893,88 @@ Page({
     var selectedId = this.data.selectedMessageId;
     for (var i = 0; i < msgs.length; i++) {
       if (msgs[i].id === selectedId) {
-        wx.setClipboardData({ data: msgs[i].content });
-        wx.showToast({ title: '\u5df2\u590d\u5236', icon: 'success' });
+        wx.setClipboardData({ data: msgs[i].content 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        wx.showToast({ title: '\u5df2\u590d\u5236', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         break;
       }
     }
@@ -307,8 +1991,88 @@ Page({
           title: msgs[i].content.substring(0, 30),
           content: msgs[i].content,
           tags: ['AI\u751f\u6210']
-        });
-        wx.showToast({ title: '\u5df2\u4fdd\u5b58\u4e3a\u7b14\u8bb0', icon: 'success' });
+        
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        wx.showToast({ title: '\u5df2\u4fdd\u5b58\u4e3a\u7b14\u8bb0', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         break;
       }
     }
@@ -326,7 +2090,47 @@ Page({
     }
     if (!msg) { self.hideActions(); return; }
 
-    wx.showLoading({ title: '提取中...' });
+    wx.showLoading({ title: '提取中...' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     var gateway = require('../../miniprogram/ai-gateway');
     var prompt = '从以下内容提取 3-5 个知识点，每个用 JSON 返回：{"title":"标题","summary":"摘要","tags":["标签"]}。只输出 JSON 数组。\n\n内容: ' + msg.content.substring(0, 1000);
     
@@ -342,17 +2146,257 @@ Page({
             title: p.title || '知识点',
             content: p.summary || '',
             tags: p.tags || ['提取知识点']
-          });
-        });
+          
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         
-        wx.showToast({ title: '已提取 ' + points.length + ' 个知识点', icon: 'success' });
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        
+        wx.showToast({ title: '已提取 ' + points.length + ' 个知识点', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       } catch (e) {
-        wx.showToast({ title: '解析失败', icon: 'none' });
+        wx.showToast({ title: '解析失败', icon: 'none' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       }
     }).catch(function(err) {
       wx.hideLoading();
-      wx.showToast({ title: '提取失败: ' + err.message, icon: 'none' });
-    });
+      wx.showToast({ title: '提取失败: ' + err.message, icon: 'none' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     self.hideActions();
   },
 
@@ -369,7 +2413,47 @@ Page({
     var convId = self.data.conversationId;
     wx.navigateTo({
       url: '/pages/graph-ingest/graph-ingest?id=' + convId + '&msgId=' + selectedId
-    });
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     self.hideActions();
   },
 
@@ -382,15 +2466,175 @@ Page({
         if (res.confirm) {
           var msgs = self.data.messages.filter(function(m) {
             return m.id !== self.data.selectedMessageId;
-          });
+          
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
           self.setData({
             messages: msgs,
             groupedMessages: self.groupByTime(msgs)
-          });
-          wx.showToast({ title: '\u5df2\u5220\u9664', icon: 'success' });
+          
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+          wx.showToast({ title: '\u5df2\u5220\u9664', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         }
       }
-    });
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     this.hideActions();
   },
 
@@ -402,23 +2646,183 @@ Page({
     var chunkSize = 2;
     var interval = 30;
 
-    self.setData({ isStreaming: true, streamingContent: '' });
+    self.setData({ isStreaming: true, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
 
     function typeNext() {
       if (index >= chars.length) {
-        self.setData({ isStreaming: false, streamingContent: '' });
+        self.setData({ isStreaming: false, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         return;
       }
       var end = Math.min(index + chunkSize, chars.length);
       var partial = chars.slice(0, end).join('');
-      self.setData({ streamingContent: partial });
+      self.setData({ streamingContent: partial 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       index = end;
       self.scrollToBottom();
 
       if (index < chars.length) {
         self._typingTimer = setTimeout(typeNext, interval);
       } else {
-        self.setData({ isStreaming: false, streamingContent: '' });
+        self.setData({ isStreaming: false, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       }
     }
 
@@ -430,7 +2834,47 @@ Page({
       clearTimeout(this._typingTimer);
       this._typingTimer = null;
     }
-    this.setData({ isStreaming: false, streamingContent: '' });
+    this.setData({ isStreaming: false, streamingContent: '' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
 
@@ -443,15 +2887,215 @@ Page({
       var title = res.content.replace(/["\'\n]/g, '').trim();
       if (title.length > 20) title = title.substring(0, 20);
       if (title.length > 0) {
-        conversationStore.updateConversation(convId, { title: title });
-        wx.setNavigationBarTitle({ title: title });
+        conversationStore.updateConversation(convId, { title: title 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        wx.setNavigationBarTitle({ title: title 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       }
     }).catch(function() {
       // Fallback: use first 15 chars of user message
       var fallback = userMsg.substring(0, 15);
-      conversationStore.updateConversation(convId, { title: fallback });
-      wx.setNavigationBarTitle({ title: fallback });
-    });
+      conversationStore.updateConversation(convId, { title: fallback 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+      wx.setNavigationBarTitle({ title: fallback 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   onChooseImage: function() {
@@ -462,10 +3106,130 @@ Page({
       sourceType: ['album', 'camera'],
       success: function(res) {
         var filePath = res.tempFilePaths[0];
-        self.setData({ pendingAttachment: { type: 'image', filePath: filePath } });
-        wx.showToast({ title: '图片已选择', icon: 'success' });
+        self.setData({ pendingAttachment: { type: 'image', filePath: filePath } 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+        wx.showToast({ title: '图片已选择', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
       }
-    });
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   onStartRecord: function() {
@@ -475,16 +3239,376 @@ Page({
       self.setData({
         pendingAttachment: { type: 'voice', filePath: tempFilePath },
         recording: false
+      
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
       });
-      wx.showToast({ title: '录音完成', icon: 'success' });
-    });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+      wx.showToast({ title: '录音完成', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
     recorder.onError(function(err) {
-      self.setData({ recording: false });
-      wx.showToast({ title: '录音失败', icon: 'none' });
-    });
-    recorder.start({ duration: 60000 });
-    self.setData({ recording: true });
-    wx.showToast({ title: '正在录音...', icon: 'none', duration: 60000 });
+      self.setData({ recording: false 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+      wx.showToast({ title: '录音失败', icon: 'none' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    recorder.start({ duration: 60000 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    self.setData({ recording: true 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+    wx.showToast({ title: '正在录音...', icon: 'none', duration: 60000 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   },
 
   onStopRecord: function() {
@@ -506,21 +3630,341 @@ Page({
             content: '\u786e\u5b9a\u6e05\u7a7a\u6240\u6709\u6d88\u606f\uff1f',
             success: function(r) {
               if (r.confirm) {
-                self.setData({ messages: [], groupedMessages: [] });
-                wx.showToast({ title: '\u5df2\u6e05\u7a7a', icon: 'success' });
+                self.setData({ messages: [], groupedMessages: [] 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+                wx.showToast({ title: '\u5df2\u6e05\u7a7a', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
               }
             }
-          });
+          
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         } else if (res.tapIndex === 1) {
           var all = self.data.messages.map(function(m) {
             return (m.role === 'user' ? '\u6211: ' : 'AI: ') + m.content;
           }).join('\n\n');
-          wx.setClipboardData({ data: all });
-          wx.showToast({ title: '\u5df2\u590d\u5236', icon: 'success' });
+          wx.setClipboardData({ data: all 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
+          wx.showToast({ title: '\u5df2\u590d\u5236', icon: 'success' 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         } else if (res.tapIndex === 2) {
-          wx.navigateTo({ url: '/pages/graph-ingest/graph-ingest?id=' + self.data.conversationId });
+          wx.navigateTo({ url: '/pages/graph-ingest/graph-ingest?id=' + self.data.conversationId 
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
         }
       }
-    });
+    
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
+});
   }
+
+
+  loadOlderMessages: function() {
+    if (!this.data.hasMoreMessages || this.data.loadingOlder) return;
+    var self = this;
+    var convId = self.data.conversationId;
+    if (!convId) return;
+    self.setData({ loadingOlder: true });
+    var store = require('../../core/conversation/store');
+    var allMsgs = store.getMessages(convId);
+    var page = self.data.messagePage + 1;
+    var pageSize = self.data.messagePageSize;
+    var totalNeeded = page * pageSize;
+    var olderMsgs = allMsgs.slice(Math.max(0, allMsgs.length - totalNeeded), allMsgs.length - (page - 1) * pageSize);
+    if (olderMsgs.length < pageSize) {
+      self.setData({ hasMoreMessages: false });
+    }
+    setTimeout(function() {
+      self.setData({
+        messages: olderMsgs.concat(self.data.messages),
+        groupedMessages: self.groupByTime(olderMsgs.concat(self.data.messages)),
+        messagePage: page,
+        loadingOlder: false
+      });
+    }, 200);
+  },
+
+  onScrollToUpper: function() {
+    this.loadOlderMessages();
+  },
+
+  _throttleTimer: null,
+  throttledSetData: function(data) {
+    var self = this;
+    if (self._throttleTimer) clearTimeout(self._throttleTimer);
+    self._throttleTimer = setTimeout(function() {
+      self.setData(data);
+    }, 50);
+  },
+
 });
