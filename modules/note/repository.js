@@ -2,6 +2,8 @@
 
 const storage = require('../../miniprogram/storage');
 const model = require('./model');
+var knowledgeModule = require('../knowledge/public');
+var wikiLink = require('../../utils/wiki-link');
 
 const STORAGE_KEY = 'notes';
 const INBOX_KEY = 'inbox_notes';
@@ -26,7 +28,24 @@ module.exports = {
       notes.unshift(updated);
     }
     storage.set(STORAGE_KEY, notes);
+    // Sync with knowledge graph
+    this._syncGraph(updated);
     return updated;
+  },
+
+  _syncGraph(note) {
+    try {
+      // Ensure note has a graph node
+      knowledgeModule.linkNote(note.id, note.title || note.content.substring(0, 50));
+      // Extract wiki-links and create edges
+      var fullText = (note.title || '') + ' ' + (note.content || '');
+      var links = wikiLink.extractLinks(fullText);
+      links.forEach(function(link) {
+        knowledgeModule.linkNotes(note.id, link.target, 'reference');
+      });
+    } catch (e) {
+      console.warn('[NoteRepo] graph sync failed:', e.message);
+    }
   },
 
   delete(id) {
@@ -34,6 +53,11 @@ module.exports = {
     const filtered = notes.filter(n => n.id !== id);
     if (filtered.length === notes.length) return false;
     storage.set(STORAGE_KEY, filtered);
+    // Clean up graph node
+    try {
+      var node = knowledgeModule.findNodeByRef(id);
+      if (node) knowledgeModule.deleteNode(node.id);
+    } catch (e) {}
     return true;
   },
 
