@@ -139,15 +139,81 @@ module.exports = {
   // Multi-modal: voice transcription (placeholder for ASR)
   transcribeVoice: function(audioPath) {
     logRequest('transcribeVoice', audioPath);
-    // Placeholder - real implementation needs MiMo ASR endpoint
-    return Promise.resolve({ text: '(placeholder) Voice transcription requires ASR API', mode: 'local' });
+    var config = apiConfig.getActiveConfig();
+    
+    // Try provider's audio transcription endpoint
+    var asrUrl = config.endpoint.replace('/chat/completions', '/audio/transcriptions');
+    
+    return new Promise(function(resolve, reject) {
+      wx.uploadFile({
+        url: asrUrl,
+        filePath: audioPath,
+        name: 'file',
+        formData: { model: 'whisper-1', language: 'zh' },
+        header: { 'Authorization': 'Bearer ' + (config.apiKey || 'no-key') },
+        success: function(res) {
+          if (res.statusCode === 200) {
+            try {
+              var data = JSON.parse(res.data);
+              resolve({ text: data.text || '', mode: 'api' });
+            } catch (e) {
+              resolve({ text: res.data, mode: 'api' });
+            }
+          } else {
+            // Fallback: send audio info as text message
+            resolve({ text: '[\u8bed\u97f3\u6d88\u606f] \u8bf7\u67e5\u770b\u9644\u4ef6', mode: 'local' });
+          }
+        },
+        fail: function(err) {
+          resolve({ text: '[\u8bed\u97f3\u6d88\u606f] \u8bf7\u67e5\u770b\u9644\u4ef6', mode: 'local' });
+        }
+      });
+    });
   },
 
   // Multi-modal: text-to-speech (placeholder for TTS)
   synthesizeSpeech: function(text) {
     logRequest('synthesizeSpeech', text);
-    // Placeholder - real implementation needs MiMo TTS endpoint
-    return Promise.resolve({ audioUrl: '', mode: 'local' });
+    var config = apiConfig.getActiveConfig();
+    
+    // Try provider's audio speech endpoint
+    var ttsUrl = config.endpoint.replace('/chat/completions', '/audio/speech');
+    
+    return new Promise(function(resolve, reject) {
+      wx.request({
+        url: ttsUrl,
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (config.apiKey || 'no-key')
+        },
+        data: { model: 'tts-1', input: text, voice: 'alloy' },
+        responseType: 'arraybuffer',
+        success: function(res) {
+          if (res.statusCode === 200) {
+            // Save audio to temp file
+            var fs = wx.getFileSystemManager();
+            var tempPath = wx.env.USER_DATA_PATH + '/tts_' + Date.now() + '.mp3';
+            fs.writeFile({
+              filePath: tempPath,
+              data: res.data,
+              encoding: 'binary',
+              success: function() {
+                resolve({ audioUrl: tempPath, mode: 'api' });
+              },
+              fail: function() {
+                resolve({ audioUrl: '', mode: 'local' });
+              }
+            });
+          } else {
+            resolve({ audioUrl: '', mode: 'local' });
+          }
+        },
+        fail: function() {
+          resolve({ audioUrl: '', mode: 'local' });
+        }
+      });
+    });
   },
 
 
