@@ -53,3 +53,11 @@
 .backlink-item:active, .press { transform: scale(0.97); }
 .backlink-title { font-size: 26rpx; font-weight: 600; color: var(--color-primary); display: block; }
 .backlink-summary { font-size: 22rpx; color: var(--color-text-secondary); display: block; margin-top: 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Wiki-Link styles */
+.wiki-link {
+  color: #5B4CFF;
+  font-weight: 500;
+  border-bottom: 2rpx solid rgba(91, 76, 255, 0.3);
+  padding: 2rpx 4rpx;
+}

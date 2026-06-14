@@ -44,7 +44,7 @@
       </view>
 
       <view class="content-section anim-fade anim-d4 {{ready ? 'anim-show' : ''}}">
-        <text class="content-text" wx:if="{{!isEditing && note.content}}">{{note.content}}</text>
+        <rich-text class="content-text" wx:if="{{!isEditing && note.content}}" nodes="{{parsedContent}}" bindtap="onContentTap"></rich-text>
         <textarea class="content-editor" wx:if="{{isEditing}}" value="{{editContent}}" bindinput="onContentInput" placeholder="输入内容..." auto-height />
         <view class="empty-content" wx:if="{{!isEditing && !note.content}}">
           <text class="empty-hint">暂无内容，点击编辑开始记录</text>

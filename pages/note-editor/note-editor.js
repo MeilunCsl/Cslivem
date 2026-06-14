@@ -196,12 +196,14 @@ Page({
       var note = noteModule.createNote({ title: title.trim(), content: content });
       this.setData({ noteId: note.id, isNew: false });
       wx.showToast({ title: '已创建', icon: 'success' });
+      this.syncToGraph(note.id, title.trim(), content);
     } else {
       noteModule.updateNote(noteId, {
         title: title.trim(),
         content: content,
         summary: noteModule.generateSummary(content)
       });
+      this.syncToGraph(noteId, title.trim(), content);
       wx.showToast({ title: '已保存', icon: 'success' });
     }
     var self = this;

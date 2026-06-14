@@ -8,6 +8,7 @@ Page({
     editContent: '',
     showTagInput: false,
     backlinks: [],
+    parsedContent: '',
     newTag: ''
   },
 
@@ -25,6 +26,7 @@ Page({
     const note = noteModule.getRecentNotes(100).find(n => n.id === id);
     if (note) {
       this.setData({ note, editContent: note.content });
+      this.parseWikiLinks(note.content || '');
     } else {
       wx.showToast({ title: '笔记不存在', icon: 'none' });
       setTimeout(() => wx.navigateBack(), 1500);
