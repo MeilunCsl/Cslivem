@@ -171,9 +171,9 @@ Page({
       var conv = conversationStore.getConversation(convId);
       if (conv && conv.messageCount <= 2) {
         conversationStore.updateConversation(convId, {
-          title: text.substring(0, 30),
           model: result.model || 'MiMo'
         });
+        self.generateTitle(convId, text, result.content);
       }
 
       self.startTypingEffect(result.content, convId);
@@ -328,6 +328,26 @@ Page({
     this.setData({ isStreaming: false, streamingContent: '' });
   },
 
+
+
+  generateTitle: function(convId, userMsg, aiReply) {
+    var self = this;
+    var prompt = '用一个简短的中文短语（5-15字）概括以下对话的主题，只输出短语，不要其他内容。\n用户: ' + userMsg.substring(0, 200) + '\nAI: ' + aiReply.substring(0, 200);
+    
+    gateway.ask(prompt, '你是一个标题生成器，只输出短标题。').then(function(res) {
+      var title = res.content.replace(/["\'\n]/g, '').trim();
+      if (title.length > 20) title = title.substring(0, 20);
+      if (title.length > 0) {
+        conversationStore.updateConversation(convId, { title: title });
+        wx.setNavigationBarTitle({ title: title });
+      }
+    }).catch(function() {
+      // Fallback: use first 15 chars of user message
+      var fallback = userMsg.substring(0, 15);
+      conversationStore.updateConversation(convId, { title: fallback });
+      wx.setNavigationBarTitle({ title: fallback });
+    });
+  },
 
   onChooseImage: function() {
     var self = this;
