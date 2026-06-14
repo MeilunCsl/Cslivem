@@ -58,6 +58,11 @@
   </scroll-view>
 
   <view class="input-bar">
+    <view class="action-btns">
+      <view class="action-btn" bindtap="onChooseImage">📷</view>
+      <view class="action-btn" bindtap="onStartRecord" wx:if="{{!recording}}">🎤</view>
+      <view class="action-btn recording" bindtap="onStopRecord" wx:if="{{recording}}">⏹</view>
+    </view>
     <view class="input-wrap">
       <input class="msg-input" placeholder="\u8f93\u5165\u6d88\u606f..." value="{{inputText}}" bindinput="onInput" bindconfirm="onSend" confirm-type="send" />
     </view>

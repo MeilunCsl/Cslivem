@@ -2,6 +2,7 @@
 var conversationStore = require('../../core/conversation/store');
 var gateway = require('../../miniprogram/ai-gateway');
 var types = require('../../core/conversation/types');
+var assetStore = require('../../core/assets/local-asset-store');
 var format = require('../../utils/format');
 
 Page({
