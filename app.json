@@ -17,7 +17,8 @@
     "pages/settings/settings",
     "pages/ocr/ocr",
     "pages/graph-ingest/graph-ingest",
-    "pages/scanner/scanner"
+    "pages/scanner/scanner",
+    "pages/habit/habit"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",

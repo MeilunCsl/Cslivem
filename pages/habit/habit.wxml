@@ -1,0 +1,81 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">习惯打卡</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <!-- Stats -->
+    <view class="stats-bar">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalHabits || 0}}</text>
+        <text class="stat-label">习惯</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.todayDone || 0}}</text>
+        <text class="stat-label">今日完成</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalCheckins || 0}}</text>
+        <text class="stat-label">总打卡</text>
+      </view>
+    </view>
+
+    <!-- Habit List -->
+    <view class="habit-list">
+      <view class="habit-card {{item.checkedToday ? 'habit-done' : ''}}" wx:for="{{habits}}" wx:key="id">
+        <view class="habit-check" bindtap="onCheckin" data-id="{{item.id}}" hover-class="check-press">
+          <view class="check-circle" style="background: {{item.checkedToday ? item.color : 'transparent'}}; border-color: {{item.color}};">
+            <text class="check-icon">{{item.checkedToday ? '✓' : item.icon}}</text>
+          </view>
+        </view>
+        <view class="habit-info">
+          <text class="habit-name">{{item.name}}</text>
+          <text class="habit-streak">连续 {{item.streak}} 天</text>
+        </view>
+        <view class="habit-delete" catchtap="onDelete" data-id="{{item.id}}">
+          <text class="delete-icon">×</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Empty State -->
+    <view class="empty-state" wx:if="{{habits.length === 0}}">
+      <text class="empty-icon">◌</text>
+      <text class="empty-text">还没有习惯</text>
+      <text class="empty-hint">点击下方按钮创建第一个习惯</text>
+    </view>
+
+    <!-- Create Button -->
+    <view class="create-btn" bindtap="toggleCreate" hover-class="btn-press">
+      <text>{{showSettings ? '取消' : '＋ 新建习惯'}}</text>
+    </view>
+
+    <!-- Create Form -->
+    <view class="create-form" wx:if="{{showCreate}}">
+      <input class="form-input" placeholder="习惯名称" value="{{newName}}" bindinput="onNameInput" />
+      <view class="form-section">
+        <text class="form-label">图标</text>
+        <view class="icon-grid">
+          <view class="icon-option {{selectedIcon === item ? 'icon-selected' : ''}}"
+                wx:for="{{icons}}" wx:key="*this"
+                bindtap="onSelectIcon" data-icon="{{item}}">
+            <text>{{item}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="form-section">
+        <text class="form-label">颜色</text>
+        <view class="color-grid">
+          <view class="color-option {{selectedColor === item ? 'color-selected' : ''}}"
+                wx:for="{{colors}}" wx:key="*this"
+                style="background: {{item}}"
+                bindtap="onSelectColor" data-color="{{item}}">
+          </view>
+        </view>
+      </view>
+      <view class="submit-btn" bindtap="onCreate" hover-class="btn-press">
+        <text>创建</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
