@@ -1,4 +1,4 @@
-// miniprogram/ai-gateway.js
+﻿// miniprogram/ai-gateway.js
 // AI 统一网关
 // 支持: MiMo(本地) / ECS(阿里云) / Local(正则匹配兜底)
 
@@ -198,6 +198,31 @@ function localAnswerQuestion(query) {
 }
 
 
+function selectModel(text, hasImage) {
+  var config = apiConfig.getActiveConfig();
+  if (!config) return null;
+  var baseModel = config.model || 'MiMo-7B-RL';
+  
+  // Image → vision model
+  if (hasImage) {
+    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
+  }
+  
+  // Long or complex text → pro model
+  if (text && text.length > 500) {
+    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
+  }
+  
+  // Code or technical content → pro model
+  if (text && (text.indexOf('```') >= 0 || text.indexOf('function') >= 0 || 
+      text.indexOf('class ') >= 0 || text.indexOf('import ') >= 0)) {
+    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
+  }
+  
+  // Simple text → fast model
+  return baseModel.includes('mimo') ? 'MiMo-7B-RL' : baseModel;
+}
+
 // ===== Public API =====
 module.exports = {
   // Multi-modal: image analysis
@@ -328,30 +353,6 @@ module.exports = {
 
 
 // ===== Model Auto-Routing =====
-function selectModel(text, hasImage) {
-  var config = apiConfig.getActiveConfig();
-  if (!config) return null;
-  var baseModel = config.model || 'MiMo-7B-RL';
-  
-  // Image → vision model
-  if (hasImage) {
-    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
-  }
-  
-  // Long or complex text → pro model
-  if (text && text.length > 500) {
-    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
-  }
-  
-  // Code or technical content → pro model
-  if (text && (text.indexOf('```') >= 0 || text.indexOf('function') >= 0 || 
-      text.indexOf('class ') >= 0 || text.indexOf('import ') >= 0)) {
-    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
-  }
-  
-  // Simple text → fast model
-  return baseModel.includes('mimo') ? 'MiMo-7B-RL' : baseModel;
-}
 
   // AI 问答（对话式）
   ask: function(question, context) {
