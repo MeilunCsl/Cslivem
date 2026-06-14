@@ -39,7 +39,7 @@
             bindtap="onSend"
             hover-class="send-btn-hover"
           >
-            <text class="send-arrow">\u2192</text>
+            <text class="send-arrow">→</text>
           </view>
         </view>
       </view>
