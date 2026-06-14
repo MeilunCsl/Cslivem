@@ -1,0 +1,92 @@
+<!-- pages/todo/todo.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="content">
+      <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+        <text class="page-title">待办清单</text>
+        <view class="header-actions">
+          <view class="template-btn" bindtap="onShowTemplates" hover-class="btn-press">
+            <text>模板</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Stats -->
+      <view class="stats-row anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="stat-item">
+          <text class="stat-val">{{stats.pending}}</text>
+          <text class="stat-label">待办</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-val">{{stats.completed}}</text>
+          <text class="stat-label">已完成</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-val">{{stats.overdue}}</text>
+          <text class="stat-label">已过期</text>
+        </view>
+      </view>
+
+      <!-- List Filter -->
+      <view class="filter-row anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+        <view class="filter-chip {{activeList === 'all' ? 'active' : ''}}" bindtap="onListTap" data-list="all">全部</view>
+        <view class="filter-chip {{activeList === 'pending' ? 'active' : ''}}" bindtap="onListTap" data-list="pending">待办</view>
+        <view class="filter-chip {{activeList === 'completed' ? 'active' : ''}}" bindtap="onListTap" data-list="completed">已完成</view>
+        <view class="filter-chip {{activeList === item.id ? 'active' : ''}}" wx:for="{{lists}}" wx:key="id" bindtap="onListTap" data-list="{{item.id}}">{{item.name}}</view>
+      </view>
+
+      <!-- Todo List -->
+      <view class="todo-list anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="todo-item {{item.completed ? 'completed' : ''}}" wx:for="{{filteredTodos}}" wx:key="id">
+          <view class="todo-check {{item.completed ? 'checked' : ''}}" bindtap="onToggleTodo" data-id="{{item.id}}">
+            <text class="check-icon">{{item.completed ? '✓' : ''}}</text>
+          </view>
+          <view class="todo-content">
+            <text class="todo-title {{item.completed ? 'done' : ''}}">{{item.title}}</text>
+            <view class="todo-meta">
+              <text class="todo-priority pri-{{item.priority}}" wx:if="{{item.priority !== 'normal'}}">{{item.priority === 'urgent' ? '紧急' : item.priority === 'high' ? '高' : '低'}}</text>
+              <text class="todo-date" wx:if="{{item.dueDate}}">{{item.dueDate}}</text>
+            </view>
+          </view>
+          <view class="todo-delete" catchtap="onDeleteTodo" data-id="{{item.id}}">×</view>
+        </view>
+        <view class="empty-todo" wx:if="{{filteredTodos.length === 0}}">
+          <text class="empty-hint">暂无待办项</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- FAB -->
+  <view class="fab-create" bindtap="showCreateForm" hover-class="fab-press">
+    <text class="fab-plus">+</text>
+  </view>
+
+  <!-- Create Modal -->
+  <view class="modal-overlay {{showCreate ? 'show' : ''}}" catchtap="hideCreateForm"></view>
+  <view class="modal {{showCreate ? 'modal-in' : ''}}">
+    <view class="modal-title">新建待办</view>
+    <view class="modal-body">
+      <input class="modal-input" value="{{newTitle}}" bindinput="onTitleInput" placeholder="输入待办内容" focus="{{showCreate}}" />
+      <view class="priority-row">
+        <text class="priority-label">优先级:</text>
+        <view class="priority-chip {{newPriority === item.key ? 'active' : ''}}" wx:for="{{priorities}}" wx:key="key" bindtap="onPriorityTap" data-key="{{item.key}}" style="border-color: {{item.color}};">
+          <text style="color: {{newPriority === item.key ? '#fff' : item.color}};">{{item.label}}</text>
+        </view>
+      </view>
+      <picker mode="date" value="{{newDueDate}}" bindchange="onDueDateChange">
+        <view class="date-picker">
+          <text class="date-label">截止日期:</text>
+          <text class="date-value">{{newDueDate || '选择日期'}}</text>
+        </view>
+      </picker>
+    </view>
+    <view class="modal-actions">
+      <view class="modal-btn" bindtap="hideCreateForm">取消</view>
+      <view class="modal-btn modal-btn-primary" bindtap="onCreateTodo">创建</view>
+    </view>
+  </view>
+
+  <custom-tabbar selected="{{-1}}" />
+</view>

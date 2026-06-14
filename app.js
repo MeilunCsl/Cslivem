@@ -19,6 +19,7 @@ const moodModule = require('./modules/mood/public');
 const toolCompress = require('./modules/tool-compress/public');
 const toolText = require('./modules/tool-text/public');
 const toolConvert = require('./modules/tool-convert/public');
+const todoModule = require('./modules/todo/public');
 const syncManager = require('./miniprogram/sync-manager');
 const ecsAdapter = require('./miniprogram/ecs-adapter');
 const migrationManager = require('./miniprogram/migration-manager');
@@ -49,6 +50,7 @@ App({
     toolRegistry.register(toolCompress.manifest);
     toolRegistry.register(toolText.manifest);
     toolRegistry.register(toolConvert.manifest);
+    toolRegistry.register(todoModule.manifest);
 
     console.log('[App] Registered tools:', toolRegistry.getAll().map(t => t.name).join(', '));
 
@@ -56,6 +58,7 @@ App({
     syncManager.init();
 
     migrationManager.runAll();
+    todoModule.init();
     storage.init();
     ecsAdapter.init();
     this.restoreUserInfo();

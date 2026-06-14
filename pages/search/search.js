@@ -7,6 +7,7 @@ var fcModule = require('../../modules/flashcard/public');
 var foodModule = require('../../modules/food/public');
 var cdModule = require('../../modules/countdown/public');
 var convStore = require('../../core/conversation/store');
+var todoModule = require('../../modules/todo/public');
 
 Page({
   data: {
@@ -147,6 +148,22 @@ Page({
         if ((c.title || '').toLowerCase().indexOf(qLower) >= 0) {
           results.push({ type: 'conversation', icon: '○', title: c.title || '新对话', subtitle: (c.summary || '').substring(0, 40), id: c.id, url: '/pages/chat/chat?id=' + c.id });
         }
+      });
+    } catch (e) {}
+
+
+    // Search todos
+    try {
+      var todos = todoModule.searchTodos(q);
+      todos.forEach(function(t) {
+        results.push({
+          type: 'todo',
+          icon: t.completed ? '☑' : '☐',
+          title: t.title,
+          subtitle: (t.completed ? '已完成' : '待办') + (t.dueDate ? ' | ' + t.dueDate : ''),
+          id: t.id,
+          url: '/pages/todo/todo'
+        });
       });
     } catch (e) {}
 

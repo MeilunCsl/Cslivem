@@ -80,7 +80,8 @@ Page({
       'countdown': '/pages/countdown/countdown',
       'food': '/pages/food/food',
       'flashcard': '/pages/flashcard/flashcard',
-      'mood': '/pages/mood/mood'
+      'mood': '/pages/mood/mood',
+      'todo': '/pages/todo/todo'
     };
     if (routes[id]) {
       wx.navigateTo({ url: routes[id] });
