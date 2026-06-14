@@ -110,6 +110,7 @@ Page({
     gateway.ask(content.trim(), '你是 Cslivem AI 助手，一个友好、有用的智能助手。用简洁的中文回答用户的问题。')
       .then(function (res) {
         var reply = res.content || '';
+        if (res.mode === 'local') { reply += '\n\n[本地模式] 请前往「设置」配置 AI API Key 以使用大模型。'; }
         self.startTypingEffect(convId, reply);
       })
       .catch(function (err) {
