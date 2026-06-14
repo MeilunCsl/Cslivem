@@ -43,8 +43,6 @@ Page({
     try {
       this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 });
     } catch (e) { /* ignore */ }
-    this.loadNotes();
-    this.loadGraphStats();
     var self = this;
     setTimeout(function () { self.setData({ ready: true }); }, 100);
   },

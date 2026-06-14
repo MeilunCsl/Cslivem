@@ -36,9 +36,11 @@ Page({
 
     if (options && options.id) {
       self.setData({ conversationId: options.id });
+      self._loadedInOnLoad = true;
       self.loadConversation(options.id);
     } else {
       var conv = conversationStore.createConversation({ title: '' });
+      self._loadedInOnLoad = true;
       self.setData({ conversationId: conv.id, conversation: conv });
     }
 
@@ -51,6 +53,11 @@ Page({
   },
 
   onShow: function () {
+    // Skip if already loaded in onLoad (prevents double-load)
+    if (this._loadedInOnLoad) {
+      this._loadedInOnLoad = false;
+      return;
+    }
     if (this.data.conversationId) {
       this.loadConversation(this.data.conversationId);
     }
@@ -350,7 +357,7 @@ Page({
         });
         self.scrollToBottom();
         // Ask AI to analyze the image
-        gateway.ask('用户发送了一张图片，请描述你看到的内容并提供分析。', '你是一个有用的AI助手。用户发送了一张图片。')
+        gateway.analyzeImage(filePath, '描述这张图片的内容并提供分析').then(function (res) {
           .then(function (res) {
             store.addMessage({ conversationId: convId, role: 'assistant', content: res.content || '(无回复)', model: res.model });
             var updatedMsgs = store.getMessages(convId);
@@ -368,15 +375,31 @@ Page({
 
   onStartRecord: function () {
     var self = this;
-    self.setData({ recording: true });
+    self.setData({ recording: true, recordingTime: 0 });
+    self._recordingTimer = setInterval(function() {
+      self.setData({ recordingTime: (self.data.recordingTime || 0) + 1 });
+    }, 1000);
     recorder.onStop(function (res) {
+      if (self._recordingTimer) { clearInterval(self._recordingTimer); self._recordingTimer = null; }
       if (res && res.tempFilePath) {
         var convId = self.data.conversationId;
         assetStore.add({ conversationId: convId, type: 'voice', filePath: res.tempFilePath });
-        var store = require('../../core/conversation/store');
-        store.addMessage({ conversationId: convId, role: 'user', content: '[语音消息]', type: 'voice' });
-        var msgs = store.getMessages(convId);
-        self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs), recording: false });
+        gateway.transcribeVoice(res.tempFilePath).then(function(text) {
+          if (text && text.trim()) {
+            self.setData({ inputText: text.trim(), recording: false });
+            self.onSend();
+          } else {
+            var store = require('../../core/conversation/store');
+            store.addMessage({ conversationId: convId, role: 'user', content: '[语音消息]', type: 'voice' });
+            var msgs = store.getMessages(convId);
+            self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs), recording: false });
+          }
+        }).catch(function() {
+          var store = require('../../core/conversation/store');
+          store.addMessage({ conversationId: convId, role: 'user', content: '[语音消息]', type: 'voice' });
+          var msgs = store.getMessages(convId);
+          self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs), recording: false });
+        });
         self.scrollToBottom();
       }
     });

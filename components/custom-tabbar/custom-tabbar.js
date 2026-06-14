@@ -6,7 +6,7 @@ Component({
   data: {
     showPanel: false,
     tabReady: false,
-    indicatorClass: 'pos-0',
+    indicatorLeft: '10%',
     badgeCount: 0
   },
 
@@ -45,9 +45,10 @@ Component({
     },
 
     updateIndicator(selectedIndex) {
-      this.setData({ indicatorClass: 'pos-' + selectedIndex });
+      var positions = { 0: '10%', 1: '30%', 3: '70%', 4: '90%' };
+      var left = positions[selectedIndex] || '10%';
+      this.setData({ indicatorLeft: left });
     },
-
     togglePanel() {
       wx.vibrateShort({ type: 'light' }).catch(() => {});
       this.setData({ showPanel: !this.data.showPanel });

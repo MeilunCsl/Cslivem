@@ -23,7 +23,7 @@
       <text class="tab-text">工具</text>
       <view class="tab-badge" wx:if="{{badgeCount > 0}}"><text>{{badgeCount > 99 ? '99+' : badgeCount}}</text></view>
     </view>
-    <view class="tab-indicator {{indicatorClass}}"></view>
+    <view class="tab-indicator" style="left: {{indicatorLeft}};"></view>
   </view>
 </view>
 

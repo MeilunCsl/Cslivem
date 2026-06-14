@@ -29,7 +29,6 @@ Page({
     try {
       self.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 });
     } catch (e) {}
-    self.loadConversations();
     setTimeout(function () {
       self.setData({ ready: true });
     }, 100);
