@@ -69,7 +69,7 @@ Page({
       'note': '/pages/note-editor/note-editor',
       'calendar': '/pages/calendar/calendar',
       'ledger': '/pages/ledger/ledger',
-      'tool-pdf': '/pages/tools/tools',
+      'tool-pdf': '/pages/pdf/pdf',
       'tool-ocr': '/pages/ocr/ocr',
       'tool-scanner': '/pages/tools/tools'
     };

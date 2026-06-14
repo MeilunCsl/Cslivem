@@ -1,8 +1,8 @@
 module.exports = {
   id: 'tool-pdf',
   name: '图片转PDF',
-  version: '0.1.0',
-  lifecycle: 'draft',
+  version: '1.7.0',
+  lifecycle: 'stable',
   permissions: ['album', 'file'],
   enabledByDefault: true,
   icon: '◻',

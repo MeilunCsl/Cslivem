@@ -1,0 +1,69 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">图片转 PDF</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="section" wx:if="{{images.length === 0 && !result}}">
+      <view class="empty-state">
+        <text class="empty-icon">📄</text>
+        <text class="empty-text">选择图片生成 PDF 文档</text>
+        <text class="empty-hint">支持多张图片，每张图片占一页</text>
+      </view>
+      <view class="source-section">
+        <view class="source-btn" bindtap="onSelectImages" hover-class="source-press">
+          <text class="source-icon">🖼</text>
+          <text class="source-text">选择图片</text>
+        </view>
+      </view>
+    </view>
+    <view class="section" wx:if="{{images.length > 0 && !result}}">
+      <view class="section-header">
+        <text class="section-title">已选 {{images.length}} 张</text>
+        <view class="add-more" bindtap="onAddMore" wx:if="{{images.length < 9}}">
+          <text>＋ 添加</text>
+        </view>
+      </view>
+      <view class="image-grid">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image class="image-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-src="{{item}}" />
+          <view class="image-remove" catchtap="onRemoveImage" data-index="{{index}}">
+            <text>×</text>
+          </view>
+          <view class="image-index">{{index + 1}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="section" wx:if="{{images.length > 0 && !result && !loading}}">
+      <view class="generate-btn" bindtap="onGenerate" hover-class="btn-press">
+        <text>生成 PDF</text>
+      </view>
+    </view>
+    <view class="section" wx:if="{{loading}}">
+      <view class="loading-section">
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{progress}}%"></view>
+        </view>
+        <text class="loading-text">正在生成 PDF...</text>
+      </view>
+    </view>
+    <view class="section" wx:if="{{result}}">
+      <view class="result-card">
+        <text class="result-icon">✅</text>
+        <text class="result-title">PDF 已生成</text>
+        <text class="result-info">{{result.pageCount}} 页</text>
+      </view>
+      <view class="result-actions">
+        <view class="action-btn" bindtap="onShare" hover-class="btn-press">
+          <text>分享</text>
+        </view>
+        <view class="action-btn action-btn-primary" bindtap="onSave" hover-class="btn-press">
+          <text>保存</text>
+        </view>
+      </view>
+      <view class="reset-link" bindtap="onReset">
+        <text>重新创建</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
