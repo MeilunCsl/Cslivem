@@ -260,9 +260,15 @@ module.exports = {
           callOpenAI(messages, { model: config.model, maxTokens: 1024 }).then(function(r) {
             r.mode = 'api';
             resolve(r);
-          }).catch(function(err) {
-            resolve({ content: '(分析失败) ' + err.message, mode: 'error' });
-          });
+    }).catch(function(err) {
+      var localAnswer = localAnswerQuestion(question);
+      var errHint = 'AI 连接失败: ' + (err.message || '未知') + '。请检查 API Key 和网络。';
+      resolve({
+        content: errHint + '\n\n本地搜索:\n' + localAnswer,
+        mode: 'local',
+        error: err.message
+      });
+    });
         },
         fail: function(err) {
           resolve({ content: '(读取图片失败) ' + (err.errMsg || ''), mode: 'error' });
@@ -361,10 +367,10 @@ module.exports = {
     var routedModel = selectModel(question, false);
     
     // 无配置时用本场模式
+    // 未配置时提示用户
     if (!config) {
-      var localAnswer = localAnswerQuestion(question);
       return Promise.resolve({
-        content: localAnswer,
+        content: '未配置 AI 服务。请前往「设置」页面配置 API Key 后重试。',
         mode: 'local'
       });
     }
@@ -389,10 +395,10 @@ module.exports = {
       result.mode = 'api';
       return result;
     }).catch(function(err) {
-      // Local fallback: search knowledge base
       var localAnswer = localAnswerQuestion(question);
+      var errHint = 'AI 连接失败: ' + (err.message || '未知') + '。请检查 API Key 和网络。';
       return {
-        content: localAnswer,
+        content: errHint + '\n\n本地搜索:\n' + localAnswer,
         mode: 'local',
         error: err.message
       };
