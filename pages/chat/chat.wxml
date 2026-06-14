@@ -92,6 +92,14 @@
       <text class="action-icon">📝</text>
       <text>保存为笔记</text>
     </view>
+    <view class="action-item" bindtap="onExtractKnowledge" wx:if="{{selectedMsgRole === 'assistant'}}">
+      <text class="action-icon">💡</text>
+      <text>提取知识点</text>
+    </view>
+    <view class="action-item" bindtap="onIngestToGraph" wx:if="{{selectedMsgRole === 'assistant'}}">
+      <text class="action-icon">🕸</text>
+      <text>转知识图谱</text>
+    </view>
     <view class="action-item action-danger" bindtap="onDeleteMessage">
       <text class="action-icon">🗑</text>
       <text>删除</text>

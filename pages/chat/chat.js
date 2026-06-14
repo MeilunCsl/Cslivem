@@ -268,6 +268,64 @@ Page({
     this.hideActions();
   },
 
+
+  onExtractKnowledge: function() {
+    var self = this;
+    var msgs = self.data.messages;
+    var selectedId = self.data.selectedMessageId;
+    var msg = null;
+    for (var i = 0; i < msgs.length; i++) {
+      if (msgs[i].id === selectedId) { msg = msgs[i]; break; }
+    }
+    if (!msg) { self.hideActions(); return; }
+
+    wx.showLoading({ title: '提取中...' });
+    var gateway = require('../../miniprogram/ai-gateway');
+    var prompt = '从以下内容提取 3-5 个知识点，每个用 JSON 返回：{"title":"标题","summary":"摘要","tags":["标签"]}。只输出 JSON 数组。\n\n内容: ' + msg.content.substring(0, 1000);
+    
+    gateway.ask(prompt, '你是知识提取器。').then(function(res) {
+      wx.hideLoading();
+      try {
+        var points = JSON.parse(res.content);
+        if (!Array.isArray(points)) points = [];
+        
+        var noteModule = require('../../modules/note/public');
+        points.forEach(function(p) {
+          noteModule.createNote({
+            title: p.title || '知识点',
+            content: p.summary || '',
+            tags: p.tags || ['提取知识点']
+          });
+        });
+        
+        wx.showToast({ title: '已提取 ' + points.length + ' 个知识点', icon: 'success' });
+      } catch (e) {
+        wx.showToast({ title: '解析失败', icon: 'none' });
+      }
+    }).catch(function(err) {
+      wx.hideLoading();
+      wx.showToast({ title: '提取失败: ' + err.message, icon: 'none' });
+    });
+    self.hideActions();
+  },
+
+  onIngestToGraph: function() {
+    var self = this;
+    var msgs = self.data.messages;
+    var selectedId = self.data.selectedMessageId;
+    var msg = null;
+    for (var i = 0; i < msgs.length; i++) {
+      if (msgs[i].id === selectedId) { msg = msgs[i]; break; }
+    }
+    if (!msg) { self.hideActions(); return; }
+
+    var convId = self.data.conversationId;
+    wx.navigateTo({
+      url: '/pages/graph-ingest/graph-ingest?id=' + convId + '&msgId=' + selectedId
+    });
+    self.hideActions();
+  },
+
   onDeleteMessage: function() {
     var self = this;
     wx.showModal({
