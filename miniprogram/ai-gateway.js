@@ -115,7 +115,7 @@ function localClassify(text) {
 }
 
 // ===== Public API =====
-
+module.exports = {
   // Multi-modal: image analysis
   analyzeImage: function(imagePath, prompt) {
     logRequest('analyzeImage', prompt || 'image');
@@ -150,7 +150,6 @@ function localClassify(text) {
     return Promise.resolve({ audioUrl: '', mode: 'local' });
   },
 
-module.exports = {
   // AI 问答（对话式）
   ask: function(question, context) {
     logRequest('ask', question);
