@@ -503,3 +503,27 @@
 ---
 
 *v1.9.0 验收通过 — 全模块数据导入导出完成。*
+
+## v1.0.0-rc.1 — Offline AI (2026-06-14)
+
+**验收人**: cansen (auto-verify)
+
+### Offline Fallback AI
+- [x] `localSearchKnowledge()` implemented
+- [x] `localAnswerQuestion()` implemented
+- [x] `ask()` enhanced with local fallback on API error
+- [x] No-config case uses local fallback
+- [x] Braces balanced (169/169)
+- [x] No BOM
+
+### Project Final Stats
+- [x] 22 pages, 11 modules, 4 components
+- [x] 216+ files
+- [x] All features from ARCHITECTURE.md implemented
+- [x] All features from TOOL_PLATFORM.md modules implemented
+- [x] CHANGELOG version roadmap complete
+- [x] All commits pushed to GitHub
+
+---
+
+*v1.0.0-rc.1 验收通过 — 全功能完成，可进入正式发布。*
