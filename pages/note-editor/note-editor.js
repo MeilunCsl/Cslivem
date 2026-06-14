@@ -181,6 +181,44 @@ Page({
       .catch(function() { wx.showToast({ title: 'AI 服务不可用', icon: 'none' }); });
   },
 
+  syncToGraph: function(noteId, title, content) {
+    try {
+      var knowledgeModule = require('../../modules/knowledge/public');
+      knowledgeModule.linkNote(noteId, title);
+      var wikiLinkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+      var match;
+      while ((match = wikiLinkRegex.exec(content)) !== null) {
+        var target = match[1].trim();
+        var alias = match[2] ? match[2].trim() : target;
+        var existing = knowledgeModule.findNodeByRef('concept_' + target);
+        var conceptNode = existing || knowledgeModule.createNode({
+          type: 'concept', refId: 'concept_' + target, label: alias,
+          metadata: { description: 'Wiki-Link concept' }
+        });
+        var noteNode = knowledgeModule.findNodeByRef(noteId);
+        if (noteNode && conceptNode) {
+          knowledgeModule.createEdge({ source: noteNode.id, target: conceptNode.id, type: 'link' });
+        }
+      }
+      var note = require('../../modules/note/public').getRecentNotes(100).find(function(n) { return n.id === noteId; });
+      if (note && note.tags) {
+        note.tags.forEach(function(tag) {
+          var tagNode = knowledgeModule.findNodeByRef('tag_' + tag);
+          if (!tagNode) {
+            tagNode = knowledgeModule.createNode({
+              type: 'tag', refId: 'tag_' + tag, label: '#' + tag,
+              metadata: { description: 'Note tag' }
+            });
+          }
+          var noteNode = knowledgeModule.findNodeByRef(noteId);
+          if (noteNode && tagNode) {
+            knowledgeModule.createEdge({ source: noteNode.id, target: tagNode.id, type: 'tag' });
+          }
+        });
+      }
+    } catch(e) { console.warn('[NoteEditor] syncToGraph error:', e); }
+  },
+
   goBack: function() { wx.navigateBack(); },
 
   save: function() {
