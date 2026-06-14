@@ -20,6 +20,55 @@
 ---
 
 
+## v1.7.0 — Tools-Complete (2026-06-14)
+
+### New
+- **PDF Tool**: Real image-to-PDF generation
+  - Select up to 9 images from album/camera
+  - Lightweight PDF writer (`core/pdf/pdf-writer.js`)
+  - A4 page layout with margin
+  - Progress bar during generation
+  - Share and save to local storage
+- **Scanner Tool**: Real image enhancement via Canvas
+  - Camera/album image capture
+  - Brightness, contrast, grayscale adjustment via Canvas pixel manipulation
+  - Save enhanced image to album
+  - Save as note integration
+- **Knowledge Graph Enhancement**:
+  - Zoom in/out controls (fixed position)
+  - Reset view button
+  - Fit-all nodes button
+  - Node labels always visible on canvas
+- **Calendar Enhancement**:
+  - Week view mode (7-day grid with event dots)
+  - Day view mode (hourly timeline 6:00-23:00)
+  - View mode toggle (Month/Week/Day)
+  - Week navigation (prev/next week)
+- **Note Editor Enhancement**:
+  - Markdown real-time preview mode
+  - Edit/Preview toggle button
+  - `utils/markdown.js` parser (headings, bold, italic, code, lists, links, blockquotes, hr)
+  - rich-text component rendering
+  - Wiki-link highlighting in preview
+
+### Files Added
+- `core/pdf/pdf-writer.js` — PDF generation library
+- `pages/pdf/pdf.*` — PDF tool page (4 files)
+- `pages/scanner/scanner.*` — Scanner tool page (4 files)
+- `utils/markdown.js` — Markdown parser
+
+### Files Modified
+- `modules/tool-pdf/public.js` — Real PDF implementation
+- `modules/tool-pdf/manifest.js` — v1.7.0 stable
+- `modules/tool-scanner/public.js` — Real scanner implementation
+- `modules/tool-scanner/manifest.js` — v1.7.0 stable
+- `pages/graph-view/graph-view.*` — Zoom controls, fit-all
+- `pages/calendar/calendar.*` — Week/day views
+- `pages/note-editor/note-editor.*` — Markdown preview
+- `pages/tools/tools.js` — Updated routes
+- `app.json` — Registered pdf, scanner pages
+
+
 
 ## v0.9.0 — Polish（2026-06-12）
 
