@@ -71,3 +71,15 @@
 .preview-content {
   font-size: 28rpx; color: var(--color-text); line-height: 1.8;
 }
+
+/* AI Writing Assistant */
+.ai-menu-toggle { position: fixed; right: 48rpx; bottom: calc(240rpx + env(safe-area-inset-bottom)); width: 88rpx; height: 88rpx; border-radius: 50%; background: var(--csl-gradient); display: flex; align-items: center; justify-content: center; box-shadow: 0 8rpx 24rpx rgba(91,76,255,0.3); z-index: 50; }
+.ai-menu-icon { font-size: 40rpx; }
+.ai-menu { position: fixed; right: 48rpx; bottom: calc(340rpx + env(safe-area-inset-bottom)); background: var(--color-card); border-radius: 24rpx; padding: 16rpx; box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.15); z-index: 51; opacity: 0; transform: translateY(20rpx); pointer-events: none; transition: all 0.2s ease; }
+.ai-menu.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.ai-menu-item { display: flex; align-items: center; gap: 16rpx; padding: 16rpx 24rpx; border-radius: 16rpx; }
+.ai-menu-item:active { background: var(--csl-surface-muted); }
+.ai-item-icon { font-size: 28rpx; width: 40rpx; text-align: center; }
+.ai-item-text { font-size: 26rpx; color: var(--color-text); }
+.ai-loading { position: fixed; right: 48rpx; bottom: calc(240rpx + env(safe-area-inset-bottom)); background: var(--color-card); border-radius: 999rpx; padding: 16rpx 28rpx; box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.1); z-index: 52; }
+.ai-loading-text { font-size: 24rpx; color: var(--color-primary); }
