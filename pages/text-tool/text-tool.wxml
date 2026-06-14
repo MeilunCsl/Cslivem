@@ -1,0 +1,44 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">文本处理</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="input-section">
+      <view class="input-header">
+        <text class="input-label">输入文本</text>
+        <view class="input-actions">
+          <view class="mini-btn" bindtap="onPaste" hover-class="btn-press">粘贴</view>
+          <view class="mini-btn" bindtap="onClear" hover-class="btn-press">清空</view>
+        </view>
+      </view>
+      <textarea class="text-area" value="{{inputText}}" bindinput="onInputChange" placeholder="输入或粘贴文本..." auto-height maxlength="10000" />
+    </view>
+
+    <view class="stats-bar" wx:if="{{stats}}">
+      <view class="stat-item"><text class="stat-val">{{stats.chars}}</text><text class="stat-lbl">字符</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.words}}</text><text class="stat-lbl">词</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.lines}}</text><text class="stat-lbl">行</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.chinese}}</text><text class="stat-lbl">中文</text></view>
+    </view>
+
+    <view class="actions-grid">
+      <view class="action-item" bindtap="onAction" data-action="upper" hover-class="btn-press"><text>全大写</text></view>
+      <view class="action-item" bindtap="onAction" data-action="lower" hover-class="btn-press"><text>全小写</text></view>
+      <view class="action-item" bindtap="onAction" data-action="title" hover-class="btn-press"><text>首字母大写</text></view>
+      <view class="action-item" bindtap="onAction" data-action="rmEmpty" hover-class="btn-press"><text>去空行</text></view>
+      <view class="action-item" bindtap="onAction" data-action="rmDup" hover-class="btn-press"><text>去重复</text></view>
+      <view class="action-item" bindtap="onAction" data-action="sort" hover-class="btn-press"><text>排序</text></view>
+      <view class="action-item" bindtap="onAction" data-action="reverse" hover-class="btn-press"><text>反转</text></view>
+      <view class="action-item" bindtap="onAction" data-action="count" hover-class="btn-press"><text>统计</text></view>
+    </view>
+
+    <view class="output-section" wx:if="{{outputText}}">
+      <view class="output-header">
+        <text class="output-label">结果</text>
+        <view class="mini-btn" bindtap="onCopyOutput" hover-class="btn-press">复制</view>
+      </view>
+      <textarea class="text-area output-area" value="{{outputText}}" auto-height />
+    </view>
+  </scroll-view>
+</view>
