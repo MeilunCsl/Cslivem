@@ -9,7 +9,8 @@
     "pages/tools/tools",
     "pages/search/search",
     "pages/ai-chat/ai-chat",
-    "pages/graph-view/graph-view"
+    "pages/graph-view/graph-view",
+    "pages/graph-debug/graph-debug"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",
