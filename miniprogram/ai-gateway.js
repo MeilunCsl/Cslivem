@@ -150,10 +150,38 @@ module.exports = {
     return Promise.resolve({ audioUrl: '', mode: 'local' });
   },
 
+
+// ===== Model Auto-Routing =====
+function selectModel(text, hasImage) {
+  var config = apiConfig.getActiveConfig();
+  if (!config) return null;
+  var baseModel = config.model || 'MiMo-7B-RL';
+  
+  // Image → vision model
+  if (hasImage) {
+    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
+  }
+  
+  // Long or complex text → pro model
+  if (text && text.length > 500) {
+    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
+  }
+  
+  // Code or technical content → pro model
+  if (text && (text.indexOf('```') >= 0 || text.indexOf('function') >= 0 || 
+      text.indexOf('class ') >= 0 || text.indexOf('import ') >= 0)) {
+    return baseModel.includes('mimo') ? 'MiMo-V2.5-Pro' : baseModel;
+  }
+  
+  // Simple text → fast model
+  return baseModel.includes('mimo') ? 'MiMo-7B-RL' : baseModel;
+}
+
   // AI 问答（对话式）
   ask: function(question, context) {
     logRequest('ask', question);
     var config = apiConfig.getActiveConfig();
+    var routedModel = selectModel(question, false);
     
     // 无配置时用本场模式
     if (!config) {
@@ -174,7 +202,7 @@ module.exports = {
       messages = [messages[0]].concat(history).concat([messages[1]]);
     }
 
-    return callOpenAI(messages).then(function(result) {
+    return callOpenAI(messages, { model: routedModel }).then(function(result) {
       _conversationHistory.push({ role: 'user', content: question });
       _conversationHistory.push({ role: 'assistant', content: result.content });
       if (_conversationHistory.length > 20) {
