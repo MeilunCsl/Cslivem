@@ -358,7 +358,6 @@ Page({
         self.scrollToBottom();
         // Ask AI to analyze the image
         gateway.analyzeImage(filePath, '描述这张图片的内容并提供分析').then(function (res) {
-          .then(function (res) {
             store.addMessage({ conversationId: convId, role: 'assistant', content: res.content || '(无回复)', model: res.model });
             var updatedMsgs = store.getMessages(convId);
             self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs), sending: false });
