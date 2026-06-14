@@ -4,6 +4,7 @@
   
   <view class="top-bar anim-fade {{ready ? 'anim-show' : ''}}">
     <view class="back-btn" bindtap="goBack" hover-class="press">← 返回</view>
+    <view class="action-btn graph-btn" bindtap="openGraph" hover-class="press">🗘️ 图谱</view>
     <view class="top-actions">
       <view class="action-btn {{note.isFavorite ? 'fav-active' : ''}}" bindtap="toggleFavorite" hover-class="press">
         {{note.isFavorite ? '★' : '☆'}}

@@ -46,7 +46,21 @@ Page({
         notes = noteModule.getFavorites();
         break;
       case 'tags':
-        notes = noteModule.getRecentNotes(100);
+        try {
+          const knowledgeModule = require('../../modules/knowledge/public');
+          const tagNodes = knowledgeModule.getNodesByType('tag');
+          notes = tagNodes.map(n => ({
+            id: n.refId || n.id,
+            title: n.label,
+            summary: (n.metadata && n.metadata.description) || '',
+            tags: [],
+            updatedAt: n.updatedAt,
+            createdAt: n.createdAt,
+            isTagNode: true
+          }));
+        } catch(e) {
+          notes = noteModule.getRecentNotes(100);
+        }
         break;
       default:
         notes = noteModule.getRecentNotes(20);

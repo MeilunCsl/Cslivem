@@ -50,6 +50,19 @@ Page({
   onToolTap: function(e) {
     var id = e.currentTarget.dataset.id;
     wx.vibrateShort({ type: 'light' }).catch(function() {});
-    wx.showToast({ title: '工具详情（开发中）', icon: 'none' });
+    var routes = {
+      'knowledge': '/pages/graph-view/graph-view',
+      'note': '/pages/note-editor/note-editor',
+      'calendar': '/pages/calendar/calendar',
+      'ledger': '/pages/ledger/ledger',
+      'tool-pdf': '/pages/tools/tools',
+      'tool-ocr': '/pages/tools/tools',
+      'tool-scanner': '/pages/tools/tools'
+    };
+    if (routes[id]) {
+      wx.navigateTo({ url: routes[id] });
+    } else {
+      wx.showToast({ title: '工具详情（开发中）', icon: 'none' });
+    }
   }
 });

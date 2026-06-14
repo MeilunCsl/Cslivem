@@ -16,6 +16,7 @@ Page({
     const noteId = options.id || '';
     this.setData({ noteId });
     this.loadNote(noteId);
+    this.loadBacklinks(noteId);
     setTimeout(() => { this.setData({ ready: true }); }, 100);
   },
 
@@ -82,9 +83,20 @@ Page({
   },
 
   loadBacklinks(id) {
-    const noteRepo = require('../../modules/note/repository');
-    const backlinks = noteRepo.getBacklinks(id);
-    this.setData({ backlinks: backlinks });
+    try {
+      const knowledgeModule = require('../../modules/knowledge/public');
+      const node = knowledgeModule.findNodeByRef(id);
+      if (node) {
+        const backlinkNodes = knowledgeModule.getBacklinks(node.id);
+        this.setData({ backlinks: backlinkNodes.map(n => ({
+          id: n.refId || n.id,
+          title: n.label,
+          summary: n.metadata && n.metadata.description || ''
+        }))});
+      }
+    } catch(e) {
+      console.warn('[NoteDetail] loadBacklinks error:', e);
+    }
   },
 
   onTapBacklink(e) {
@@ -93,6 +105,10 @@ Page({
   },
 
   goBack() { wx.navigateBack(); },
+
+  openGraph() {
+    wx.navigateTo({ url: '/pages/graph-view/graph-view' });
+  },
 
   deleteNote() {
     wx.showModal({

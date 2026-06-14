@@ -144,7 +144,20 @@ Page({
       .then(function(r) {
         var tags = r.tags || [];
         if (tags.length > 0) {
-          wx.showToast({ title: '建议标签: ' + tags.join(', '), icon: 'none', duration: 3000 });
+          wx.showModal({
+            title: 'AI 建议标签',
+            content: tags.join(', '),
+            confirmText: '添加到笔记',
+            success: function(res) {
+              if (res.confirm) {
+                var noteModule = require('../../modules/note/public');
+                tags.forEach(function(tag) {
+                  try { noteModule.addTag(self.data.noteId, tag); } catch(e) {}
+                });
+                wx.showToast({ title: '已添加 ' + tags.length + ' 个标签', icon: 'success' });
+              }
+            }
+          });
         }
       })
       .catch(function() { wx.showToast({ title: 'AI 服务不可用', icon: 'none' }); });
