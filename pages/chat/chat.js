@@ -138,6 +138,24 @@ Page({
     self.setData({ messages: msgs, groupedMessages: self.groupByTime(msgs) });
     self.scrollToBottom();
 
+    // Check for pending attachment
+    var attachment = self.data.pendingAttachment;
+    if (attachment && attachment.type === 'image') {
+      gateway.analyzeImage(attachment.filePath, text).then(function(result) {
+        conversationStore.addMessage({ conversationId: convId, role: 'assistant', content: result.content, type: 'text', model: result.model || 'MiMo' });
+        self.setData({ pendingAttachment: null });
+        var updatedMsgs = conversationStore.getMessages(convId);
+        self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs), sending: false });
+        self.scrollToBottom();
+      }).catch(function(err) {
+        conversationStore.addMessage({ conversationId: convId, role: 'assistant', content: 'Image analysis failed: ' + err.message, type: 'text', isError: true });
+        self.setData({ pendingAttachment: null, sending: false });
+        var updatedMsgs = conversationStore.getMessages(convId);
+        self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs) });
+      });
+      return;
+    }
+
     gateway.ask(text).then(function(result) {
       conversationStore.addMessage({
         conversationId: convId,

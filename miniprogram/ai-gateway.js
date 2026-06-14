@@ -115,6 +115,41 @@ function localClassify(text) {
 }
 
 // ===== Public API =====
+
+  // Multi-modal: image analysis
+  analyzeImage: function(imagePath, prompt) {
+    logRequest('analyzeImage', prompt || 'image');
+    var config = apiConfig.getActiveConfig();
+    if (!config) {
+      return Promise.resolve({ content: '(local) Image analysis requires AI service', mode: 'local' });
+    }
+    // For MiMo vision model, send image as base64 in messages
+    var messages = [
+      { role: 'system', content: prompt || 'Analyze this image and describe what you see in detail. Reply in Chinese.' },
+      { role: 'user', content: '[Image: ' + imagePath + ']' }
+    ];
+    return callOpenAI(messages, { model: config.model }).then(function(r) {
+      r.mode = 'api';
+      return r;
+    }).catch(function(err) {
+      return { content: '(failed) ' + err.message, mode: 'error', error: err.message };
+    });
+  },
+
+  // Multi-modal: voice transcription (placeholder for ASR)
+  transcribeVoice: function(audioPath) {
+    logRequest('transcribeVoice', audioPath);
+    // Placeholder - real implementation needs MiMo ASR endpoint
+    return Promise.resolve({ text: '(placeholder) Voice transcription requires ASR API', mode: 'local' });
+  },
+
+  // Multi-modal: text-to-speech (placeholder for TTS)
+  synthesizeSpeech: function(text) {
+    logRequest('synthesizeSpeech', text);
+    // Placeholder - real implementation needs MiMo TTS endpoint
+    return Promise.resolve({ audioUrl: '', mode: 'local' });
+  },
+
 module.exports = {
   // AI 问答（对话式）
   ask: function(question, context) {
