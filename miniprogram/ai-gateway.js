@@ -32,9 +32,15 @@ function callOpenAI(messages, options) {
     stream: false
   };
 
+  // Auto-append /chat/completions if missing
+  var url = config.endpoint;
+  if (url && url.indexOf('/chat/completions') === -1) {
+    url = url.replace(/\/+$/, '') + '/chat/completions';
+  }
+
   return new Promise(function(resolve, reject) {
     wx.request({
-      url: config.endpoint,
+      url: url,
       method: 'POST',
       header: {
         'Content-Type': 'application/json',
