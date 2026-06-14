@@ -70,7 +70,7 @@ Page({
       'calendar': '/pages/calendar/calendar',
       'ledger': '/pages/ledger/ledger',
       'tool-pdf': '/pages/tools/tools',
-      'tool-ocr': '/pages/tools/tools',
+      'tool-ocr': '/pages/ocr/ocr',
       'tool-scanner': '/pages/tools/tools'
     };
     if (routes[id]) {

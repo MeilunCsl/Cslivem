@@ -1,0 +1,66 @@
+<view class="page">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">OCR 识别</view>
+  </view>
+  <view class="content">
+    <!-- Image Preview -->
+    <view class="preview-section" wx:if="{{imagePath}}">
+      <image class="preview-image" src="{{imagePath}}" mode="aspectFit" bindtap="onPreviewImage" />
+    </view>
+
+    <!-- Source Selection -->
+    <view class="source-section" wx:if="{{!imagePath && !result}}">
+      <view class="source-btn" bindtap="onChooseAlbum" hover-class="source-press">
+        <text class="source-icon">🖼</text>
+        <text class="source-text">从相册选择</text>
+      </view>
+      <view class="source-btn" bindtap="onTakePhoto" hover-class="source-press">
+        <text class="source-icon">📷</text>
+        <text class="source-text">拍照识别</text>
+      </view>
+    </view>
+
+    <!-- Recognize Button -->
+    <view class="action-section" wx:if="{{imagePath && !result && !loading}}">
+      <view class="recognize-btn" bindtap="onRecognize" hover-class="recognize-press">
+        <text>开始识别</text>
+      </view>
+      <view class="reselect-btn" bindtap="onReselect">
+        <text>重新选择</text>
+      </view>
+    </view>
+
+    <!-- Loading -->
+    <view class="loading-section" wx:if="{{loading}}">
+      <view class="loading-dots">
+        <view class="dot dot1"></view>
+        <view class="dot dot2"></view>
+        <view class="dot dot3"></view>
+      </view>
+      <text class="loading-text">正在识别中...</text>
+    </view>
+
+    <!-- Result -->
+    <view class="result-section" wx:if="{{result}}">
+      <view class="result-header">
+        <text class="result-title">识别结果</text>
+        <text class="result-mode">{{result.mode === 'api' ? 'AI 识别' : '本地'}}</text>
+      </view>
+      <view class="result-content">
+        <text class="result-text" user-select>{{result.text}}</text>
+      </view>
+      <view class="result-actions">
+        <view class="result-btn" bindtap="onCopyResult">
+          <text>复制文字</text>
+        </view>
+        <view class="result-btn result-btn-primary" bindtap="onSaveAsNote">
+          <text>保存为笔记</text>
+        </view>
+      </view>
+      <view class="new-ocr" bindtap="onNewOcr">
+        <text>新识别一张</text>
+      </view>
+    </view>
+  </view>
+</view>

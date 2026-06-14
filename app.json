@@ -14,6 +14,7 @@
     "pages/graph-view/graph-view",
     "pages/graph-debug/graph-debug",
     "pages/settings/settings",
+    "pages/ocr/ocr",
     "pages/graph-ingest/graph-ingest"
   ],
   "window": {
