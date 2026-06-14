@@ -1,4 +1,4 @@
-﻿// pages/tools/tools.js
+// pages/tools/tools.js
 var toolRegistry = require('../../miniprogram/tool-registry');
 
 Page({

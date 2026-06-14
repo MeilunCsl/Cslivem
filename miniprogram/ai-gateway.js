@@ -1,4 +1,4 @@
-﻿// miniprogram/ai-gateway.js
+// miniprogram/ai-gateway.js
 // AI 统一网关
 // 支持: MiMo(本地) / ECS(阿里云) / Local(正则匹配兜底)
 
