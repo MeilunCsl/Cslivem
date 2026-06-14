@@ -209,16 +209,42 @@ module.exports = {
     if (!config) {
       return Promise.resolve({ content: '(local) Image analysis requires AI service', mode: 'local' });
     }
-    // For MiMo vision model, send image as base64 in messages
-    var messages = [
-      { role: 'system', content: prompt || 'Analyze this image and describe what you see in detail. Reply in Chinese.' },
-      { role: 'user', content: '[Image: ' + imagePath + ']' }
-    ];
-    return callOpenAI(messages, { model: config.model }).then(function(r) {
-      r.mode = 'api';
-      return r;
-    }).catch(function(err) {
-      return { content: '(failed) ' + err.message, mode: 'error', error: err.message };
+
+    // Read image as base64 and send as multimodal message
+    return new Promise(function(resolve, reject) {
+      wx.getFileSystemManager().readFile({
+        filePath: imagePath,
+        encoding: 'base64',
+        success: function(res) {
+          var base64Data = res.data;
+          var ext = (imagePath.split('.').pop() || 'jpeg').toLowerCase();
+          var mimeType = 'image/jpeg';
+          if (ext === 'png') mimeType = 'image/png';
+          else if (ext === 'webp') mimeType = 'image/webp';
+          else if (ext === 'gif') mimeType = 'image/gif';
+
+          var messages = [
+            { role: 'system', content: prompt || '请详细描述这张图片的内容，用中文回答。' },
+            {
+              role: 'user',
+              content: [
+                { type: 'image_url', image_url: { url: 'data:' + mimeType + ';base64,' + base64Data } },
+                { type: 'text', text: prompt || '请描述这张图片' }
+              ]
+            }
+          ];
+
+          callOpenAI(messages, { model: config.model, maxTokens: 1024 }).then(function(r) {
+            r.mode = 'api';
+            resolve(r);
+          }).catch(function(err) {
+            resolve({ content: '(分析失败) ' + err.message, mode: 'error' });
+          });
+        },
+        fail: function(err) {
+          resolve({ content: '(读取图片失败) ' + (err.errMsg || ''), mode: 'error' });
+        }
+      });
     });
   },
 
@@ -451,7 +477,153 @@ function selectModel(text, hasImage) {
     return Promise.resolve({ intent: 'unknown', entities: {}, raw: query });
   },
 
+
+
+
+  // Streaming AI chat (real streaming via enableChunked)
+  streamChat: function(messages, options, onChunk, onDone, onError) {
+    options = options || {};
+    var config = apiConfig.getActiveConfig();
+    if (!config) {
+      onError && onError(new Error('No AI provider configured'));
+      return null;
+    }
+
+    var body = {
+      model: options.model || config.model,
+      messages: messages,
+      max_tokens: options.maxTokens || config.maxTokens || 2048,
+      temperature: options.temperature !== undefined ? options.temperature : (config.temperature || 0.7),
+      stream: true
+    };
+
+    var url = config.endpoint;
+    if (url && url.indexOf('/chat/completions') === -1) {
+      url = url.replace(/\/+$/, '') + '/chat/completions';
+    }
+
+    var fullContent = '';
+    var buffer = '';
+
+    var task = wx.request({
+      url: url,
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + (config.apiKey || 'no-key')
+      },
+      data: body,
+      timeout: config.timeout || 60000,
+      enableChunked: true,
+      success: function(res) {
+        if (onDone) onDone(fullContent);
+      },
+      fail: function(err) {
+        var msg = err.errMsg || 'unknown';
+        if (msg.indexOf('url not in domain') >= 0 || msg.indexOf('not in domain') >= 0) {
+          onError && onError(new Error('Domain not whitelisted.'));
+        } else {
+          onError && onError(new Error('Network error: ' + msg));
+        }
+      }
+    });
+
+    if (task && task.onChunkReceived) {
+      task.onChunkReceived(function(res) {
+        try {
+          var chunk = '';
+          if (res.data instanceof ArrayBuffer) {
+            chunk = String.fromCharCode.apply(null, new Uint8Array(res.data));
+          } else if (typeof res.data === 'string') {
+            chunk = res.data;
+          }
+          buffer += chunk;
+          var lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          lines.forEach(function(line) {
+            line = line.trim();
+            if (!line || line === 'data: [DONE]') return;
+            if (line.indexOf('data: ') === 0) {
+              try {
+                var json = JSON.parse(line.substring(6));
+                var delta = json.choices && json.choices[0] && json.choices[0].delta;
+                if (delta && delta.content) {
+                  fullContent += delta.content;
+                  if (onChunk) onChunk(delta.content, fullContent);
+                }
+              } catch (e) {
+                // ignore parse errors in streaming
+              }
+            }
+          });
+        } catch (e) {
+          console.warn('[AI] chunk parse error:', e);
+        }
+      });
+    } else {
+      // Fallback: chunked not supported, use regular request
+      // The success handler will call onDone with full content
+    }
+
+    return task;
+  },
+
+  // AI 笔记摘要（优先用真实 AI，降级用本地）
+  summarizeNote: function(content) {
+    if (!content || content.length < 20) {
+      return Promise.resolve({ summary: content || '', source: 'local' });
+    }
+    var systemPrompt = '你是一个笔记摘要助手。用一句话（不超过50字）概括下列内容的核心要点，只输出摘要本身。';
+    var userMsg = content.substring(0, 2000);
+    return callOpenAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMsg }
+    ], { maxTokens: 200, temperature: 0.3 }).then(function(res) {
+      return { summary: res.content.trim(), source: 'ai' };
+    }).catch(function() {
+      return { summary: localSummarize(content), source: 'local' };
+    });
+  },
+
+  // AI 标签推荐（优先用真实 AI，降级用本地）
+  suggestTagsForNote: function(content) {
+    if (!content || content.length < 10) {
+      return Promise.resolve({ tags: [], source: 'local' });
+    }
+    var systemPrompt = '你是一个标签推荐助手。根据下列内容，推荐3-5个简短中文标签，用英文逗号分隔，只输出标签列表。';
+    var userMsg = content.substring(0, 1500);
+    return callOpenAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMsg }
+    ], { maxTokens: 100, temperature: 0.3 }).then(function(res) {
+      var tags = res.content.split(/[,，、\s]+/).map(function(t) { return t.trim(); }).filter(function(t) { return t.length > 0 && t.length < 20; });
+      return { tags: tags.slice(0, 5), source: 'ai' };
+    }).catch(function() {
+      return { tags: localSuggestTags(content), source: 'local' };
+    });
+  },
+
+  // AI 关联推荐（基于笔记内容搜索相关知识节点）
+  suggestRelated: function(content) {
+    if (!content || content.length < 10) {
+      return Promise.resolve({ related: [], source: 'local' });
+    }
+    var systemPrompt = '你是一个知识关联助手。根据下列内容，提取3-5个关键词或概念，用英文逗号分隔，只输出关键词。';
+    var userMsg = content.substring(0, 1500);
+    return callOpenAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMsg }
+    ], { maxTokens: 100, temperature: 0.3 }).then(function(res) {
+      var keywords = res.content.split(/[,，、\s]+/).map(function(t) { return t.trim(); }).filter(function(t) { return t.length > 1; });
+      return { keywords: keywords.slice(0, 5), source: 'ai' };
+    }).catch(function() {
+      var words = localSuggestTags(content);
+      return { keywords: words, source: 'local' };
+    });
+  },
+
   // OCR
+
   ocr: function(imageUrl) {
     logRequest('ocr', imageUrl);
     return Promise.resolve({ text: '(桩实现) OCR 功能开发中', confidence: 0.9 });

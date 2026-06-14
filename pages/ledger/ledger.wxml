@@ -35,6 +35,29 @@
         </view>
       </view>
 
+      <!-- Budget Section -->
+      <view class="budget-section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+        <view class="section-header">
+          <text class="section-title">预算</text>
+          <view class="add-budget-btn" bindtap="showBudgetForm" hover-class="press">+ 新增</view>
+        </view>
+        <view class="budget-list" wx:if="{{budgetProgress.length > 0}}">
+          <view class="budget-item" wx:for="{{budgetProgress}}" wx:key="category">
+            <view class="budget-info">
+              <text class="budget-cat">{{item.category}}</text>
+              <text class="budget-amount">已花 ¥{{item.spent}} / ¥{{item.budget}}</text>
+            </view>
+            <view class="budget-bar-bg">
+              <view class="budget-bar-fill {{item.percentage > 100 ? 'over' : (item.percentage > 80 ? 'warn' : '')}}" style="width: {{item.percentage > 100 ? 100 : item.percentage}}%;"></view>
+            </view>
+            <text class="budget-pct">{{item.percentage}}%</text>
+          </view>
+        </view>
+        <view class="empty-budget" wx:if="{{budgetProgress.length === 0}}">
+          <text class="empty-hint">暂无预算，点击新增开始</text>
+        </view>
+      </view>
+
       <!-- Accounts -->
       <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
         <view class="section-header">
@@ -92,19 +115,16 @@
       <view class="panel-close" bindtap="toggleCreate">×</view>
     </view>
 
-    <!-- Type Tabs -->
     <view class="type-tabs">
       <view class="type-tab {{txType === 'expense' ? 'active' : ''}}" bindtap="switchTxType" data-type="expense">支出</view>
       <view class="type-tab {{txType === 'income' ? 'active' : ''}}" bindtap="switchTxType" data-type="income">收入</view>
     </view>
 
-    <!-- Amount -->
     <view class="amount-row">
       <text class="amount-prefix">¥</text>
       <input class="amount-input" type="digit" placeholder="0.00" value="{{amountInput}}" bindinput="onAmountInput" />
     </view>
 
-    <!-- Category Grid -->
     <view class="cat-grid">
       <view
         class="cat-item {{selectedCategory === item.id ? 'selected' : ''}}"
@@ -119,7 +139,6 @@
       </view>
     </view>
 
-    <!-- Account Select -->
     <view class="account-select">
       <text class="select-label">账户</text>
       <view class="account-options">
@@ -134,11 +153,31 @@
       </view>
     </view>
 
-    <!-- Note -->
     <input class="note-input" placeholder="备注（可选）" value="{{txNote}}" bindinput="onNoteInput" />
 
-    <!-- Save -->
     <view class="save-btn" bindtap="saveTransaction" hover-class="save-press">保存</view>
+  </view>
+
+  <!-- Budget Form Modal -->
+  <view class="modal-overlay {{showBudgetModal ? 'show' : ''}}" catchtap="hideBudgetForm"></view>
+  <view class="modal {{showBudgetModal ? 'modal-in' : ''}}">
+    <view class="modal-title">设置预算</view>
+    <view class="modal-body">
+      <view class="config-row config-input-row">
+        <text class="config-label">分类</text>
+        <picker range="{{expenseCategories}}" range-key="name" value="{{budgetCatIndex}}" bindchange="onBudgetCatChange">
+          <text class="picker-text">{{expenseCategories[budgetCatIndex].name || '选择分类'}}</text>
+        </picker>
+      </view>
+      <view class="config-row config-input-row">
+        <text class="config-label">金额</text>
+        <input class="config-input" type="digit" value="{{budgetAmount}}" bindinput="onBudgetAmountInput" placeholder="输入预算金额" />
+      </view>
+    </view>
+    <view class="modal-actions">
+      <view class="modal-btn" bindtap="hideBudgetForm">取消</view>
+      <view class="modal-btn modal-btn-primary" bindtap="saveBudget">确认</view>
+    </view>
   </view>
 
 </view>

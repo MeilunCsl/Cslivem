@@ -158,3 +158,21 @@
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 .save-press { transform: scale(0.96); opacity: 0.85; }
+
+/* Budget Section */
+.budget-section { background: var(--color-card); border-radius: 32rpx; padding: 32rpx; margin-bottom: 24rpx; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24rpx; }
+.section-title { font-size: 28rpx; font-weight: 600; color: var(--color-text); }
+.add-budget-btn { font-size: 24rpx; color: var(--color-primary); font-weight: 500; padding: 8rpx 16rpx; }
+.budget-list { display: flex; flex-direction: column; gap: 20rpx; }
+.budget-item { display: flex; align-items: center; gap: 16rpx; }
+.budget-info { flex: 1; }
+.budget-cat { font-size: 26rpx; color: var(--color-text); font-weight: 500; display: block; }
+.budget-amount { font-size: 22rpx; color: var(--color-text-secondary); display: block; margin-top: 4rpx; }
+.budget-bar-bg { width: 160rpx; height: 12rpx; background: var(--csl-surface-muted); border-radius: 999rpx; overflow: hidden; }
+.budget-bar-fill { height: 100%; background: var(--color-success); border-radius: 999rpx; transition: width 0.3s ease; }
+.budget-bar-fill.warn { background: var(--color-warning); }
+.budget-bar-fill.over { background: var(--color-error); }
+.budget-pct { font-size: 22rpx; color: var(--color-text-secondary); width: 60rpx; text-align: right; }
+.empty-budget { text-align: center; padding: 24rpx; }
+.empty-hint { font-size: 26rpx; color: var(--color-text-secondary); }

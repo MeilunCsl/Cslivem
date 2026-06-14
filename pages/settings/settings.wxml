@@ -147,8 +147,20 @@
           <view class="action-btn" bindtap="onExport" hover-class="btn-press"><text>导出数据</text></view>
           <view class="action-btn action-secondary" bindtap="onImport" hover-class="btn-press"><text>导入数据</text></view>
         </view>
+
+        <view class="action-row" style="margin-top: 20rpx;">
+          <view class="action-btn" bindtap="onShowStorageDetail" hover-class="btn-press"><text>存储详情</text></view>
+          <view class="action-btn action-secondary" bindtap="onCleanupCache" hover-class="btn-press"><text>清理缓存</text></view>
+        </view>
         <view class="action-row" style="margin-top: 20rpx;">
           <view class="action-btn action-danger" bindtap="onResetGraph" hover-class="btn-press"><text>重置知识图谱</text></view>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d4 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">关于</view>
+        <view class="action-row">
+          <view class="action-btn" bindtap="onGoAbout" hover-class="btn-press"><text>关于 Cslivem</text></view>
         </view>
       </view>
     </view>

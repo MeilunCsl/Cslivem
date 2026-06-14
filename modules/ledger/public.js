@@ -56,6 +56,35 @@ module.exports = {
     return repository.getMonthlySummary(year, month);
   },
 
+
+
+  // Budget
+  getBudgets() {
+    return repository.getAllBudgets();
+  },
+  setBudget(data) {
+    return repository.setBudget(data);
+  },
+  deleteBudget(category, yearMonth) {
+    return repository.deleteBudget(category, yearMonth);
+  },
+  getBudgetProgress(year, month) {
+    var yearMonth = year + '-' + String(month).padStart(2, '0');
+    var transactions = repository.getTransactionsByMonth(year, month);
+    return repository.getBudgetProgress(yearMonth, transactions);
+  },
+  getMonthlyCategorySummary(year, month) {
+    var transactions = repository.getTransactionsByMonth(year, month);
+    var summary = {};
+    transactions.forEach(function(tx) {
+      if (tx.type === 'expense') {
+        var cat = tx.category || '其他';
+        if (!summary[cat]) summary[cat] = 0;
+        summary[cat] += Math.abs(tx.amountMinor || 0);
+      }
+    });
+    return summary;
+  },
   // Category
   getCategories() {
     return repository.getAllCategories();

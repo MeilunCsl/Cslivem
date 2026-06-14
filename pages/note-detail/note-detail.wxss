@@ -61,3 +61,29 @@
   border-bottom: 2rpx solid rgba(91, 76, 255, 0.3);
   padding: 2rpx 4rpx;
 }
+
+/* AI Panel */
+.ai-section { background: var(--color-card); border-radius: 32rpx; padding: 0; margin-bottom: 24rpx; overflow: hidden; }
+.ai-toggle { display: flex; align-items: center; padding: 24rpx 32rpx; }
+.ai-icon { font-size: 32rpx; margin-right: 12rpx; }
+.ai-label { font-size: 28rpx; font-weight: 600; color: var(--color-text); flex: 1; }
+.ai-arrow { font-size: 22rpx; color: var(--color-text-secondary); }
+.ai-panel { padding: 0 32rpx 32rpx; }
+.ai-actions { display: flex; gap: 20rpx; margin-bottom: 24rpx; }
+.ai-btn { flex: 1; background: var(--color-primary-bg); border-radius: 24rpx; padding: 20rpx; text-align: center; }
+.ai-btn-text { font-size: 26rpx; color: var(--color-primary); font-weight: 500; }
+.ai-result { background: var(--csl-surface-muted); border-radius: 24rpx; padding: 24rpx; margin-bottom: 16rpx; }
+.ai-result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
+.ai-result-title { font-size: 24rpx; font-weight: 600; color: var(--color-text); }
+.ai-apply-btn { background: var(--color-primary); border-radius: 999rpx; padding: 8rpx 24rpx; }
+.ai-apply-btn text { font-size: 22rpx; color: #fff; font-weight: 500; }
+.ai-result-text { font-size: 26rpx; color: var(--color-text); line-height: 1.6; }
+.ai-tags-wrap { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.ai-tag-item { background: #fff; border: 1rpx solid var(--color-primary); border-radius: 999rpx; padding: 10rpx 24rpx; }
+.ai-tag-text { font-size: 24rpx; color: var(--color-primary); font-weight: 500; }
+
+/* Related Nodes */
+.ai-related-list { display: flex; flex-direction: column; gap: 12rpx; }
+.ai-related-item { display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 16rpx; padding: 16rpx 20rpx; }
+.ai-related-label { font-size: 26rpx; color: var(--color-text); font-weight: 500; flex: 1; }
+.ai-related-type { font-size: 22rpx; color: var(--color-text-secondary); background: var(--csl-surface-muted); border-radius: 999rpx; padding: 4rpx 16rpx; }

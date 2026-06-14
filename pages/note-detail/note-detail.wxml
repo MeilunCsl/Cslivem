@@ -12,6 +12,7 @@
       <view class="action-btn" bindtap="toggleEdit" hover-class="press">
         {{isEditing ? '取消' : '编辑'}}
       </view>
+      <view class="action-btn" bindtap="onShareNote" hover-class="press">分享</view>
       <view class="action-btn delete-btn" bindtap="deleteNote" hover-class="press">删除</view>
     </view>
   </view>
@@ -40,6 +41,60 @@
         <view class="tag-input-wrap" wx:if="{{showTagInput}}">
           <input class="tag-input" value="{{newTag}}" bindinput="onTagInput" placeholder="新标签" focus="{{showTagInput}}" bindconfirm="confirmAddTag" />
           <text class="tag-confirm" bindtap="confirmAddTag">✓</text>
+        </view>
+      </view>
+
+
+      <!-- AI Panel -->
+      <view class="ai-section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="ai-toggle" bindtap="toggleAiPanel" hover-class="press">
+          <text class="ai-icon">✨</text>
+          <text class="ai-label">AI 助手</text>
+          <text class="ai-arrow">{{showAiPanel ? '▲' : '▼'}}</text>
+        </view>
+        <view class="ai-panel" wx:if="{{showAiPanel}}">
+          <view class="ai-actions">
+            <view class="ai-btn" bindtap="onAiSummarize" hover-class="press">
+              <text class="ai-btn-text">{{aiLoading ? '生成中...' : 'AI 摘要'}}</text>
+            </view>
+            <view class="ai-btn" bindtap="onAiSuggestTags" hover-class="press">
+              <text class="ai-btn-text">{{aiLoading ? '推荐中...' : '推荐标签'}}</text>
+            </view>
+            <view class="ai-btn" bindtap="onAiSuggestRelated" hover-class="press">
+              <text class="ai-btn-text">{{aiLoading ? '搜索中...' : '关联推荐'}}</text>
+            </view>
+          </view>
+          <view class="ai-result" wx:if="{{aiSummary}}">
+            <view class="ai-result-header">
+              <text class="ai-result-title">AI 摘要</text>
+              <view class="ai-apply-btn" bindtap="onApplyAiSummary" hover-class="press"><text>应用</text></view>
+            </view>
+            <text class="ai-result-text">{{aiSummary}}</text>
+          </view>
+          <view class="ai-result" wx:if="{{aiTags.length > 0}}">
+            <view class="ai-result-header">
+              <text class="ai-result-title">推荐标签</text>
+              <view class="ai-apply-btn" bindtap="onApplyAllAiTags" hover-class="press"><text>全部应用</text></view>
+            </view>
+            <view class="ai-tags-wrap">
+              <view class="ai-tag-item" wx:for="{{aiTags}}" wx:key="*this" bindtap="onApplyAiTag" data-tag="{{item}}" hover-class="press">
+                <text class="ai-tag-text">+ {{item}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- Related Nodes -->
+          <view class="ai-result" wx:if="{{aiRelated.length > 0}}">
+            <view class="ai-result-header">
+              <text class="ai-result-title">关联内容</text>
+            </view>
+            <view class="ai-related-list">
+              <view class="ai-related-item" wx:for="{{aiRelated}}" wx:key="id" bindtap="onGoRelatedNode" data-id="{{item.id}}" data-type="{{item.type}}" hover-class="press">
+                <text class="ai-related-label">{{item.label}}</text>
+                <text class="ai-related-type">{{item.type}}</text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
 

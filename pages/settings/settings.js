@@ -42,7 +42,8 @@ Page({
       graphNodes: 0,
       graphEdges: 0,
       notes: 0,
-      storageUsed: '0 KB'
+      storageUsed: '0 KB',
+      storageDetails: []
     },
 
     // Export/Import
@@ -291,6 +292,67 @@ Page({
   },
 
   // ===== Reset =====
+
+  onGoAbout: function() {
+    wx.navigateTo({ url: '/pages/about/about' });
+  },
+
+
+  onShowStorageDetail: function() {
+    try {
+      var info = wx.getStorageInfoSync();
+      var keys = info.keys || [];
+      var totalKB = info.currentSize || 0;
+      var limitKB = info.limitSize || 10240;
+
+      var categories = {};
+      keys.forEach(function(key) {
+        var prefix = key.split('_')[0] || 'other';
+        if (!categories[prefix]) categories[prefix] = { count: 0, keys: [] };
+        categories[prefix].count++;
+        categories[prefix].keys.push(key);
+      });
+
+      var detail = Object.keys(categories).map(function(cat) {
+        return { name: cat, count: categories[cat].count };
+      }).sort(function(a, b) { return b.count - a.count; });
+
+      wx.showModal({
+        title: '存储详情',
+        content: '已用: ' + totalKB + 'KB / ' + limitKB + 'KB\n存储键: ' + keys.length + '个\n\n分类: ' + detail.map(function(d) { return d.name + '(' + d.count + ')'; }).join(', '),
+        showCancel: true,
+        cancelText: '关闭',
+        confirmText: '清理旧数据',
+        success: function(res) {
+          if (res.confirm) {
+            wx.showToast({ title: '请在关于页清理', icon: 'none' });
+          }
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '获取失败', icon: 'none' });
+    }
+  },
+
+  onCleanupCache: function() {
+    var self = this;
+    wx.showModal({
+      title: '清理缓存',
+      content: '将清理 AI 请求日志、对话缓存等临时数据，不影响笔记和图谱。',
+      success: function(res) {
+        if (res.confirm) {
+          try {
+            var aiGateway = require('../../miniprogram/ai-gateway');
+            aiGateway.clearHistory();
+            wx.showToast({ title: '已清理', icon: 'success' });
+            self.loadStats();
+          } catch (e) {
+            wx.showToast({ title: '清理失败', icon: 'none' });
+          }
+        }
+      }
+    });
+  },
   onResetGraph: function() {
     var self = this;
     wx.showModal({

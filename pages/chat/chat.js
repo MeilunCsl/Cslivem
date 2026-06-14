@@ -159,27 +159,37 @@ Page({
       return;
     }
 
-    gateway.ask(text).then(function(result) {
-      conversationStore.addMessage({
-        conversationId: convId,
-        role: 'assistant',
-        content: result.content,
-        type: 'text',
-        model: result.model || 'MiMo'
-      });
+    var streamContent = '';
+    self.setData({ isStreaming: true, streamingContent: '' });
 
-      var conv = conversationStore.getConversation(convId);
-      if (conv && conv.messageCount <= 2) {
-        conversationStore.updateConversation(convId, {
-          model: result.model || 'MiMo'
+    var streamTask = gateway.streamChat(
+      [{ role: 'user', content: text }],
+      {},
+      // onChunk
+      function(chunk, full) {
+        streamContent = full;
+        self.setData({ streamingContent: full });
+        self.scrollToBottom();
+      },
+      // onDone
+      function(fullContent) {
+        self.setData({ isStreaming: false, streamingContent: '' });
+        var content = fullContent || streamContent;
+        if (!content) {
+          self.setData({ sending: false });
+          return;
+        }
+        conversationStore.addMessage({
+          conversationId: convId,
+          role: 'assistant',
+          content: content,
+          type: 'text',
+          model: 'AI'
         });
-        self.generateTitle(convId, text, result.content);
-      }
-
-      self.startTypingEffect(result.content, convId);
-      
-      setTimeout(function() {
-        self.stopTypingEffect();
+        var conv = conversationStore.getConversation(convId);
+        if (conv && conv.messageCount <= 2) {
+          self.generateTitle(convId, text, content);
+        }
         var updatedMsgs = conversationStore.getMessages(convId);
         self.setData({
           messages: updatedMsgs,
@@ -187,7 +197,44 @@ Page({
           sending: false
         });
         self.scrollToBottom();
-      }, Math.min(result.content.length * 30, 3000));
+      },
+      // onError
+      function(err) {
+        self.setData({ isStreaming: false, streamingContent: '' });
+        // Fallback to non-streaming
+        gateway.ask(text).then(function(result) {
+          conversationStore.addMessage({
+            conversationId: convId,
+            role: 'assistant',
+            content: result.content,
+            type: 'text',
+            model: result.model || 'MiMo'
+          });
+          self.startTypingEffect(result.content, convId);
+          setTimeout(function() {
+            self.stopTypingEffect();
+            var updatedMsgs = conversationStore.getMessages(convId);
+            self.setData({
+              messages: updatedMsgs,
+              groupedMessages: self.groupByTime(updatedMsgs),
+              sending: false
+            });
+            self.scrollToBottom();
+          }, Math.min(result.content.length * 30, 3000));
+        }).catch(function() {
+          conversationStore.addMessage({
+            conversationId: convId,
+            role: 'assistant',
+            content: '\u62b1\u6b49\uff0cAI \u670d\u52a1\u6682\u65f6\u4e0d\u53ef\u7528\uff0c\u8bf7\u68c0\u67e5\u7f51\u7edc\u548c API \u914d\u7f6e\u3002',
+            type: 'text',
+            isError: true
+          });
+          self.setData({ sending: false });
+          var updatedMsgs = conversationStore.getMessages(convId);
+          self.setData({ messages: updatedMsgs, groupedMessages: self.groupByTime(updatedMsgs) });
+        });
+      }
+    );
     }).catch(function(err) {
       conversationStore.addMessage({
         conversationId: convId,

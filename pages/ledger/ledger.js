@@ -15,6 +15,11 @@ Page({
     categoryMap: {},
     // Create form
     showCreate: false,
+    budgetProgress: [],
+    showBudgetModal: false,
+    budgetCatIndex: 0,
+    budgetAmount: '',
+    expenseCategories: [],
     txType: 'expense',
     amountInput: '',
     selectedCategory: '',

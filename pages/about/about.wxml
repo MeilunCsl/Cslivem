@@ -1,0 +1,71 @@
+<!-- pages/about/about.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="content">
+      <view class="logo-section anim-fade {{ready ? 'anim-show' : ''}}">
+        <view class="logo-circle">
+          <text class="logo-text">C</text>
+        </view>
+        <view class="app-name">Cslivem</view>
+        <view class="app-slogan">AI 第二大脑</view>
+        <view class="version-badge" bindtap="onCopyVersion">
+          <text>{{version}}</text>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">项目统计</view>
+        <view class="stats-grid">
+          <view class="stat-card">
+            <text class="stat-value">{{stats.modules}}</text>
+            <text class="stat-label">模块</text>
+          </view>
+          <view class="stat-card">
+            <text class="stat-value">{{stats.pages}}</text>
+            <text class="stat-label">页面</text>
+          </view>
+          <view class="stat-card">
+            <text class="stat-value">{{stats.notes}}</text>
+            <text class="stat-label">笔记</text>
+          </view>
+          <view class="stat-card">
+            <text class="stat-value">{{stats.graphNodes}}</text>
+            <text class="stat-label">知识节点</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+        <view class="section-title">存储</view>
+        <view class="info-row">
+          <text class="info-label">本地存储用量</text>
+          <text class="info-value">{{stats.storageSize}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">对话记录</text>
+          <text class="info-value">{{stats.conversations}} 条</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">图谱边</text>
+          <text class="info-value">{{stats.graphEdges}} 条</text>
+        </view>
+      </view>
+
+      <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <view class="action-btn" bindtap="onClearCache" hover-class="btn-press">
+          <text>清理缓存</text>
+        </view>
+        <view class="action-btn" bindtap="onFeedback" hover-class="btn-press">
+          <text>反馈问题</text>
+        </view>
+      </view>
+
+      <view class="footer anim-fade anim-d4 {{ready ? 'anim-show' : ''}}">
+        <text class="footer-text">构建于原生微信小程序</text>
+        <text class="footer-text">{{buildDate}}</text>
+        <text class="footer-text">github.com/MeilunCsl/Cslivem</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

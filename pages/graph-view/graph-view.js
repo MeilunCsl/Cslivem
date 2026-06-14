@@ -44,9 +44,1497 @@ Page({
   canvasH: 600,
 
   onLoad: function() {
-    try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 }); } catch(e) {}
+    try { this.setData({ statusBarHeight: wx.getSystemInfoSync().statusBarHeight || 20 
+
+  onExportGraph: function() {
     var self = this;
-    setTimeout(function() { self.setData({ ready: true }); }, 100);
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+}); } catch(e) {}
+    var self = this;
+    setTimeout(function() { self.setData({ ready: true 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+}); }, 100);
   },
 
   onReady: function() {
@@ -66,7 +1554,751 @@ Page({
       self.ctx = ctx;
       self.loadGraph();
       self.startRender();
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
   },
 
   onShow: function() {
@@ -92,19 +2324,2995 @@ Page({
         vx: 0, vy: 0,
         neighbors: []
       };
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     this.nodes = Object.values(nodeMap);
     this.edges = [];
     var self = this;
     Object.keys(graph.edges).forEach(function(eid) {
       var e = graph.edges[eid];
       if (nodeMap[e.source] && nodeMap[e.target]) {
-        self.edges.push({ source: e.source, target: e.target, type: e.type });
+        self.edges.push({ source: e.source, target: e.target, type: e.type 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
         nodeMap[e.source].neighbors.push(e.target);
         nodeMap[e.target].neighbors.push(e.source);
       }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
-    this.setData({ nodeCount: this.nodes.length, edgeCount: this.edges.length });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    this.setData({ nodeCount: this.nodes.length, edgeCount: this.edges.length 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
   },
 
   startRender: function() {
@@ -139,7 +5347,751 @@ Page({
     }
     // Attraction
     var nodeMap = {};
-    nodes.forEach(function(n) { nodeMap[n.id] = n; });
+    nodes.forEach(function(n) { nodeMap[n.id] = n; 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     this.edges.forEach(function(e) {
       var s = nodeMap[e.source], t = nodeMap[e.target];
       if (!s || !t) return;
@@ -148,7 +6100,751 @@ Page({
       var f = (d - 120) * 0.005;
       s.vx += (dx / d) * f; s.vy += (dy / d) * f;
       t.vx -= (dx / d) * f; t.vy -= (dy / d) * f;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     // Center gravity + damping
     nodes.forEach(function(n) {
       n.vx += (W / 2 - n.x) * 0.0005;
@@ -159,7 +6855,751 @@ Page({
         n.x = Math.max(20, Math.min(W - 20, n.x));
         n.y = Math.max(20, Math.min(H - 20, n.y));
       }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
   },
 
   draw: function() {
@@ -172,7 +7612,751 @@ Page({
     ctx.scale(this.scale, this.scale);
 
     var nodeMap = {};
-    this.nodes.forEach(function(n) { nodeMap[n.id] = n; });
+    this.nodes.forEach(function(n) { nodeMap[n.id] = n; 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     var highlighted = this.highlightedNode;
     var hlNeighbors = highlighted ? (nodeMap[highlighted] || {}).neighbors || [] : [];
 
@@ -187,7 +8371,751 @@ Page({
       ctx.strokeStyle = isHl ? 'rgba(91, 76, 255, 0.5)' : 'rgba(91, 76, 255, 0.1)';
       ctx.lineWidth = isHl ? 2 : 1;
       ctx.stroke();
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
 
     // Draw nodes
     var self = this;
@@ -218,7 +9146,751 @@ Page({
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(n.label.substring(0, 8), n.x, n.y + r + 14);
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
 
     ctx.restore();
   },
@@ -235,7 +9907,751 @@ Page({
     this.nodes.forEach(function(n) {
       var dx = x - n.x, dy = y - n.y;
       if (dx * dx + dy * dy < 400) tapped = n;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
 
     if (tapped) {
       // Double-tap detection
@@ -243,7 +10659,751 @@ Page({
       if (this.lastTapNode === tapped.id && now - this.lastTapTime < 300) {
         // Double-tap: navigate to note
         if (tapped.refId) {
-          wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + tapped.refId });
+          wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + tapped.refId 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
         }
         this.lastTapTime = 0;
         return;
@@ -254,7 +11414,751 @@ Page({
       // Single tap: highlight
       if (this.highlightedNode === tapped.id) {
         this.highlightedNode = null;
-        this.setData({ selectedNode: null, neighborNodes: [] });
+        this.setData({ selectedNode: null, neighborNodes: [] 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
       } else {
         this.highlightedNode = tapped.id;
         // Load neighbor details
@@ -266,8 +12170,1496 @@ Page({
               break;
             }
           }
-        });
-        this.setData({ selectedNode: tapped, neighborNodes: neighborNodes.slice(0, 6) });
+        
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        this.setData({ selectedNode: tapped, neighborNodes: neighborNodes.slice(0, 6) 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
       }
 
       // Start drag
@@ -278,7 +13670,751 @@ Page({
     } else {
       // Tap on canvas: start panning
       this.highlightedNode = null;
-      this.setData({ selectedNode: null, neighborNodes: [] });
+      this.setData({ selectedNode: null, neighborNodes: [] 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
       this._panStartX = touch.x;
       this._panStartY = touch.y;
       this._panOffsetX = this.offsetX;
@@ -329,17 +14465,2993 @@ Page({
 
   // ===== Search =====
   toggleSearch: function() {
-    this.setData({ showSearch: !this.data.showSearch, searchResults: [], searchQuery: '' });
+    this.setData({ showSearch: !this.data.showSearch, searchResults: [], searchQuery: '' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
   },
 
   onSearchInput: function(e) {
     var q = e.detail.value;
-    this.setData({ searchQuery: q });
+    this.setData({ searchQuery: q 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     if (q.trim()) {
       var results = graphQuery.searchNodes(q).slice(0, 10);
-      this.setData({ searchResults: results });
+      this.setData({ searchResults: results 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     } else {
-      this.setData({ searchResults: [] });
+      this.setData({ searchResults: [] 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     }
   },
 
@@ -354,7 +17466,751 @@ Page({
       this.offsetX = this.canvasW / 2 - node.x * this.scale;
       this.offsetY = this.canvasH / 2 - node.y * this.scale;
       this.highlightedNode = nodeId;
-      this.setData({ selectedNode: node, showSearch: false });
+      this.setData({ selectedNode: node, showSearch: false 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     }
   },
 
@@ -362,7 +18218,751 @@ Page({
   onNodeDetail: function() {
     var node = this.data.selectedNode;
     if (node && node.refId) {
-      wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + node.refId });
+      wx.navigateTo({ url: '/pages/note-detail/note-detail?id=' + node.refId 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     }
   },
 
@@ -382,8 +18982,1496 @@ Page({
         for (var i = 0; i < self.nodes.length; i++) {
           if (self.nodes[i].id === nid) { neighborNodes.push(self.nodes[i]); break; }
         }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
       });
-      this.setData({ selectedNode: node, neighborNodes: neighborNodes.slice(0, 6) });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      this.setData({ selectedNode: node, neighborNodes: neighborNodes.slice(0, 6) 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     }
   },
 
@@ -403,7 +20491,751 @@ Page({
     this.offsetX = 0;
     this.offsetY = 0;
     this.highlightedNode = null;
-    this.setData({ selectedNode: null, neighborNodes: [] });
+    this.setData({ selectedNode: null, neighborNodes: [] 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
   },
 
   onFitAll: function() {
@@ -414,7 +21246,751 @@ Page({
       if (n.x > maxX) maxX = n.x;
       if (n.y < minY) minY = n.y;
       if (n.y > maxY) maxY = n.y;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
     });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
     var graphW = maxX - minX + 80;
     var graphH = maxY - minY + 80;
     this.scale = Math.min(this.canvasW / graphW, this.canvasH / graphH, 2);
@@ -432,4 +22008,748 @@ Page({
   onUnload: function() {
     if (this.animFrame) this.canvas.cancelAnimationFrame(this.animFrame);
   }
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+        }
+      
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' 
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var edges = Object.values(graph.edges || {
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
+});
+  }
+
+
+
+  onExportGraph: function() {
+    var self = this;
+    wx.showActionSheet({
+      itemList: ['导出 JSON (剪贴板)', '图谱统计'],
+      success: function(res) {
+        if (res.tapIndex === 0) {
+          self.exportJSON();
+        } else if (res.tapIndex === 1) {
+          self.showStats();
+        }
+      }
+    });
+  },
+
+  exportJSON: function() {
+    try {
+      var graphStore = require('../../core/graph/graph-store');
+      var graph = graphStore.loadGraph();
+      var nodes = Object.values(graph.nodes || {});
+      var edges = Object.values(graph.edges || {});
+      var exportData = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodeCount: nodes.length,
+        edgeCount: edges.length,
+        nodes: nodes,
+        edges: edges
+      };
+      var json = JSON.stringify(exportData, null, 2);
+      wx.setClipboardData({
+        data: json,
+        success: function() {
+          wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+        }
+      });
+    } catch (e) {
+      wx.showToast({ title: '导出失败', icon: 'none' });
+    }
+  },
+
+  showStats: function() {
+    var graphStore = require('../../core/graph/graph-store');
+    var graph = graphStore.loadGraph();
+    var nodes = Object.values(graph.nodes || {});
+    var edges = Object.values(graph.edges || {});
+    var typeCount = {};
+    nodes.forEach(function(n) {
+      var t = n.type || 'unknown';
+      typeCount[t] = (typeCount[t] || 0) + 1;
+    });
+    var typeStr = Object.keys(typeCount).map(function(t) {
+      return t + ': ' + typeCount[t];
+    }).join(', ');
+    wx.showModal({
+      title: '图谱统计',
+      content: '节点: ' + nodes.length + '\n边: ' + edges.length + '\n类型: ' + typeStr,
+      showCancel: false
+    });
+  }
+
 });

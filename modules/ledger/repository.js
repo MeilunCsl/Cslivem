@@ -5,6 +5,7 @@ const model = require('./model');
 var ACCOUNTS_KEY = 'ledger_accounts';
 var TRANSACTIONS_KEY = 'ledger_transactions';
 var CATEGORIES_KEY = 'ledger_categories';
+var BUDGETS_KEY = 'ledger_budgets';
 
 function loadAccounts() { return storage.get(ACCOUNTS_KEY) || []; }
 function saveAccounts(list) { storage.set(ACCOUNTS_KEY, list); }
@@ -12,6 +13,8 @@ function loadTransactions() { return storage.get(TRANSACTIONS_KEY) || []; }
 function saveTransactions(list) { storage.set(TRANSACTIONS_KEY, list); }
 function loadCategories() { return storage.get(CATEGORIES_KEY) || null; }
 function saveCategories(list) { storage.set(CATEGORIES_KEY, list); }
+function loadBudgets() { return storage.get(BUDGETS_KEY) || []; }
+function saveBudgets(list) { storage.set(BUDGETS_KEY, list); }
 
 function initCategories() {
   if (!loadCategories()) {
@@ -119,6 +122,54 @@ function getCategoriesByType(type) {
 }
 function getCategoryById(id) {
   return getAllCategories().find(function(c) { return c.id === id; }) || null;
+}
+
+
+
+// ===== Budget =====
+function getAllBudgets() { return loadBudgets(); }
+function getBudgetByCategory(category, yearMonth) {
+  return loadBudgets().find(function(b) { return b.category === category && b.yearMonth === yearMonth; }) || null;
+}
+function setBudget(data) {
+  var budgets = loadBudgets();
+  var existing = budgets.findIndex(function(b) { return b.category === data.category && b.yearMonth === data.yearMonth; });
+  var budget = {
+    category: data.category,
+    yearMonth: data.yearMonth,
+    amountMinor: data.amountMinor || 0,
+    updatedAt: new Date().toISOString()
+  };
+  if (existing >= 0) {
+    budgets[existing] = budget;
+  } else {
+    budget.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
+    budgets.push(budget);
+  }
+  saveBudgets(budgets);
+  return budget;
+}
+function deleteBudget(category, yearMonth) {
+  var budgets = loadBudgets().filter(function(b) { return !(b.category === category && b.yearMonth === yearMonth); });
+  saveBudgets(budgets);
+}
+function getBudgetProgress(yearMonth, transactions) {
+  var budgets = loadBudgets().filter(function(b) { return b.yearMonth === yearMonth; });
+  return budgets.map(function(b) {
+    var spent = 0;
+    transactions.forEach(function(tx) {
+      if (tx.type === 'expense' && tx.category === b.category) {
+        spent += Math.abs(tx.amountMinor || 0);
+      }
+    });
+    return {
+      category: b.category,
+      budgetMinor: b.amountMinor,
+      spentMinor: spent,
+      remainingMinor: b.amountMinor - spent,
+      percentage: b.amountMinor > 0 ? Math.round(spent / b.amountMinor * 100) : 0
+    };
+  });
 }
 
 module.exports = {

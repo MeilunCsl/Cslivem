@@ -559,3 +559,18 @@
 ---
 
 *v2.0.0 验收通过 — 平台完成。*
+
+## v2.1.0 — UX Enhancement (2026-06-14)
+
+**验收人**: cansen (auto-verify)
+
+- [x] Tools page: 3 categories (Knowledge/Tools/Lifestyle)
+- [x] Tabbar: dynamic badge with habit + flashcard counts
+- [x] Home: dashboard with 4 daily stats
+- [x] Search: covers 8 modules
+- [x] All files BOM clean, braces balanced
+- [x] All commits pushed to GitHub
+
+---
+
+*v2.1.0 验收通过 — UX 增强完成。*
