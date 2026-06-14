@@ -1,4 +1,4 @@
-<!-- pages/conversations/conversations.wxml -->
+﻿<!-- pages/conversations/conversations.wxml -->
 <view class="page">
   <view style="height: {{statusBarHeight}}px;"></view>
   <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}" bindscrolltolower="onScrollToLower" lower-threshold="200">
@@ -39,7 +39,7 @@
           </view>
           <text class="conv-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
           <view class="conv-footer">
-            <text class="conv-status {{item.ingested ? 'status-ingested' : ''}}">{{item.ingested ? '已入库' : '未入库'}}</text>
+            <text class="conv-status {{item.ingested ? 'status-ingested' : ''}}" bindtap="onIngestTap" data-id="{{item.id}}" data-ingested="{{item.ingested}}">{{item.ingested ? '已入库' : '未入库'}}</text>
             <text class="conv-model" wx:if="{{item.model}}">{{item.model}}</text>
           </view>
         </card>
@@ -59,3 +59,4 @@
 
   <custom-tabbar selected="{{1}}" />
 </view>
+

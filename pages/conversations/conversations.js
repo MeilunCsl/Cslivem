@@ -1,4 +1,4 @@
-// pages/conversations/conversations.js
+﻿// pages/conversations/conversations.js
 var conversationStore = require('../../core/conversation/store');
 var format = require('../../utils/format');
 
@@ -1280,4 +1280,16 @@ Page({
     }, 300);
   },
 
+
+  onIngestTap: function(e) {
+    var id = e.currentTarget.dataset.id;
+    var ingested = e.currentTarget.dataset.ingested;
+    if (ingested === 'true' || ingested === true) {
+      wx.showToast({ title: '已入库', icon: 'success' });
+      return;
+    }
+    wx.navigateTo({ url: '/pages/graph-ingest/graph-ingest?id=' + id });
+  },
+
 });
+

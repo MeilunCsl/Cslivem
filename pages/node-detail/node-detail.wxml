@@ -1,0 +1,69 @@
+<!-- pages/node-detail/node-detail.wxml -->
+<view class="page">
+  <view style="height: {{statusBarHeight}}px;"></view>
+
+  <!-- Header -->
+  <view class="header anim-fade {{ready ? 'anim-show' : ''}}">
+    <view class="back-btn" bindtap="goBack" hover-class="press">←</view>
+    <text class="header-title">节点详情</text>
+    <view class="header-action" bindtap="onMore" hover-class="press">⋯</view>
+  </view>
+
+  <!-- Node Info -->
+  <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="content-area">
+      <view class="node-hero anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="node-dot-large" style="background: {{nodeColor}};"></view>
+        <text class="node-label">{{node.label}}</text>
+        <text class="node-type-badge">{{node.type}}</text>
+        <text class="node-time" wx:if="{{node.createdAt}}">创建于 {{node.createdAtFormatted}}</text>
+      </view>
+
+      <!-- Metadata -->
+      <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" wx:if="{{node.refId}}">
+        <text class="section-title">引用 ID</text>
+        <text class="section-content">{{node.refId}}</text>
+      </view>
+
+      <view class="section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" wx:if="{{node.metadataDesc}}">
+        <text class="section-title">元数据</text>
+        <text class="section-content">{{node.metadataDesc}}</text>
+      </view>
+
+      <!-- Neighbors -->
+      <view class="section anim-fade anim-d3 {{ready ? 'anim-show' : ''}}">
+        <text class="section-title">关联节点 ({{neighbors.length}})</text>
+        <view class="neighbor-list">
+          <view class="neighbor-item" wx:for="{{neighbors}}" wx:key="id" bindtap="onNeighborTap" data-id="{{item.id}}" hover-class="neighbor-press">
+            <view class="neighbor-dot" style="background: {{item.color}};"></view>
+            <view class="neighbor-info">
+              <text class="neighbor-label">{{item.label}}</text>
+              <text class="neighbor-type">{{item.type}} · {{item.edgeType}}</text>
+            </view>
+            <text class="neighbor-arrow">→</text>
+          </view>
+        </view>
+        <view class="empty-small" wx:if="{{neighbors.length === 0}}">
+          <text class="empty-small-text">暂无关联节点</text>
+        </view>
+      </view>
+
+      <!-- Connected Notes -->
+      <view class="section anim-fade anim-d4 {{ready ? 'anim-show' : ''}}" wx:if="{{relatedNotes.length > 0}}">
+        <text class="section-title">相关笔记 ({{relatedNotes.length}})</text>
+        <view class="note-list">
+          <view class="note-card" wx:for="{{relatedNotes}}" wx:key="id" bindtap="onNoteTap" data-id="{{item.id}}" hover-class="note-press">
+            <text class="note-card-title">{{item.title}}</text>
+            <text class="note-card-summary">{{item.summary}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Actions -->
+      <view class="actions anim-fade anim-d5 {{ready ? 'anim-show' : ''}}">
+        <view class="action-btn" bindtap="onViewInGraph" hover-class="action-press">在图谱中查看</view>
+        <view class="action-btn action-danger" bindtap="onDeleteNode" hover-class="action-press">删除节点</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

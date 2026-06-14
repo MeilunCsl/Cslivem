@@ -61,3 +61,33 @@
 .batch-danger { background: #FEE2E2; color: #DC3545; }
 
 .note-card.selected { border: 3rpx solid var(--color-primary); background: var(--color-primary-bg); }
+
+/* Three-Tab Bar */
+.tab-bar { display: flex; gap: 8rpx; margin: 16rpx 0 8rpx; background: var(--csl-surface-muted); border-radius: var(--radius-lg); padding: 6rpx; }
+.tab { flex: 1; text-align: center; padding: 16rpx 0; border-radius: var(--radius-md); font-size: 26rpx; color: var(--color-text-secondary); font-weight: 500; transition: all 0.2s ease; }
+.tab.active { background: var(--color-card); color: var(--color-primary); font-weight: 600; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06); }
+.tab-press { transform: scale(0.96); }
+
+/* Tags Grid */
+.tags-grid { display: flex; flex-wrap: wrap; gap: 16rpx; margin-top: 20rpx; }
+.tag-card { width: calc(50% - 8rpx); background: var(--color-card); border-radius: var(--radius-lg); padding: 24rpx; box-shadow: var(--shadow-sm); transition: transform 0.2s ease; }
+.tag-card:active { transform: scale(0.97); }
+.tag-card-label { display: block; font-size: 28rpx; font-weight: 600; color: var(--color-primary); margin-bottom: 8rpx; }
+.tag-card-count { display: block; font-size: 22rpx; color: var(--color-text-secondary); }
+.tag-press { transform: scale(0.97); }
+
+/* Graph Preview */
+.graph-preview { background: var(--color-card); border-radius: var(--radius-lg); padding: 48rpx 32rpx; text-align: center; margin-top: 20rpx; box-shadow: var(--shadow-card); transition: transform 0.2s ease; }
+.graph-preview:active { transform: scale(0.98); }
+.graph-preview-icon { font-size: 80rpx; margin-bottom: 16rpx; }
+.graph-preview-title { display: block; font-size: 32rpx; font-weight: 700; color: var(--color-text); margin-bottom: 8rpx; }
+.graph-preview-desc { display: block; font-size: 24rpx; color: var(--color-text-secondary); margin-bottom: 16rpx; }
+.graph-preview-hint { display: block; font-size: 26rpx; color: var(--color-primary); font-weight: 500; }
+.graph-press { transform: scale(0.98); }
+
+/* Graph Stats */
+.graph-stats { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 20rpx; }
+.stat-card { display: flex; align-items: center; gap: 10rpx; background: var(--color-card); border-radius: var(--radius-md); padding: 16rpx 20rpx; min-width: 140rpx; }
+.stat-dot { width: 12rpx; height: 12rpx; border-radius: 50%; flex-shrink: 0; }
+.stat-label { font-size: 24rpx; color: var(--color-text-secondary); }
+.stat-count { font-size: 26rpx; font-weight: 600; color: var(--color-text); margin-left: auto; }

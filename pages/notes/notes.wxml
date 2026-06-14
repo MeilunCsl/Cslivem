@@ -7,67 +7,106 @@
         <text class="page-title">知识</text>
       </view>
 
-      <view class="search-section anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
-        <search-input placeholder="搜索笔记..." showAi="{{false}}" />
+      <!-- Three-Tab Switcher -->
+      <view class="tab-bar anim-fade anim-d1 {{ready ? 'anim-show' : ''}}">
+        <view class="tab {{activeTab === 'notes' ? 'active' : ''}}" bindtap="switchTab" data-tab="notes" hover-class="tab-press">全部笔记</view>
+        <view class="tab {{activeTab === 'tags' ? 'active' : ''}}" bindtap="switchTab" data-tab="tags" hover-class="tab-press">标签</view>
+        <view class="tab {{activeTab === 'graph' ? 'active' : ''}}" bindtap="switchTab" data-tab="graph" hover-class="tab-press">图谱</view>
       </view>
 
-      <scroll-view scroll-x class="filters-scroll anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" enhanced show-scrollbar="{{false}}">
-        <view class="filters-row">
-          <view class="filter {{activeFilter === item.key ? 'active' : ''}}" wx:for="{{filters}}" wx:key="key" bindtap="setFilter" data-filter="{{item.key}}" hover-class="filter-press">
-            {{item.label}}
-            <text class="filter-badge" wx:if="{{item.key === 'inbox' && inboxCount > 0}}">{{inboxCount}}</text>
-          </view>
+      <!-- ===== Notes Tab ===== -->
+      <block wx:if="{{activeTab === 'notes'}}">
+        <view class="search-section anim-fade anim-d2 {{ready ? 'anim-show' : ''}}">
+          <search-input placeholder="搜索笔记..." showAi="{{false}}" />
         </view>
-      </scroll-view>
 
-      <view class="note-list">
-        <card className="note-item anim-fade anim-d{{index < 4 ? index + 2 : 5}} {{ready ? 'anim-show' : ''}}" wx:for="{{notes}}" wx:key="id" hover-class="note-press" bindtap="onTapNote" data-id="{{item.id}}">
-          <text class="note-item-title">{{item.title}}</text>
-          <text class="note-item-summary">{{item.summary || item.content}}</text>
-          <view class="note-item-footer">
-            <text class="note-item-time">{{item.timeAgo}}</text>
-            <view class="note-item-tags">
-              <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+        <scroll-view scroll-x class="filters-scroll anim-fade anim-d2 {{ready ? 'anim-show' : ''}}" enhanced show-scrollbar="{{false}}">
+          <view class="filters-row">
+            <view class="filter {{activeFilter === item.key ? 'active' : ''}}" wx:for="{{filters}}" wx:key="key" bindtap="setFilter" data-filter="{{item.key}}" hover-class="filter-press">
+              {{item.label}}
+              <text class="filter-badge" wx:if="{{item.key === 'inbox' && inboxCount > 0}}">{{inboxCount}}</text>
             </view>
           </view>
-        </card>
-      </view>
+        </scroll-view>
 
-      <view class="empty anim-fade {{ready ? 'anim-show' : ''}}" wx:if="{{notes.length === 0}}">
-        <text class="empty-icon">📝</text>
-        <text class="empty-text">还没有笔记</text>
-        <text class="empty-hint">点击右下角 + 开始记录</text>
-      </view>
+        <view class="note-list">
+          <card className="note-item anim-fade anim-d{{index < 4 ? index + 2 : 5}} {{ready ? 'anim-show' : ''}}" wx:for="{{notes}}" wx:key="id" hover-class="note-press" bindtap="onTapNote" data-id="{{item.id}}" bindlongpress="onNoteLongPress" data-id="{{item.id}}">
+            <text class="note-item-title">{{item.title}}</text>
+            <text class="note-item-summary">{{item.summary || item.content}}</text>
+            <view class="note-item-footer">
+              <text class="note-item-time">{{item.timeAgo}}</text>
+              <view class="note-item-tags">
+                <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+              </view>
+            </view>
+          </card>
+        </view>
+
+        <view class="loading-more" wx:if="{{loadingMore}}">
+          <text class="loading-text">加载中...</text>
+        </view>
+        <view class="no-more" wx:if="{{!hasMore && notes.length > 0}}">
+          <text class="no-more-text">没有更多了</text>
+        </view>
+
+        <view class="empty anim-fade {{ready ? 'anim-show' : ''}}" wx:if="{{notes.length === 0 && !loadingMore}}">
+          <text class="empty-icon">📝</text>
+          <text class="empty-text">还没有笔记</text>
+          <text class="empty-hint">点击右下角 + 开始记录</text>
+        </view>
+      </block>
+
+      <!-- ===== Tags Tab ===== -->
+      <block wx:if="{{activeTab === 'tags'}}">
+        <view class="tags-grid">
+          <view class="tag-card" wx:for="{{allTags}}" wx:key="label" bindtap="onTagTap" data-tag="{{item.label}}" hover-class="tag-press">
+            <text class="tag-card-label"># {{item.label}}</text>
+            <text class="tag-card-count">{{item.count}} 篇</text>
+          </view>
+        </view>
+        <view class="empty anim-fade {{ready ? 'anim-show' : ''}}" wx:if="{{allTags.length === 0}}">
+          <text class="empty-icon">🏷</text>
+          <text class="empty-text">还没有标签</text>
+          <text class="empty-hint">在笔记中添加标签即可在此查看</text>
+        </view>
+      </block>
+
+      <!-- ===== Graph Tab ===== -->
+      <block wx:if="{{activeTab === 'graph'}}">
+        <view class="graph-preview" bindtap="openGraphView" hover-class="graph-press">
+          <view class="graph-preview-icon">🕸</view>
+          <text class="graph-preview-title">知识图谱</text>
+          <text class="graph-preview-desc">{{graphNodeCount}} 个节点 · {{graphEdgeCount}} 条关系</text>
+          <text class="graph-preview-hint">点击进入图谱可视化 →</text>
+        </view>
+        <view class="graph-stats">
+          <view class="stat-card" wx:for="{{graphTypeStats}}" wx:key="type">
+            <text class="stat-dot" style="background: {{item.color}};"></text>
+            <text class="stat-label">{{item.type}}</text>
+            <text class="stat-count">{{item.count}}</text>
+          </view>
+        </view>
+      </block>
     </view>
   </scroll-view>
+
+  <!-- Batch Operations Bar -->
+  <view class="batch-bar {{selectMode ? 'show' : ''}}">
+    <view class="batch-info">
+      <text class="batch-count">已选 {{selectedIds.length}} 项</text>
+    </view>
+    <view class="batch-actions">
+      <view class="batch-btn" bindtap="onSelectAll" hover-class="batch-btn-press">全选</view>
+      <view class="batch-btn" bindtap="onBatchTag" hover-class="batch-btn-press">加标签</view>
+      <view class="batch-btn" bindtap="onBatchExport" hover-class="batch-btn-press">导出</view>
+      <view class="batch-btn batch-danger" bindtap="onBatchDelete" hover-class="batch-btn-press">删除</view>
+      <view class="batch-btn" bindtap="exitSelectMode" hover-class="batch-btn-press">取消</view>
+    </view>
+  </view>
 
   <view class="fab-create" bindtap="createNote" hover-class="fab-press">
     <text class="fab-icon">+</text>
   </view>
-
-
-    <view class="loading-more" wx:if="{{loadingMore}}">
-      <text class="loading-text">加载中...</text>
-    </view>
-    <view class="no-more" wx:if="{{!hasMore && notes.length > 0}}">
-      <text class="no-more-text">没有更多了</text>
-    </view>
-
-    <view class="template-btn" bindtap="onShowTemplates" hover-class="btn-press"><text class="template-icon">+</text><text class="template-label">模板</text></view>
-
-    <!-- Batch Actions Bar -->
-    <view class="batch-bar {{selectMode ? 'show' : ''}}" wx:if="{{selectMode}}">
-      <view class="batch-info">
-        <text class="batch-count">已选 {{selectedIds.length}} 项</text>
-      </view>
-      <view class="batch-actions">
-        <view class="batch-btn" bindtap="onSelectAll" hover-class="press">全选</view>
-        <view class="batch-btn" bindtap="onBatchTag" hover-class="press">加标签</view>
-        <view class="batch-btn" bindtap="onBatchExport" hover-class="press">导出</view>
-        <view class="batch-btn batch-danger" bindtap="onBatchDelete" hover-class="press">删除</view>
-        <view class="batch-btn" bindtap="exitSelectMode" hover-class="press">取消</view>
-      </view>
-    </view>
 
   <custom-tabbar selected="{{2}}" />
 </view>

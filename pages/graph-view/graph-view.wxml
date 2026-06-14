@@ -1,0 +1,64 @@
+<!-- pages/graph-view/graph-view.wxml -->
+<view class="page">
+  <!-- Header -->
+  <view class="header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="back-btn btn-press" bindtap="onBack" hover-class="btn-press">←</view>
+    <text class="header-title">知识图谱</text>
+    <view class="header-actions">
+      <view class="search-toggle" bindtap="onToggleSearch">🔍</view>
+      <text class="stats" wx:if="{{nodeCount > 0}}">{{nodeCount}}节点 {{edgeCount}}边</text>
+      <view class="search-toggle" bindtap="onExportGraph">⋯</view>
+    </view>
+  </view>
+
+  <!-- Search Bar -->
+  <view class="search-bar {{showSearch ? 'show' : ''}}">
+    <input class="search-input" placeholder="搜索节点..." value="{{searchQuery}}" bindinput="onSearchInput" confirm-type="search" />
+    <view class="search-results" wx:if="{{searchResults.length > 0}}">
+      <view class="search-item" wx:for="{{searchResults}}" wx:key="id" bindtap="onTapSearchResult" data-id="{{item.id}}" hover-class="item-press">
+        <view class="search-dot" style="background: {{item.color}};"></view>
+        <text class="search-label">{{item.label}}</text>
+        <text class="search-type">{{item.type}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Canvas -->
+  <canvas type="2d" id="graphCanvas" class="graph-canvas"
+    bindtouchstart="onCanvasTouchStart"
+    bindtouchmove="onCanvasTouchMove"
+    bindtouchend="onCanvasTouchEnd"
+  />
+
+  <!-- Node Info Card -->
+  <view class="node-info {{selectedNode ? 'show' : ''}}">
+    <view class="node-info-header" wx:if="{{selectedNode}}">
+      <view class="node-dot" style="background: {{selectedNode.color}};"></view>
+      <view class="node-info-text">
+        <text class="node-label">{{selectedNode.label}}</text>
+        <text class="node-type">{{selectedNode.type}}</text>
+      </view>
+      <view class="node-actions">
+        <view class="node-action action-press" bindtap="onNodeDetail" hover-class="action-press">详情</view>
+        <view class="node-action action-press" bindtap="onNodeNeighbors" hover-class="action-press">关联</view>
+      </view>
+    </view>
+    <!-- Neighbor chips -->
+    <view class="neighbor-list" wx:if="{{neighborNodes.length > 0}}">
+      <text class="neighbor-title">关联节点</text>
+      <view class="neighbor-items">
+        <view class="neighbor-chip" wx:for="{{neighborNodes}}" wx:key="id" bindtap="onTapNeighbor" data-id="{{item.id}}" hover-class="chip-press">
+          <view class="neighbor-dot" style="background: {{item.color}};"></view>
+          <text class="neighbor-name">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Zoom Controls -->
+  <view class="zoom-controls">
+    <view class="zoom-btn" bindtap="onZoomIn" hover-class="zoom-press">+</view>
+    <view class="zoom-btn" bindtap="onZoomOut" hover-class="zoom-press">−</view>
+    <view class="zoom-btn zoom-reset" bindtap="onZoomReset" hover-class="zoom-press">⟲</view>
+  </view>
+</view>
