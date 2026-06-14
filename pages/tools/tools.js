@@ -71,7 +71,7 @@ Page({
       'ledger': '/pages/ledger/ledger',
       'tool-pdf': '/pages/pdf/pdf',
       'tool-ocr': '/pages/ocr/ocr',
-      'tool-scanner': '/pages/tools/tools'
+      'tool-scanner': '/pages/scanner/scanner'
     };
     if (routes[id]) {
       wx.navigateTo({ url: routes[id] });

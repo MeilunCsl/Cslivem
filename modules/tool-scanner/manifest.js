@@ -1,10 +1,10 @@
 module.exports = {
   id: 'tool-scanner',
   name: '扫描归档',
-  version: '0.1.0',
-  lifecycle: 'draft',
+  version: '1.7.0',
+  lifecycle: 'stable',
   permissions: ['camera', 'album'],
   enabledByDefault: true,
-  icon: '◻',
-  description: '自动裁切和增强文档'
+  icon: '◌',
+  description: '拍照增强、文档扫描归档'
 };

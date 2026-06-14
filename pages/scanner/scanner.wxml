@@ -1,0 +1,81 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">扫描归档</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="section" wx:if="{{!imagePath}}">
+      <view class="empty-state">
+        <text class="empty-icon">◌</text>
+        <text class="empty-text">拍照或选择图片</text>
+        <text class="empty-hint">自动增强文档清晰度</text>
+      </view>
+      <view class="source-section">
+        <view class="source-btn" bindtap="onTakePhoto" hover-class="source-press">
+          <text class="source-icon">○</text>
+          <text class="source-text">拍照</text>
+        </view>
+        <view class="source-btn" bindtap="onChooseAlbum" hover-class="source-press">
+          <text class="source-icon">□</text>
+          <text class="source-text">相册</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{imagePath}}">
+      <view class="preview-wrap">
+        <image class="preview-image" src="{{enhancedPath || imagePath}}" mode="widthFix" bindtap="onPreview" />
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{imagePath && !loading}}">
+      <view class="settings-toggle" bindtap="onToggleSettings">
+        <text>增强设置</text>
+        <text class="toggle-arrow">{{showSettings ? '▲' : '▼'}}</text>
+      </view>
+      <view class="settings-panel" wx:if="{{showSettings}}">
+        <view class="setting-row">
+          <text class="setting-label">亮度</text>
+          <slider min="-50" max="50" value="{{brightness}}" bindchanging="onBrightnessChange" activeColor="#6C5CE7" />
+        </view>
+        <view class="setting-row">
+          <text class="setting-label">对比度</text>
+          <slider min="-50" max="50" value="{{contrast}}" bindchanging="onContrastChange" activeColor="#6C5CE7" />
+        </view>
+        <view class="setting-row">
+          <text class="setting-label">灰度模式</text>
+          <switch checked="{{grayscale}}" bindchange="onToggleGrayscale" color="#6C5CE7" />
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{imagePath && !loading}}">
+      <view class="enhance-btn" bindtap="onEnhance" hover-class="btn-press">
+        <text>增强扫描</text>
+      </view>
+      <view class="action-row">
+        <view class="action-btn" bindtap="onSaveToAlbum" hover-class="btn-press">
+          <text>保存相册</text>
+        </view>
+        <view class="action-btn" bindtap="onSaveAsNote" hover-class="btn-press">
+          <text>存为笔记</text>
+        </view>
+      </view>
+      <view class="reset-link" bindtap="onReset">
+        <text>重新扫描</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{loading}}">
+      <view class="loading-section">
+        <view class="loading-dots">
+          <view class="dot dot1"></view>
+          <view class="dot dot2"></view>
+          <view class="dot dot3"></view>
+        </view>
+        <text class="loading-text">正在增强处理...</text>
+      </view>
+    </view>
+  </scroll-view>
+  <canvas canvas-id="scanner-canvas" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;" />
+</view>
