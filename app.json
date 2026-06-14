@@ -22,7 +22,8 @@
     "pages/pomodoro/pomodoro",
     "pages/countdown/countdown",
     "pages/food/food",
-    "pages/flashcard/flashcard"
+    "pages/flashcard/flashcard",
+    "pages/mood/mood"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7FA",

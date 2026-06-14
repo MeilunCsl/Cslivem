@@ -1,0 +1,33 @@
+<view class="page anim-fade {{ready ? 'anim-show' : ''}}">
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="onBack">‹</view>
+    <view class="nav-title">心情记录</view>
+  </view>
+  <scroll-view scroll-y class="content">
+    <view class="today-section">
+      <text class="section-title">今天心情如何？</text>
+      <view class="mood-selector">
+        <view class="mood-opt {{selectedMood === item.value ? 'mood-sel' : ''}}" wx:for="{{moods}}" wx:key="value" bindtap="onSelectMood" data-value="{{item.value}}">
+          <text class="mood-icon">{{item.icon}}</text><text class="mood-label">{{item.label}}</text>
+        </view>
+      </view>
+      <textarea class="note-input" placeholder="写点什么... (可选)" value="{{note}}" bindinput="onNoteInput" auto-height maxlength="200" />
+      <view class="save-btn" bindtap="onSave" hover-class="btn-press"><text>{{todayRecord ? '更新' : '记录'}}</text></view>
+    </view>
+
+    <view class="stats-section">
+      <view class="stat-item"><text class="stat-val">{{stats.avg || '-'}}</text><text class="stat-lbl">平均心情</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.count || 0}}</text><text class="stat-lbl">总记录</text></view>
+      <view class="stat-item"><text class="stat-val">{{stats.streak || 0}}</text><text class="stat-lbl">连续</text></view>
+    </view>
+
+    <view class="recent-section" wx:if="{{recentRecords.length > 0}}">
+      <text class="section-title">近期心情</text>
+      <view class="recent-item" wx:for="{{recentRecords}}" wx:key="date">
+        <text class="recent-date">{{item.date}}</text>
+        <text class="recent-mood">{{item.mood === 5 ? '☺' : item.mood === 4 ? '□' : item.mood === 3 ? '○' : item.mood === 2 ? '▽' : '☹'}}</text>
+        <text class="recent-note">{{item.note}}</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
