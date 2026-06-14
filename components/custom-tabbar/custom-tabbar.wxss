@@ -18,8 +18,8 @@
   border-radius: 26rpx;
   overflow: hidden;
   padding: 0;
-  background: linear-gradient(110deg, rgba(99, 82, 255, 0.06) 0%, rgba(255, 255, 255, 0.92) 40%, rgba(255, 255, 255, 0.92) 60%, rgba(31, 212, 224, 0.05) 100%);
-  border: none;
+  background: rgba(255, 255, 255, 0.96);
+  border: none; box-shadow: 0 -2rpx 16rpx rgba(0,0,0,0.06);
   transition: opacity 260ms ease, transform 260ms ease;
 }
 

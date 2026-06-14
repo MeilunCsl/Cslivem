@@ -100,7 +100,7 @@ Page({
       self.generateTitle(content.trim());
     }
 
-    gateway.ask(content.trim(), '你是一个知识助手，帮助用户整理和管理知识。')
+    gateway.ask(content.trim(), '你是 Cslivem AI 助手，一个友好、有用的智能助手。用简洁的中文回答用户的问题。')
       .then(function (res) {
         var reply = res.content || '';
         self.startTypingEffect(convId, reply);
