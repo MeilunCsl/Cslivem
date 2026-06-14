@@ -11,6 +11,7 @@ const toolOcr = require('./modules/tool-ocr/public');
 const toolScanner = require('./modules/tool-scanner/public');
 const knowledgeModule = require('./modules/knowledge/public');
 const syncManager = require('./miniprogram/sync-manager');
+const ecsAdapter = require('./miniprogram/ecs-adapter');
 
 App({
   globalData: {
@@ -36,6 +37,7 @@ App({
     syncManager.init();
 
     storage.init();
+    ecsAdapter.init();
     this.restoreUserInfo();
   },
 

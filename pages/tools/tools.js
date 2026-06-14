@@ -42,6 +42,11 @@ Page({
     this.setData({ tools: tools });
   },
 
+  onSettingsTap: function() {
+    wx.vibrateShort({ type: 'light' }).catch(function() {});
+    wx.navigateTo({ url: '/pages/settings/settings' });
+  },
+
   onToolTap: function(e) {
     var id = e.currentTarget.dataset.id;
     wx.vibrateShort({ type: 'light' }).catch(function() {});

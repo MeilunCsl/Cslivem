@@ -35,3 +35,22 @@
 .coming-press { transform: scale(0.92); opacity: 0.35; }
 .coming-icon { font-size: 40rpx; }
 .coming-name { font-size: 22rpx; color: var(--color-text-secondary); }
+
+/* Settings Entry */
+.settings-entry {
+  display: flex; align-items: center; padding: 28rpx 24rpx;
+  background: var(--color-card); border-radius: 20rpx;
+  transition: transform 0.2s ease;
+}
+.settings-entry:active { transform: scale(0.97); }
+.settings-icon-wrap {
+  width: 72rpx; height: 72rpx; border-radius: 18rpx;
+  background: linear-gradient(135deg, #5B4CFF, #3A7BFF);
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 24rpx; flex-shrink: 0;
+}
+.settings-icon-text { font-size: 36rpx; color: #FFFFFF; }
+.settings-info { flex: 1; display: flex; flex-direction: column; }
+.settings-name { font-size: 30rpx; font-weight: 600; color: var(--color-text); margin-bottom: 6rpx; }
+.settings-desc { font-size: 22rpx; color: var(--color-text-secondary); }
+.settings-arrow { font-size: 32rpx; color: #D0D5DD; margin-left: 16rpx; }
