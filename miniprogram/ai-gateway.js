@@ -114,6 +114,92 @@ function localClassify(text) {
   return { category: 'uncategorized', confidence: 0.3 };
 }
 
+// ===== Local Knowledge Search =====
+function localSearchKnowledge(query) {
+  var localStorage = require('../core/storage/local-storage');
+  var keys = require('../core/storage/storage-keys');
+  var notes = localStorage.getJSON(keys.NOTES, []);
+  var graph = localStorage.getJSON(keys.GRAPH, { nodes: {}, edges: {} });
+
+  var queryLower = query.toLowerCase();
+  var queryWords = queryLower.split(/[\s,.\?!，。？！]+/).filter(function(w) { return w.length > 1; });
+
+  // Search notes
+  var matchedNotes = [];
+  notes.forEach(function(note) {
+    var titleLower = (note.title || '').toLowerCase();
+    var contentLower = (note.content || '').toLowerCase();
+    var tags = (note.tags || []).join(' ').toLowerCase();
+    var score = 0;
+
+    queryWords.forEach(function(word) {
+      if (titleLower.indexOf(word) >= 0) score += 3;
+      if (contentLower.indexOf(word) >= 0) score += 1;
+      if (tags.indexOf(word) >= 0) score += 2;
+    });
+
+    if (score > 0) {
+      matchedNotes.push({ title: note.title, content: note.content, tags: note.tags, score: score });
+    }
+  });
+
+  // Sort by score
+  matchedNotes.sort(function(a, b) { return b.score - a.score; });
+  matchedNotes = matchedNotes.slice(0, 3);
+
+  // Search graph nodes
+  var matchedNodes = [];
+  Object.keys(graph.nodes || {}).forEach(function(id) {
+    var node = graph.nodes[id];
+    var labelLower = (node.label || '').toLowerCase();
+    queryWords.forEach(function(word) {
+      if (labelLower.indexOf(word) >= 0) {
+        matchedNodes.push({ label: node.label, type: node.type });
+      }
+    });
+  });
+
+  return { notes: matchedNotes, nodes: matchedNodes.slice(0, 5) };
+}
+
+function localAnswerQuestion(query) {
+  var results = localSearchKnowledge(query);
+
+  if (results.notes.length === 0 && results.nodes.length === 0) {
+    return '本地知识库中没有找到相关内容。请尝试重新表述问题，或在设置中配置 AI 服务以获得更好的回答。';
+  }
+
+  var answer = '';
+
+  if (results.notes.length > 0) {
+    answer += '找到以下相关笔记：
+
+';
+    results.notes.forEach(function(note, i) {
+      answer += (i + 1) + '. ' + note.title;
+      if (note.tags && note.tags.length > 0) {
+        answer += ' [' + note.tags.join(', ') + ']';
+      }
+      var preview = (note.content || '').replace(/[#*>\-`\[\]]/g, '').trim();
+      if (preview.length > 80) preview = preview.substring(0, 80) + '...';
+      if (preview) answer += '\n   ' + preview;
+      answer += '\n';
+    });
+  }
+
+  if (results.nodes.length > 0) {
+    answer += '\n相关知识节点：';
+    results.nodes.forEach(function(node) {
+      answer += ' ' + node.label + '(' + node.type + ')';
+    });
+    answer += '\n';
+  }
+
+  answer += '\n（本地模式 · 基于知识库检索）';
+  return answer;
+}
+
+
 // ===== Public API =====
 module.exports = {
   // Multi-modal: image analysis
@@ -251,8 +337,9 @@ function selectModel(text, hasImage) {
     
     // 无配置时用本场模式
     if (!config) {
+      var localAnswer = localAnswerQuestion(question);
       return Promise.resolve({
-        content: '(本场模式) 无法连接 AI 服务，请在设置中配置 API。',
+        content: localAnswer,
         mode: 'local'
       });
     }
@@ -277,9 +364,12 @@ function selectModel(text, hasImage) {
       result.mode = 'api';
       return result;
     }).catch(function(err) {
+      // Local fallback: search knowledge base
+      var localAnswer = localAnswerQuestion(question);
       return {
-        content: '(连接失败) ' + err.message + '\n请检查 AI 服务是否运行。',
-        mode: 'error'
+        content: localAnswer,
+        mode: 'local',
+        error: err.message
       };
     });
   },
