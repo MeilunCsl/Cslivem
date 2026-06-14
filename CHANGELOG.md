@@ -25,6 +25,18 @@
 
 ## v1.7.1 -- Navigation-Fix (2026-06-14)
 
+
+## v1.7.2 -- Bugfix-Round2 (2026-06-14)
+
+### Fixed
+- **导航栏指示器**: 改为 JS 动态计算 left%，不再依赖 CSS 类
+  - 位置映射: 首页=10%, 对话=30%, 知识=70%, 工具=90%
+- **录音功能**: 录音结束后自动调用 transcribeVoice 转文字，再作为消息发送
+- **图片识别**: onChooseImage 改用 analyzeImage (MiMo-V2.5-Pro 多模态)
+- **页面重复加载**: 
+  - chat: onLoad/onShow 加载标记，防止 loadConversation 双调
+  - conversations: 移除 onLoad 中重复的 loadConversations
+  - notes: 移除 onLoad 中重复的 loadNotes/loadGraphStats
 ### Fixed
 - **导航栏描点问题**: 修复 WXML 中 selected 值与页面 setData 不匹配
   - 知识页: selected === 2 -> selected === 3
